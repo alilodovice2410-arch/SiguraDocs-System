@@ -1,0 +1,497 @@
+/* User Management Container */
+.user-management {
+  padding: 2rem;
+  background-image: url("../../assets/background.jpg");
+  min-height: 100vh;
+  background-repeat: no-repeat;
+}
+
+/* Header */
+.um-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.um-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.um-header-icon {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #2d4739 0%, #1e2f26 100%);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.um-header-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.um-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.um-header p {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Buttons */
+.um-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #2d4739;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.um-btn-primary:hover {
+  background-color: #1e2f26;
+}
+
+.um-btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.um-btn-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+/* Filters */
+.um-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.um-search {
+  flex: 1;
+  position: relative;
+}
+
+.um-search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #000000;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.um-search input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  color: #000000;
+}
+
+.um-search input:focus {
+  border-color: #2d4739;
+}
+
+.um-filter-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+  min-width: 150px;
+}
+
+.um-filter-select:focus {
+  border-color: #2d4739;
+}
+
+/* Table Container */
+.um-table-container {
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Table */
+.um-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.um-table thead {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.um-table th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.um-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.um-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.um-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.um-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.um-empty {
+  text-align: center;
+  padding: 3rem !important;
+  color: #9ca3af;
+}
+
+/* User Info */
+.um-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.um-user-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2d4739 0%, #1e2f26 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.um-user-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.um-user-username {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Role Badge */
+.um-role-badge {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.um-role-1 {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.um-role-2 {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.um-role-3 {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.um-role-4 {
+  background-color: #e9d5ff;
+  color: #6b21a8;
+}
+
+.um-role-5 {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Actions */
+.um-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.um-action-btn {
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.um-action-btn:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.um-action-delete:hover {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Modal */
+.um-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.um-modal {
+  background-color: white;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.um-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.um-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.um-modal-close {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.um-modal-close:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+/* Form */
+.um-modal-form {
+  padding: 1.5rem;
+}
+
+.um-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.um-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.um-form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.um-form-group .required {
+  color: #dc2626;
+}
+
+.um-form-group input,
+.um-form-group select {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.um-form-group input:focus,
+.um-form-group select:focus {
+  border-color: #2d4739;
+}
+
+.um-form-group input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+}
+
+/* Password Input */
+.um-password-input {
+  position: relative;
+}
+
+.um-password-input input {
+  width: 100%;
+  padding-right: 2.5rem;
+}
+
+.um-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.um-password-toggle:hover {
+  color: #374151;
+}
+
+/* Modal Actions */
+.um-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Loading State */
+.user-management-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e5e7eb;
+  border-top-color: #2d4739;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.user-management-loading p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-management {
+    padding: 1rem;
+  }
+
+  .um-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .um-filters {
+    flex-direction: column;
+  }
+
+  .um-filter-select {
+    width: 100%;
+  }
+
+  .um-table-container {
+    overflow-x: auto;
+  }
+
+  .um-table {
+    min-width: 800px;
+  }
+
+  .um-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .um-modal {
+    max-width: 100%;
+    margin: 1rem;
+  }
+}

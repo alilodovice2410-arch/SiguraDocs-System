@@ -1,0 +1,741 @@
+/* Document Status Container */
+.document-status {
+  padding: 2rem;
+  background-image: url("../../assets/background.jpg");
+  min-height: 100vh;
+}
+
+/* Header */
+.ds-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.ds-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ds-header-icon {
+  width: 3rem;
+  height: 3rem;
+  background: linear-gradient(135deg, #2d4739 0%, #1e2f26 100%);
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.ds-header-icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.ds-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.ds-header p {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Buttons */
+.ds-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #2d4739;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ds-btn-primary:hover {
+  background-color: #1e2f26;
+}
+
+.ds-btn-secondary {
+  padding: 0.75rem 1.5rem;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.ds-btn-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+/* Statistics */
+.ds-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ds-stat-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.ds-stat-card:hover {
+  transform: translateY(-2px);
+}
+
+.ds-stat-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.ds-stat-total .ds-stat-icon {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.ds-stat-pending .ds-stat-icon {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.ds-stat-approved .ds-stat-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.ds-stat-rejected .ds-stat-icon {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.ds-stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.ds-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1;
+}
+
+.ds-stat-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}
+
+/* Filters */
+.ds-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ds-search {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.ds-search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.ds-search input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ds-search input:focus {
+  border-color: #2d4739;
+}
+
+.ds-filter-select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+  min-width: 160px;
+}
+
+.ds-filter-select:focus {
+  border-color: #2d4739;
+}
+
+/* Table Container */
+.ds-table-container {
+  background-color: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+/* Table */
+.ds-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ds-table thead {
+  background-color: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.ds-table th {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ds-table tbody tr {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background-color 0.2s;
+}
+
+.ds-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.ds-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.ds-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.ds-empty {
+  text-align: center;
+  padding: 3rem !important;
+  color: #9ca3af;
+}
+
+/* Document Title */
+.ds-doc-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.ds-doc-title svg {
+  color: #6b7280;
+}
+
+/* Submitter */
+.ds-submitter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #374151;
+}
+
+.ds-submitter svg {
+  color: #9ca3af;
+}
+
+/* Date */
+.ds-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.ds-date svg {
+  color: #9ca3af;
+}
+
+/* Status Badge */
+.ds-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.ds-status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.ds-status-review {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.ds-status-approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.ds-status-rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.ds-status-revision {
+  background-color: #fed7aa;
+  color: #9a3412;
+}
+
+/* Priority Badge */
+.ds-priority-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ds-priority-low {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.ds-priority-medium {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.ds-priority-high {
+  background-color: #fed7aa;
+  color: #9a3412;
+}
+
+.ds-priority-urgent {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Actions */
+.ds-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ds-action-btn {
+  padding: 0.5rem;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.ds-action-btn:hover {
+  background-color: #f3f4f6;
+}
+
+.ds-action-view:hover {
+  color: #3b82f6;
+  background-color: #dbeafe;
+}
+
+.ds-action-download:hover {
+  color: #10b981;
+  background-color: #d1fae5;
+}
+
+/* Pagination */
+.ds-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ds-page-btn {
+  padding: 0.5rem 1rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ds-page-btn:hover:not(:disabled) {
+  background-color: #f9fafb;
+  border-color: #2d4739;
+  color: #2d4739;
+}
+
+.ds-page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ds-page-numbers {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.ds-page-num {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ds-page-num:hover {
+  background-color: #f9fafb;
+  border-color: #2d4739;
+  color: #2d4739;
+}
+
+.ds-page-num.active {
+  background-color: #2d4739;
+  border-color: #2d4739;
+  color: white;
+}
+
+/* Modal */
+.ds-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.ds-modal {
+  background-color: white;
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.ds-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ds-modal-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.ds-modal-close {
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  background-color: transparent;
+  color: #6b7280;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ds-modal-close:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.ds-modal-body {
+  padding: 1.5rem;
+}
+
+.ds-modal-section {
+  margin-bottom: 2rem;
+}
+
+.ds-modal-section:last-child {
+  margin-bottom: 0;
+}
+
+.ds-modal-section h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 1rem 0;
+}
+
+.ds-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.ds-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ds-modal-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.ds-modal-field span {
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+/* History Timeline */
+.ds-history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  padding-left: 2rem;
+}
+
+.ds-history-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background-color: #e5e7eb;
+}
+
+.ds-history-item {
+  position: relative;
+  display: flex;
+  gap: 1rem;
+}
+
+.ds-history-marker {
+  position: absolute;
+  left: -1.625rem;
+  top: 0.25rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background-color: #2d4739;
+  border: 2px solid white;
+  box-shadow: 0 0 0 2px #e5e7eb;
+}
+
+.ds-history-content {
+  flex: 1;
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.ds-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.ds-history-action {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.ds-history-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.ds-history-user {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.ds-history-comments {
+  font-size: 0.875rem;
+  color: #374151;
+  background-color: white;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-top: 0.5rem;
+}
+
+.ds-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Loading State */
+.document-status-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid #e5e7eb;
+  border-top-color: #2d4739;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.document-status-loading p {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .ds-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ds-filters {
+    flex-direction: column;
+  }
+
+  .ds-search {
+    width: 100%;
+  }
+
+  .ds-filter-select {
+    width: 100%;
+  }
+
+  .ds-modal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .document-status {
+    padding: 1rem;
+  }
+
+  .ds-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .ds-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ds-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .ds-table-container {
+    overflow-x: auto;
+  }
+
+  .ds-table {
+    min-width: 900px;
+  }
+
+  .ds-pagination {
+    flex-wrap: wrap;
+  }
+}
