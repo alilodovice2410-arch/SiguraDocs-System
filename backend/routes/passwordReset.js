@@ -3,26 +3,57 @@ const express = require("express");
 const router = express.Router();
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
-const db = require("../config/database"); // Your database connection
+const db = require("../config/database");
 
 // Store verification codes temporarily (in production, use Redis or database)
 const verificationCodes = new Map();
 
-// Gmail SMTP Configuration - FIXED to use correct .env variables
+// Gmail SMTP Configuration - Railway-compatible
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Use Gmail service
+  host: process.env.EMAIL_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.EMAIL_PORT) || 465, // Default to 465 (SSL)
+  secure:
+    process.env.EMAIL_PORT === "465" || process.env.EMAIL_SECURE === "true", // true for 465
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+  // Extended timeouts for Railway
+  connectionTimeout: 60000, // 60 seconds
+  greetingTimeout: 30000,
+  socketTimeout: 60000,
+  // TLS settings
+  tls: {
+    rejectUnauthorized: false,
+    minVersion: "TLSv1.2",
+  },
+  pool: true, // Use connection pooling
+  maxConnections: 5,
+  maxMessages: 10,
 });
 
-// Test email configuration on startup
+// Test email configuration on startup (non-blocking)
 transporter.verify(function (error, success) {
   if (error) {
-    console.error("❌ Email transporter error:", error);
+    console.error("❌ Email transporter error:", error.message);
+    console.log("⚠️ Email may not work. Check these settings:");
+    console.log("   - EMAIL_HOST:", process.env.EMAIL_HOST || "smtp.gmail.com");
+    console.log("   - EMAIL_PORT:", process.env.EMAIL_PORT || 465);
+    console.log(
+      "   - EMAIL_USER:",
+      process.env.EMAIL_USER ? "✓ Set" : "✗ Not set"
+    );
+    console.log(
+      "   - EMAIL_PASS:",
+      process.env.EMAIL_PASS ? "✓ Set" : "✗ Not set"
+    );
   } else {
     console.log("✅ Email server is ready to send messages");
+    console.log(
+      `📧 Using SMTP: ${process.env.EMAIL_HOST || "smtp.gmail.com"}:${
+        process.env.EMAIL_PORT || 465
+      }`
+    );
   }
 });
 
@@ -51,7 +82,6 @@ router.post("/request-password-reset", async (req, res) => {
       );
 
       users = Array.isArray(result[0]) ? result[0] : result;
-
       console.log("📊 Query result:", users);
     } catch (dbError) {
       console.error("❌ Database query error:", dbError);
@@ -81,7 +111,7 @@ router.post("/request-password-reset", async (req, res) => {
       userId: user.user_id,
     });
 
-    console.log("🔑 Generated code:", code, "for", email);
+    console.log("🔐 Generated code:", code, "for", email);
 
     // Send email with code
     const mailOptions = {
@@ -151,26 +181,38 @@ router.post("/request-password-reset", async (req, res) => {
       `,
     };
 
-    console.log("📤 Sending email to:", email);
+    console.log("📤 Attempting to send email to:", email);
+    console.log("📧 SMTP Config:", {
+      host: process.env.EMAIL_HOST || "smtp.gmail.com",
+      port: process.env.EMAIL_PORT || 465,
+      user: process.env.EMAIL_USER ? "✓" : "✗",
+    });
 
     try {
-      await transporter.sendMail(mailOptions);
-      console.log("✅ Email sent successfully to:", email);
+      const info = await transporter.sendMail(mailOptions);
+      console.log("✅ Email sent successfully:", info.messageId);
 
       res.status(200).json({
         message: "Verification code sent successfully to your email",
       });
     } catch (emailError) {
       console.error("❌ Email sending error:", emailError);
+      console.error("Error details:", {
+        code: emailError.code,
+        command: emailError.command,
+        response: emailError.response,
+      });
+
       return res.status(500).json({
-        message: "Failed to send email. Please check email configuration.",
+        message: "Failed to send email. Please try again or contact support.",
+        error: emailError.message,
       });
     }
   } catch (error) {
     console.error("❌ Request password reset error:", error);
     res.status(500).json({
       message: "Failed to send verification code. Please try again.",
-      error: error.message, // Include error details for debugging
+      error: error.message,
     });
   }
 });
@@ -178,7 +220,7 @@ router.post("/request-password-reset", async (req, res) => {
 // POST /auth/reset-password
 router.post("/reset-password", async (req, res) => {
   try {
-    console.log("🔐 Password reset attempt for:", req.body.email);
+    console.log("🔓 Password reset attempt for:", req.body.email);
 
     const { email, code, newPassword } = req.body;
 
@@ -225,7 +267,7 @@ router.post("/reset-password", async (req, res) => {
     // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password_hash in database (matches your schema)
+    // Update password_hash in database
     try {
       await db.query("UPDATE users SET password_hash = ? WHERE user_id = ?", [
         hashedPassword,
@@ -242,7 +284,7 @@ router.post("/reset-password", async (req, res) => {
     // Delete used code
     verificationCodes.delete(email);
 
-    // Send confirmation email
+    // Send confirmation email (non-blocking)
     const confirmMailOptions = {
       from: `"SiguraDocs" <${process.env.EMAIL_USER}>`,
       to: email,
