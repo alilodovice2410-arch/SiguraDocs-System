@@ -1,24 +1,15 @@
-// contents of file
-const nodemailer = require("nodemailer");
+// backend/utils/notificationService.js
 const { pool } = require("../config/database");
+const { getTransporter, isEmailConfigured } = require("../config/emailConfig");
 
 async function sendEmail(to, subject, html, text) {
   // If email credentials are not set, skip sending but log
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  if (!isEmailConfigured()) {
     console.log("Email not configured - skipping email send");
     return;
   }
 
-  // Build transporter from env config (supports custom host/port)
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.EMAIL_PORT || "587", 10),
-    secure: process.env.EMAIL_SECURE === "true" || false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  const transporter = getTransporter();
 
   try {
     await transporter.sendMail({
@@ -34,7 +25,7 @@ async function sendEmail(to, subject, html, text) {
       "❌ Failed to send email:",
       err && err.message ? err.message : err
     );
-    // Don't throw — email is best-effort
+    // Don't throw – email is best-effort
   }
 }
 

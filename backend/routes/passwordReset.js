@@ -1,61 +1,12 @@
 // backend/routes/passwordReset.js
 const express = require("express");
 const router = express.Router();
-const nodemailer = require("nodemailer");
 const bcrypt = require("bcryptjs");
 const db = require("../config/database");
+const { getTransporter, isEmailConfigured } = require("../config/emailConfig");
 
 // Store verification codes temporarily (in production, use Redis or database)
 const verificationCodes = new Map();
-
-// Gmail SMTP Configuration - Railway-compatible
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.EMAIL_PORT) || 465, // Default to 465 (SSL)
-  secure:
-    process.env.EMAIL_PORT === "465" || process.env.EMAIL_SECURE === "true", // true for 465
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  // Extended timeouts for Railway
-  connectionTimeout: 60000, // 60 seconds
-  greetingTimeout: 30000,
-  socketTimeout: 60000,
-  // TLS settings
-  tls: {
-    rejectUnauthorized: false,
-    minVersion: "TLSv1.2",
-  },
-  pool: true, // Use connection pooling
-  maxConnections: 5,
-  maxMessages: 10,
-});
-
-// Test email configuration on startup (non-blocking)
-transporter.verify(function (error, success) {
-  if (error) {
-    console.error("❌ Email transporter error:", error.message);
-    console.log("⚠️ Email may not work. Check these settings:");
-    console.log("   - EMAIL_HOST:", process.env.EMAIL_HOST || "smtp.gmail.com");
-    console.log("   - EMAIL_PORT:", process.env.EMAIL_PORT || 465);
-    console.log(
-      "   - EMAIL_USER:",
-      process.env.EMAIL_USER ? "✓ Set" : "✗ Not set"
-    );
-    console.log(
-      "   - EMAIL_PASS:",
-      process.env.EMAIL_PASS ? "✓ Set" : "✗ Not set"
-    );
-  } else {
-    console.log("✅ Email server is ready to send messages");
-    console.log(
-      `📧 Using SMTP: ${process.env.EMAIL_HOST || "smtp.gmail.com"}:${
-        process.env.EMAIL_PORT || 465
-      }`
-    );
-  }
-});
 
 // Generate 6-digit code
 function generateCode() {
@@ -71,6 +22,15 @@ router.post("/request-password-reset", async (req, res) => {
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
+    }
+
+    // Check if email is configured
+    if (!isEmailConfigured()) {
+      console.error("❌ Email not configured");
+      return res.status(500).json({
+        message:
+          "Email service is not configured. Please contact administrator.",
+      });
     }
 
     // Check if user exists
@@ -111,7 +71,7 @@ router.post("/request-password-reset", async (req, res) => {
       userId: user.user_id,
     });
 
-    console.log("🔐 Generated code:", code, "for", email);
+    console.log("🔑 Generated code:", code, "for", email);
 
     // Send email with code
     const mailOptions = {
@@ -182,13 +142,9 @@ router.post("/request-password-reset", async (req, res) => {
     };
 
     console.log("📤 Attempting to send email to:", email);
-    console.log("📧 SMTP Config:", {
-      host: process.env.EMAIL_HOST || "smtp.gmail.com",
-      port: process.env.EMAIL_PORT || 465,
-      user: process.env.EMAIL_USER ? "✓" : "✗",
-    });
 
     try {
+      const transporter = getTransporter();
       const info = await transporter.sendMail(mailOptions);
       console.log("✅ Email sent successfully:", info.messageId);
 
@@ -220,7 +176,7 @@ router.post("/request-password-reset", async (req, res) => {
 // POST /auth/reset-password
 router.post("/reset-password", async (req, res) => {
   try {
-    console.log("🔓 Password reset attempt for:", req.body.email);
+    console.log("🔐 Password reset attempt for:", req.body.email);
 
     const { email, code, newPassword } = req.body;
 
@@ -285,55 +241,58 @@ router.post("/reset-password", async (req, res) => {
     verificationCodes.delete(email);
 
     // Send confirmation email (non-blocking)
-    const confirmMailOptions = {
-      from: `"SiguraDocs" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "SiguraDocs - Password Successfully Reset",
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(135deg, #2d4739 0%, #3d5a49 100%); 
-                      color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
-            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
-            .success-box { background: #d1fae5; border-left: 4px solid #10b981; 
-                           padding: 15px; margin: 20px 0; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>✓ Password Reset Successful</h1>
-            </div>
-            <div class="content">
-              <div class="success-box">
-                <strong>Your password has been successfully reset!</strong>
+    if (isEmailConfigured()) {
+      const confirmMailOptions = {
+        from: `"SiguraDocs" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "SiguraDocs - Password Successfully Reset",
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #2d4739 0%, #3d5a49 100%); 
+                        color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+              .success-box { background: #d1fae5; border-left: 4px solid #10b981; 
+                             padding: 15px; margin: 20px 0; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>✓ Password Reset Successful</h1>
               </div>
-              
-              <p>You can now log in to SiguraDocs using your new password.</p>
-              
-              <p><strong>If you did not make this change, please contact your administrator immediately.</strong></p>
-              
-              <p style="margin-top: 30px;">
-                Best regards,<br>
-                <strong>SiguraDocs Team</strong>
-              </p>
+              <div class="content">
+                <div class="success-box">
+                  <strong>Your password has been successfully reset!</strong>
+                </div>
+                
+                <p>You can now log in to SiguraDocs using your new password.</p>
+                
+                <p><strong>If you did not make this change, please contact your administrator immediately.</strong></p>
+                
+                <p style="margin-top: 30px;">
+                  Best regards,<br>
+                  <strong>SiguraDocs Team</strong>
+                </p>
+              </div>
             </div>
-          </div>
-        </body>
-        </html>
-      `,
-    };
+          </body>
+          </html>
+        `,
+      };
 
-    try {
-      await transporter.sendMail(confirmMailOptions);
-      console.log("✅ Confirmation email sent to:", email);
-    } catch (emailError) {
-      console.error("⚠️ Confirmation email failed:", emailError);
-      // Don't fail the request if confirmation email fails
+      try {
+        const transporter = getTransporter();
+        await transporter.sendMail(confirmMailOptions);
+        console.log("✅ Confirmation email sent to:", email);
+      } catch (emailError) {
+        console.error("⚠️ Confirmation email failed:", emailError);
+        // Don't fail the request if confirmation email fails
+      }
     }
 
     res.status(200).json({
