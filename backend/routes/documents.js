@@ -108,7 +108,7 @@ router.get("/types/all", authenticateToken, async (req, res) => {
 });
 
 // ============================================
-// Submit a new document
+// Submit a new document - OPTIMIZED FOR SPEED
 // ============================================
 router.post(
   "/submit",
@@ -133,8 +133,8 @@ router.post(
       }
 
       const file_path = req.file.path;
-      const file_name = req.file.filename; // stored name on disk (unique)
-      const original_file_name = req.file.originalname; // original uploaded name
+      const file_name = req.file.filename;
+      const original_file_name = req.file.originalname;
       const file_size = req.file.size;
 
       // Get document type name
@@ -185,9 +185,8 @@ router.post(
       console.log(`📄 Document created with ID: ${document_id}`);
 
       let approvalLevel = 1;
-      let firstApprover = null;
 
-      // Find Head Teacher (use imported function from roleNotifier)
+      // Find Head Teacher
       const headTeacher = await findHeadTeacherForDepartment(
         department,
         connection
@@ -212,11 +211,10 @@ router.post(
           [headTeacher.user_id, document_id]
         );
 
-        firstApprover = headTeacher;
         approvalLevel = 2;
       }
 
-      // Find Principal (use imported helper)
+      // Find Principal
       const principal = await findPrincipal(connection);
 
       if (principal) {
@@ -228,52 +226,70 @@ router.post(
         );
 
         console.log(`✅ Level ${approvalLevel} Approval: Principal`);
-
-        // Notify principal about new upload (transaction-aware)
-        try {
-          await notifyPrincipalOfNewUpload(
-            document_id,
-            uploader_id,
-            title,
-            department,
-            connection
-          );
-        } catch (notifErr) {
-          console.error("Failed to notify principal on upload:", notifErr);
-          // continue - notification is best-effort
-        }
       }
 
-      // ✅ FIXED: Non-blocking audit log - no await
-      logActivity(
-        uploader_id,
-        ACTIONS.DOCUMENT_UPLOADED,
-        document_id,
-        `Uploaded document: ${title}`,
-        req.ip,
-        req.get("user-agent")
-      );
-
-      // NEW: Notify Head Teacher (transaction-aware) that a new document has been uploaded
-      try {
-        await notifyHeadTeacherOfNewUpload(
-          document_id,
-          uploader_id,
-          title,
-          department,
-          connection
-        );
-      } catch (notifErr) {
-        console.error("Failed to notify head teacher:", notifErr);
-        // continue - notification is best-effort
-      }
-
+      // ✅ COMMIT TRANSACTION BEFORE SENDING RESPONSE
       await connection.commit();
 
+      // ✅ SEND RESPONSE IMMEDIATELY - Don't wait for notifications/emails
       res.status(201).json({
         success: true,
         message: `Document submitted successfully!`,
         document_id,
+      });
+
+      // ✅ ASYNC OPERATIONS AFTER RESPONSE - Don't block the response
+      // These run in the background without delaying the user
+      setImmediate(async () => {
+        try {
+          // Audit log (non-blocking)
+          logActivity(
+            uploader_id,
+            ACTIONS.DOCUMENT_UPLOADED,
+            document_id,
+            `Uploaded document: ${title}`,
+            req.ip,
+            req.get("user-agent")
+          );
+
+          // Notifications (parallel execution for speed)
+          const notificationPromises = [];
+
+          if (headTeacher) {
+            notificationPromises.push(
+              notifyHeadTeacherOfNewUpload(
+                document_id,
+                uploader_id,
+                title,
+                department,
+                null // Use pool instead of connection
+              ).catch((err) =>
+                console.error("Failed to notify head teacher:", err)
+              )
+            );
+          }
+
+          if (principal) {
+            notificationPromises.push(
+              notifyPrincipalOfNewUpload(
+                document_id,
+                uploader_id,
+                title,
+                department,
+                null // Use pool instead of connection
+              ).catch((err) =>
+                console.error("Failed to notify principal:", err)
+              )
+            );
+          }
+
+          // Wait for all notifications to complete
+          await Promise.all(notificationPromises);
+          console.log("✅ Background notifications completed");
+        } catch (bgError) {
+          console.error("Background processing error:", bgError);
+          // Don't throw - this is best-effort
+        }
       });
     } catch (error) {
       await connection.rollback();
