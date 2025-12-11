@@ -1,11 +1,10 @@
+# Backend-specific nixpacks configuration
 [phases.setup]
 aptPkgs = ["libreoffice", "libreoffice-writer", "libreoffice-calc", "libreoffice-impress"]
+nixPkgs = ['nodejs_20']
 
 [phases.install]
 cmds = ["npm install"]
 
-[phases.build]
-cmds = ["npm run postinstall"]
-
 [start]
-cmd = "npm start"
+cmd = "node server.js"

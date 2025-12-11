@@ -1,0 +1,12 @@
+# Frontend-specific nixpacks configuration
+[phases.setup]
+nixPkgs = ['nodejs_20']
+
+[phases.install]
+cmds = ['npm install']
+
+[phases.build]
+cmds = ['npm run build']
+
+[start]
+cmd = 'npx vite preview --port $PORT --host 0.0.0.0'
