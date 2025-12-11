@@ -69,6 +69,7 @@ const upload = multer({
     }
   },
 });
+
 /**
  * Create notification helper (keeps backward compatibility where used locally)
  */

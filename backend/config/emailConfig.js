@@ -13,7 +13,7 @@ const createTransporter = () => {
       pass: process.env.EMAIL_PASS, // Use Gmail App Password here
     },
     // Extended timeouts for cloud environments
-    connectionTimeout: 60000, // 60 seconds
+    connectionTimeout: 60000,
     greetingTimeout: 30000,
     socketTimeout: 60000,
     // Connection pooling for better performance
