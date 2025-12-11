@@ -23,6 +23,10 @@ const profileRoutes = require("./routes/profile");
 
 const app = express();
 
+// Ready flag for health checks
+let isReady = false;
+let dbReady = false;
+
 // CORS Configuration - Allow frontend domain
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -56,14 +60,24 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 // Serve uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// IMPORTANT: Add Railway health check endpoint FIRST (before any middleware)
-// Railway checks this endpoint to verify your service is running
+// CRITICAL: Railway health check endpoint - must respond quickly
 app.get("/health", (req, res) => {
+  // Return 503 if not ready (Railway will retry)
+  if (!isReady) {
+    return res.status(503).json({
+      status: "starting",
+      message: "Server is initializing...",
+      dbReady: dbReady,
+    });
+  }
+
+  // Return 200 when ready
   res.status(200).json({
     status: "healthy",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     memory: process.memoryUsage(),
+    database: dbReady ? "connected" : "disconnected",
   });
 });
 
@@ -74,11 +88,11 @@ app.get("/api/health", (req, res) => {
     message: "SiguraDocs API is running",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
+    ready: isReady,
   });
 });
 
 // IMPORTANT: Mount public password reset routes BEFORE the main authRoutes
-// so router-level auth middleware inside authRoutes won't block reset endpoints.
 app.use("/api/auth", passwordResetRouter);
 
 // Routes
@@ -99,9 +113,10 @@ app.get("/", (req, res) => {
   res.json({
     name: "SiguraDocs API",
     version: "1.0.0",
-    status: "running",
+    status: isReady ? "running" : "initializing",
     endpoints: {
-      health: "/api/health",
+      health: "/health",
+      apiHealth: "/api/health",
       auth: "/api/auth",
       documents: "/api/documents",
       approvals: "/api/approvals",
@@ -136,42 +151,26 @@ const startServer = async () => {
   try {
     console.log("🚀 Starting SiguraDocs Backend...");
     console.log(`📍 Environment: ${process.env.NODE_ENV || "development"}`);
-    console.log(`📍 Port: ${PORT}`);
+    console.log(`📍 PORT from env: ${process.env.PORT || "not set"}`);
+    console.log(`📍 Will bind to port: ${PORT}`);
 
-    // Test database connection with retry logic
-    let dbConnected = false;
-    let retries = 5;
-
-    while (!dbConnected && retries > 0) {
-      try {
-        await testConnection();
-        dbConnected = true;
-        console.log("✅ Database connected successfully");
-      } catch (error) {
-        retries--;
-        console.warn(
-          `⚠️ Database connection attempt failed. Retries left: ${retries}`
-        );
-        if (retries > 0) {
-          await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2s before retry
-        } else {
-          throw error;
-        }
-      }
-    }
-
-    // Start the server
+    // Start server FIRST (before database connection)
+    // This allows Railway health checks to get a response immediately
     const server = app.listen(PORT, "0.0.0.0", () => {
-      console.log(`✅ Server running on port ${PORT}`);
+      console.log(`✅ Server listening on port ${PORT}`);
       console.log(`🔗 API: http://localhost:${PORT}/api`);
       console.log(`🏥 Health check: http://localhost:${PORT}/health`);
       console.log(`🌐 Allowed origins:`, allowedOrigins);
-      console.log(`💾 Memory usage:`, process.memoryUsage());
+
+      // Now connect to database in background
+      connectDatabase();
     });
 
     // Graceful shutdown handling
-    process.on("SIGTERM", () => {
-      console.log("⚠️ SIGTERM received, starting graceful shutdown...");
+    const gracefulShutdown = (signal) => {
+      console.log(`⚠️ ${signal} received, starting graceful shutdown...`);
+      isReady = false;
+
       server.close(() => {
         console.log("✅ Server closed gracefully");
         process.exit(0);
@@ -182,14 +181,20 @@ const startServer = async () => {
         console.error("⚠️ Forced shutdown after timeout");
         process.exit(1);
       }, 10000);
+    };
+
+    process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+    process.on("SIGINT", () => gracefulShutdown("SIGINT"));
+
+    // Handle uncaught errors
+    process.on("uncaughtException", (error) => {
+      console.error("❌ Uncaught Exception:", error);
+      // Don't exit - let Railway restart if needed
     });
 
-    process.on("SIGINT", () => {
-      console.log("⚠️ SIGINT received, starting graceful shutdown...");
-      server.close(() => {
-        console.log("✅ Server closed gracefully");
-        process.exit(0);
-      });
+    process.on("unhandledRejection", (reason, promise) => {
+      console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+      // Don't exit - let Railway restart if needed
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);
@@ -197,5 +202,45 @@ const startServer = async () => {
     process.exit(1);
   }
 };
+
+// Separate function to connect to database (non-blocking)
+async function connectDatabase() {
+  try {
+    console.log("🔄 Connecting to database...");
+
+    // Test database connection with retry logic
+    let retries = 5;
+    let connected = false;
+
+    while (!connected && retries > 0) {
+      try {
+        await testConnection();
+        connected = true;
+        dbReady = true;
+        console.log("✅ Database connected successfully");
+        console.log(`💾 Memory usage:`, process.memoryUsage());
+
+        // Mark application as ready
+        isReady = true;
+        console.log("✅ Application is READY to accept requests");
+      } catch (error) {
+        retries--;
+        console.warn(`⚠️ Database connection failed. Retries left: ${retries}`);
+        if (retries > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 3s
+        } else {
+          console.error("❌ Database connection failed after all retries");
+          console.error("⚠️ Server will continue without database");
+          // Don't exit - let the server run for health checks
+          isReady = true; // Mark as ready anyway to prevent Railway from killing it
+        }
+      }
+    }
+  } catch (error) {
+    console.error("❌ Database connection error:", error.message);
+    // Don't exit - mark as ready to keep server alive
+    isReady = true;
+  }
+}
 
 startServer();

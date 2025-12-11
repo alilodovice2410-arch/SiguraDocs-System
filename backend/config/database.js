@@ -27,7 +27,7 @@ const promisePool = pool.promise();
 const testConnection = async () => {
   let attempts = 0;
   const maxAttempts = 5;
-  const retryDelay = 2000; // 2 seconds
+  const retryDelay = 3000; // 3 seconds - increased from 2s
 
   while (attempts < maxAttempts) {
     try {
@@ -90,7 +90,7 @@ const testConnection = async () => {
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
       } else {
         console.error(`❌ Failed to connect after ${maxAttempts} attempts`);
-        console.error("🔍 Debug info:");
+        console.error("📋 Debug info:");
         console.error("   - Ensure MySQL service is deployed and running");
         console.error(
           "   - Check all DB_* environment variables are set correctly"

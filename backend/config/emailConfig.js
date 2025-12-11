@@ -20,31 +20,36 @@ if (process.env.EMAIL_ENABLED !== "false") {
       socketTimeout: 10000,
       // Ignore TLS errors in production (Railway environment)
       tls: {
-        rejectUnauthorized: process.env.NODE_ENV !== "production",
+        rejectUnauthorized: false,
       },
     });
 
-    // Verify connection configuration (async, non-blocking)
-    transporter
-      .verify()
-      .then(() => {
-        console.log("âœ… Email server is ready to send messages");
-      })
-      .catch((error) => {
-        console.log(
-          "âš ï¸ Email transporter error (non-critical):",
-          error.message
-        );
-        console.log("ðŸ“§ App will continue without email functionality");
-        transporter = null; // Disable transporter if verification fails
-      });
+    // CRITICAL: Make verification truly non-blocking
+    // Use setImmediate to defer verification until after server starts
+    setImmediate(() => {
+      if (transporter) {
+        transporter
+          .verify()
+          .then(() => {
+            console.log("✅ Email server is ready to send messages");
+          })
+          .catch((error) => {
+            console.log(
+              "⚠️ Email transporter error (non-critical):",
+              error.message
+            );
+            console.log("📧 App will continue without email functionality");
+            // Don't set transporter to null - it might still work for sending
+          });
+      }
+    });
   } catch (error) {
-    console.log("âš ï¸ Email setup failed (non-critical):", error.message);
-    console.log("ðŸ“§ App will continue without email functionality");
+    console.log("⚠️ Email setup failed (non-critical):", error.message);
+    console.log("📧 App will continue without email functionality");
     transporter = null;
   }
 } else {
-  console.log("ðŸ“§ Email functionality is disabled (EMAIL_ENABLED=false)");
+  console.log("📧 Email functionality is disabled (EMAIL_ENABLED=false)");
 }
 
 /**
@@ -55,22 +60,22 @@ if (process.env.EMAIL_ENABLED !== "false") {
 async function sendEmail(options) {
   // Check if email is enabled
   if (process.env.EMAIL_ENABLED === "false") {
-    console.log("ðŸ“§ Email disabled - would have sent:", options.subject);
+    console.log("📧 Email disabled - would have sent:", options.subject);
     return { success: true, message: "Email disabled in config" };
   }
 
   // Check if transporter is available
   if (!transporter) {
-    console.log("âš ï¸ Email not configured, skipping email send");
+    console.log("⚠️ Email not configured, skipping email send");
     return { success: false, message: "Email service unavailable" };
   }
 
   try {
     const info = await transporter.sendMail(options);
-    console.log("âœ… Email sent successfully:", info.messageId);
+    console.log("✅ Email sent successfully:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error("âŒ Failed to send email:", error.message);
+    console.error("❌ Failed to send email:", error.message);
     return { success: false, error: error.message };
   }
 }
