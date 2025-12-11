@@ -11,8 +11,8 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // Add timeout for better error handling
-  timeout: 10000,
+  // INCREASED: 30 seconds for file uploads and slower operations
+  timeout: 30000,
 });
 
 // Request interceptor - Add token to requests
@@ -22,6 +22,11 @@ api.interceptors.request.use(
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // ADDED: Increase timeout for file uploads
+    if (config.headers["Content-Type"] === "multipart/form-data") {
+      config.timeout = 60000; // 60 seconds for file uploads
     }
 
     // Log request in development
