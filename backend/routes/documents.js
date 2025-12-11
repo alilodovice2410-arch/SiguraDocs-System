@@ -85,6 +85,63 @@ async function createNotification(
   }
 }
 
+router.get("/:id/debug", authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const [documents] = await pool.query(
+      "SELECT document_id, title, file_path, file_name, original_file_name, status FROM documents WHERE document_id = ?",
+      [id]
+    );
+
+    if (documents.length === 0) {
+      return res.json({
+        success: false,
+        message: "Document not found in database",
+      });
+    }
+
+    const document = documents[0];
+    const filePath = document.file_path;
+    const fileExists = fs.existsSync(filePath);
+
+    // List all files in uploads directory
+    const uploadsDir = process.env.UPLOAD_PATH || "./uploads";
+    let filesInUploads = [];
+    try {
+      filesInUploads = fs.readdirSync(uploadsDir);
+    } catch (err) {
+      filesInUploads = [`Error reading directory: ${err.message}`];
+    }
+
+    res.json({
+      success: true,
+      debug: {
+        document_id: document.document_id,
+        title: document.title,
+        file_path: filePath,
+        file_name: document.file_name,
+        original_file_name: document.original_file_name,
+        status: document.status,
+        file_exists: fileExists,
+        upload_path_env: process.env.UPLOAD_PATH || "./uploads",
+        current_working_directory: process.cwd(),
+        volume_name: process.env.RAILWAY_VOLUME_NAME || "No volume",
+        volume_mount_path: process.env.RAILWAY_VOLUME_MOUNT_PATH || "No volume",
+        files_in_uploads: filesInUploads.slice(0, 10), // First 10 files
+        total_files_in_uploads: filesInUploads.length,
+      },
+    });
+  } catch (error) {
+    console.error("Debug error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Debug failed",
+      error: error.message,
+    });
+  }
+});
+
 // ============================================
 // IMPORTANT: Get document types - MUST be before /:id route
 // ============================================
