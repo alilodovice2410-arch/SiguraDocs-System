@@ -1,3 +1,4 @@
+// backend/config/emailConfig.js
 const nodemailer = require("nodemailer");
 
 // Email transporter - with Railway-safe configuration
@@ -50,6 +51,22 @@ if (process.env.EMAIL_ENABLED !== "false") {
   }
 } else {
   console.log("📧 Email functionality is disabled (EMAIL_ENABLED=false)");
+}
+
+/**
+ * Check if email is configured and ready
+ * @returns {boolean}
+ */
+function isEmailConfigured() {
+  return transporter !== null && process.env.EMAIL_ENABLED !== "false";
+}
+
+/**
+ * Get transporter instance (for testing purposes)
+ * @returns {Object|null}
+ */
+function getTransporter() {
+  return transporter;
 }
 
 /**
@@ -136,4 +153,6 @@ module.exports = {
   sendEmail,
   sendPasswordResetEmail,
   sendNotificationEmail,
+  isEmailConfigured,
+  getTransporter,
 };
