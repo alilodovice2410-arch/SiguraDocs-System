@@ -13,13 +13,6 @@
   position: fixed;
   height: 100vh;
   overflow-y: auto;
-  transition: transform 0.28s ease;
-  z-index: 1000;
-}
-
-/* Mobile closed state (kept in media query below) */
-.faculty-sidebar.open {
-  transform: translateX(0);
 }
 
 .sidebar-content {
@@ -122,7 +115,7 @@
   padding: 1.5rem 2rem;
   position: sticky;
   top: 0;
-  z-index: 1100;
+  z-index: 100;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
@@ -156,23 +149,6 @@
   gap: 1.5rem;
 }
 
-/* Mobile menu button (hamburger) */
-.mobile-menu-btn {
-  display: none;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  color: white;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.75rem;
-  cursor: pointer;
-}
-
-/* Notification button styles unchanged */
 .header-icon-btn {
   position: relative;
   width: 2.5rem;
@@ -246,6 +222,135 @@
 
 .logout-btn:hover {
   background-color: rgba(30, 47, 38, 0.95);
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+  display: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.75rem;
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+  padding: 0;
+}
+
+.mobile-menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.mobile-menu-toggle svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Mobile Overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  .faculty-sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+  }
+
+  .faculty-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .faculty-main {
+    margin-left: 0;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .dashboard-content {
+    padding: 1rem;
+  }
+
+  .header-content {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .header-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .header-left h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+
+  .user-menu {
+    padding-left: 1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .logout-btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .document-item {
+    padding: 0.625rem 0;
+  }
+
+  .section-header {
+    padding: 1.5rem 1.5rem 1rem;
+  }
+
+  .documents-content {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  /* Modern stats grid mobile */
+  .stats-grid-modern {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .quick-actions-modern {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Make the modern "cards" use the same translucent / glass tint as the details page */
@@ -655,25 +760,10 @@
 }
 
 @media (max-width: 768px) {
-  /* Sidebar hidden by default on small screens */
   .faculty-sidebar {
-    width: 280px;
     transform: translateX(-100%);
     position: fixed;
-    z-index: 1200;
-    top: 0;
-    left: 0;
-    height: 100vh;
-  }
-
-  /* When open, the .open class will bring it in */
-  .faculty-sidebar.open {
-    transform: translateX(0);
-  }
-
-  /* show hamburger */
-  .mobile-menu-btn {
-    display: inline-flex;
+    z-index: 1000;
   }
 
   .faculty-main {
@@ -715,24 +805,6 @@
   .documents-content {
     padding: 0 1.5rem 1.5rem;
   }
-
-  /* ensure user menu is visible on mobile */
-  .user-menu {
-    padding-left: 0.75rem;
-    border-left: none;
-  }
-
-  .user-menu .user-info {
-    align-items: flex-start;
-  }
-}
-
-/* Mobile overlay (when sidebar is open) */
-.mobile-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  z-index: 1000;
 }
 
 @media (max-width: 640px) {

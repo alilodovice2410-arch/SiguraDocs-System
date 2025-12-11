@@ -15,7 +15,7 @@ import {
   Calendar,
   AlertCircle,
   Menu,
-  X as CloseIcon,
+  X,
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -248,8 +248,16 @@ function FacultyDashboard() {
 
   return (
     <div className="faculty-dashboard">
+      {/* Mobile Sidebar Overlay */}
+      <div
+        className={`sidebar-overlay ${mobileMenuOpen ? "active" : ""}`}
+        onClick={() => setMobileMenuOpen(false)}
+      ></div>
+
       {/* Sidebar */}
-      <aside className="faculty-sidebar">
+      <aside
+        className={`faculty-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}
+      >
         <div className="sidebar-content">
           <div className="sidebar-header">
             <div className="sidebar-logo">
@@ -268,7 +276,10 @@ function FacultyDashboard() {
 
           <nav className="sidebar-nav">
             <button
-              onClick={() => setActiveView("overview")}
+              onClick={() => {
+                setActiveView("overview");
+                setMobileMenuOpen(false);
+              }}
               className={`nav-item ${
                 activeView === "overview" ? "active" : ""
               }`}
@@ -277,14 +288,20 @@ function FacultyDashboard() {
               <span>Overview</span>
             </button>
             <button
-              onClick={() => setShowUploadModal(true)}
+              onClick={() => {
+                setShowUploadModal(true);
+                setMobileMenuOpen(false);
+              }}
               className="nav-item"
             >
               <Upload className="nav-icon" />
               <span>Upload Document</span>
             </button>
             <button
-              onClick={() => setActiveView("documents")}
+              onClick={() => {
+                setActiveView("documents");
+                setMobileMenuOpen(false);
+              }}
               className={`nav-item ${
                 activeView === "documents" ? "active" : ""
               }`}
@@ -294,7 +311,10 @@ function FacultyDashboard() {
             </button>
             <button
               className="nav-item"
-              onClick={() => setShowNotifications(true)}
+              onClick={() => {
+                setShowNotifications(true);
+                setMobileMenuOpen(false);
+              }}
             >
               <Bell className="nav-icon" />
               <span>Notifications</span>
@@ -309,6 +329,12 @@ function FacultyDashboard() {
         <header className="faculty-header">
           <div className="header-content">
             <div className="header-left">
+              <button
+                className="mobile-menu-toggle"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? <X /> : <Menu />}
+              </button>
               <h1>
                 {activeView === "overview"
                   ? "Faculty Dashboard"
