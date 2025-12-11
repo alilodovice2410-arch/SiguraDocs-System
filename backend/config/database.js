@@ -16,10 +16,8 @@ const pool = mysql.createPool({
   queueLimit: 0,
   enableKeepAlive: true,
   keepAliveInitialDelay: 0,
-  // Railway-specific timeouts - IMPORTANT for cloud deployments
+  // Railway-specific timeout - IMPORTANT for cloud deployments
   connectTimeout: 60000, // 60 seconds - Railway needs longer timeout
-  acquireTimeout: 60000,
-  timeout: 60000,
 });
 
 // Convert pool to use promises
