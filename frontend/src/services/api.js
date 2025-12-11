@@ -1,11 +1,8 @@
 import axios from "axios";
 
-// In production, use relative URL (same domain)
-// In development, use localhost backend
+// FIXED: Always use VITE_API_URL if available, regardless of environment
 const getBaseURL = () => {
-  if (import.meta.env.PROD) {
-    return "/api"; // Production: same domain
-  }
+  // Always prefer the environment variable if it exists
   return import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 };
 
@@ -14,16 +11,22 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  // Add timeout for better error handling
+  timeout: 10000,
 });
 
 // Request interceptor - Add token to requests
 api.interceptors.request.use(
   (config) => {
-    // Get token from sessionStorage instead of localStorage
     const token = sessionStorage.getItem("token");
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    // Log request in development
+    if (import.meta.env.DEV) {
+      console.log(`API Request: ${config.method.toUpperCase()} ${config.url}`);
     }
 
     return config;
@@ -39,24 +42,36 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    // Log detailed error info
+    if (error.response) {
+      console.error("API Error Response:", {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        url: error.config?.url,
+        method: error.config?.method,
+        data: error.response.data,
+      });
+    } else if (error.request) {
+      console.error("API No Response:", {
+        url: error.config?.url,
+        message: "No response received from server",
+      });
+    } else {
+      console.error("API Request Error:", error.message);
+    }
+
     // Special handling for blob responses (file downloads)
     if (error.config && error.config.responseType === "blob") {
-      // If the response is a blob but it's actually an error JSON
       if (error.response && error.response.data instanceof Blob) {
         try {
-          // Try to read the blob as JSON
           const text = await error.response.data.text();
           const errorData = JSON.parse(text);
-
-          // Replace the blob error with a proper error object
           error.response.data = errorData;
 
-          // Handle 401 for blob downloads
           if (error.response.status === 401) {
             console.log(
               "Unauthorized access during download - clearing session"
             );
-
             sessionStorage.removeItem("token");
             sessionStorage.removeItem("user");
             sessionStorage.removeItem("lastActivity");
@@ -70,7 +85,6 @@ api.interceptors.response.use(
 
           return Promise.reject(error);
         } catch (parseError) {
-          // If we can't parse it as JSON, it might be a real blob error
           console.error("Could not parse blob error:", parseError);
           return Promise.reject(error);
         }
@@ -81,14 +95,12 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       console.log("Unauthorized access - clearing session");
 
-      // Clear session data
       sessionStorage.removeItem("token");
       sessionStorage.removeItem("user");
       sessionStorage.removeItem("lastActivity");
       sessionStorage.removeItem("loginTime");
       localStorage.removeItem("hasActiveSession");
 
-      // Redirect to login if not already there
       if (!window.location.pathname.includes("/login")) {
         window.location.href = "/login";
       }

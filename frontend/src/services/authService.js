@@ -1,30 +1,47 @@
-// authService.js
-// Full, ready-to-use file for your frontend.
-// - Keeps using your existing authenticated `api` instance (imported from ./api)
-// - Adds a `publicApi` axios instance (no auth header) for request-password-reset and reset-password
-// - Implements session monitoring, login/logout, and other helper methods
-// - Exports the service as the default export
-
 import api from "./api";
 import axios from "axios";
 
 const SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
 const ACTIVITY_CHECK_INTERVAL = 60 * 1000; // 1 minute
 
-const PUBLIC_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// Get the correct base URL based on environment
+const getPublicBaseURL = () => {
+  // Always use VITE_API_URL if available
+  return import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+};
 
-// Public axios instance for unauthenticated endpoints (no Authorization header)
+// Public axios instance for unauthenticated endpoints
 const publicApi = axios.create({
-  baseURL: PUBLIC_BASE,
+  baseURL: getPublicBaseURL(),
   headers: {
     "Content-Type": "application/json",
   },
-  // Set withCredentials only if your backend uses cookie-based sessions for public endpoints
+  timeout: 10000,
   withCredentials: false,
 });
 
+// Add response interceptor for better error logging
+publicApi.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      console.error("Public API Error:", {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        url: error.config?.url,
+        data: error.response.data,
+      });
+    } else if (error.request) {
+      console.error("Public API No Response:", {
+        url: error.config?.url,
+        message: "No response received from server",
+      });
+    }
+    return Promise.reject(error);
+  }
+);
+
 const authService = {
-  // Initialize session monitoring (returns true if a session exists)
   initializeSessionMonitoring: () => {
     if (!sessionStorage.getItem("token")) {
       return false;
@@ -38,7 +55,6 @@ const authService = {
     return true;
   },
 
-  // Track user activity to reset lastActivity timestamp
   trackUserActivity: () => {
     const updateLastActivity = () => {
       sessionStorage.setItem("lastActivity", Date.now().toString());
@@ -52,7 +68,6 @@ const authService = {
     updateLastActivity();
   },
 
-  // Start interval to auto-logout when inactive
   startSessionTimeout: () => {
     if (window.sessionTimeoutInterval) {
       clearInterval(window.sessionTimeoutInterval);
@@ -73,22 +88,27 @@ const authService = {
     }, ACTIVITY_CHECK_INTERVAL);
   },
 
-  // Login: uses authenticated api instance
   login: async (username, password) => {
     try {
       console.log("Attempting login for:", username);
-      const response = await api.post("/auth/login", { username, password });
+      console.log("API Base URL:", api.defaults.baseURL);
+
+      const response = await api.post("/auth/login", {
+        username,
+        password,
+      });
+
+      console.log("Login response:", response.data);
 
       if (response?.data?.success) {
         const { token, user } = response.data;
+
         sessionStorage.setItem("token", token);
         sessionStorage.setItem("user", JSON.stringify(user || {}));
         sessionStorage.setItem("lastActivity", Date.now().toString());
         sessionStorage.setItem("loginTime", Date.now().toString());
-        // localStorage flag for multi-tab detection
         localStorage.setItem("hasActiveSession", "true");
 
-        // Start tracking
         authService.trackUserActivity();
         authService.startSessionTimeout();
         document.addEventListener(
@@ -101,44 +121,67 @@ const authService = {
         throw new Error(response.data?.message || "Login failed");
       }
     } catch (error) {
-      console.error("Login error details:", error.response?.data || error);
+      console.error("Login error:", error);
+
+      // Better error messages
+      let errorMessage = "Login failed. Please try again.";
+
+      if (error.response) {
+        // Server responded with error
+        if (error.response.status === 405) {
+          errorMessage = "Server configuration error. Please contact support.";
+        } else if (error.response.status === 401) {
+          errorMessage = "Invalid username or password.";
+        } else if (error.response.status === 404) {
+          errorMessage = "Login endpoint not found. Please contact support.";
+        } else {
+          errorMessage =
+            error.response.data?.message ||
+            `Error ${error.response.status}: ${error.response.statusText}`;
+        }
+      } else if (error.request) {
+        // No response from server
+        errorMessage = "Cannot reach server. Please check your connection.";
+      }
+
+      // Create a new error with the friendly message
+      const friendlyError = new Error(errorMessage);
+      friendlyError.originalError = error;
+      throw friendlyError;
+    }
+  },
+
+  register: async (userData) => {
+    try {
+      const response = await api.post("/auth/register", userData);
+      return response.data;
+    } catch (error) {
+      console.error("Register error:", error.response?.data || error);
       throw error;
     }
   },
 
-  // Register (keeps using authenticated api; if your register endpoint is public you may want to switch)
-  register: async (userData) => {
-    const response = await api.post("/auth/register", userData);
-    return response.data;
-  },
-
-  // Get profile (authenticated)
   getProfile: async () => {
     const response = await api.get("/auth/profile");
     return response.data;
   },
 
-  // ========= PASSWORD RESET METHODS (use publicApi so no auth header is attached) =========
-
-  // Request password reset (send verification code)
   requestPasswordReset: async (email) => {
     try {
+      console.log("Requesting password reset for:", email);
       const response = await publicApi.post("/auth/request-password-reset", {
         email,
       });
       return response.data;
     } catch (error) {
-      console.error(
-        "Request password reset error:",
-        error.response?.data || error.message || error
-      );
+      console.error("Request password reset error:", error);
       throw error;
     }
   },
 
-  // Reset password with code
   resetPassword: async (email, code, newPassword) => {
     try {
+      console.log("Resetting password for:", email);
       const response = await publicApi.post("/auth/reset-password", {
         email,
         code,
@@ -146,17 +189,11 @@ const authService = {
       });
       return response.data;
     } catch (error) {
-      console.error(
-        "Reset password error:",
-        error.response?.data || error.message || error
-      );
+      console.error("Reset password error:", error);
       throw error;
     }
   },
 
-  // ======================================================================================
-
-  // Logout: calls backend if token present, then clears local session state
   logout: async (isSessionExpired = false) => {
     try {
       const token = sessionStorage.getItem("token");
@@ -164,14 +201,11 @@ const authService = {
         try {
           await api.post("/auth/logout");
         } catch (error) {
-          console.warn(
-            "Logout API call failed (continuing to clear session):",
-            error
-          );
+          console.warn("Logout API call failed:", error);
         }
       }
     } catch (err) {
-      console.error("Error during logout flow:", err);
+      console.error("Error during logout:", err);
     } finally {
       authService.clearSession();
 
@@ -180,21 +214,15 @@ const authService = {
       }
 
       if (isSessionExpired) {
-        try {
-          // avoid blocking UI; use a toast instead in production
-          alert(
-            "Your session has expired due to inactivity. Please log in again."
-          );
-        } catch (e) {
-          /* ignore */
-        }
+        alert(
+          "Your session has expired due to inactivity. Please log in again."
+        );
       }
 
       window.location.href = "/login";
     }
   },
 
-  // Clear session data & remove listeners
   clearSession: () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
@@ -209,22 +237,22 @@ const authService = {
     );
   },
 
-  // Get current user from session storage (returns parsed object or null)
   getCurrentUser: () => {
     const userStr = sessionStorage.getItem("user");
     if (!userStr) return null;
 
-    // verify session still valid
     const lastActivity = parseInt(
       sessionStorage.getItem("lastActivity") || "0",
       10
     );
     const now = Date.now();
+
     if (now - lastActivity > SESSION_TIMEOUT) {
       console.log("Session expired, clearing user data");
       authService.clearSession();
       return null;
     }
+
     try {
       return JSON.parse(userStr);
     } catch (e) {
@@ -232,7 +260,6 @@ const authService = {
     }
   },
 
-  // Authenticated check
   isAuthenticated: () => {
     const token = sessionStorage.getItem("token");
     const lastActivity = parseInt(
@@ -251,7 +278,6 @@ const authService = {
     return true;
   },
 
-  // Session info helper
   getSessionInfo: () => {
     const loginTime = parseInt(sessionStorage.getItem("loginTime") || "0", 10);
     const lastActivity = parseInt(
@@ -268,10 +294,10 @@ const authService = {
     return {
       loggedInForMinutes: Math.floor(sessionDuration / 1000 / 60),
       expiresInMinutes: Math.max(0, Math.floor(timeUntilExpiry / 1000 / 60)),
+      expiresIn: Math.max(0, Math.floor(timeUntilExpiry / 1000 / 60)), // Add this for SessionIndicator
     };
   },
 
-  // Visibility change handler for tab hidden/visible detection
   handleVisibilityChange: () => {
     if (document.hidden) {
       sessionStorage.setItem("tabHiddenAt", Date.now().toString());
