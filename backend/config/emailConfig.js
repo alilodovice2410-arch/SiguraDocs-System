@@ -1,83 +1,69 @@
 // backend/config/emailConfig.js
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
-// Create a single transporter instance to be reused
-const createTransporter = () => {
-  // Railway-optimized configuration - Use port 465 with SSL
-  const config = {
-    host: "smtp.gmail.com",
-    port: 465, // Use 465 instead of 587 for Railway
-    secure: true, // Use SSL/TLS
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS, // Use Gmail App Password here
-    },
-    // Extended timeouts for cloud environments
-    connectionTimeout: 60000,
-    greetingTimeout: 30000,
-    socketTimeout: 60000,
-    // Connection pooling for better performance
-    pool: true,
-    maxConnections: 5,
-    maxMessages: 10,
-    // Add these for Railway network compatibility
-    tls: {
-      rejectUnauthorized: true,
-      minVersion: "TLSv1.2",
+// Check which email service to use
+const useResend = !!process.env.RESEND_API_KEY;
+
+let resendClient = null;
+
+// Initialize Resend if API key exists
+if (useResend) {
+  resendClient = new Resend(process.env.RESEND_API_KEY);
+  console.log("✅ Using Resend for email delivery (FREE - 3,000 emails/month)");
+} else {
+  console.log("⚠️ RESEND_API_KEY not set - emails will not work");
+  console.log("   Add RESEND_API_KEY to Railway Variables");
+  console.log("   Get your key from: https://resend.com/api-keys");
+}
+
+/**
+ * Send email using Resend
+ */
+async function sendEmail(to, subject, html) {
+  try {
+    if (!useResend) {
+      console.error("❌ Cannot send email - RESEND_API_KEY not configured");
+      return false;
+    }
+
+    const { data, error } = await resendClient.emails.send({
+      from: process.env.EMAIL_FROM || "SiguraDocs <onboarding@resend.dev>",
+      to: [to],
+      subject: subject,
+      html: html,
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    console.log(`✅ Email sent via Resend to ${to} (ID: ${data.id})`);
+    return true;
+  } catch (error) {
+    console.error("❌ Email send failed:", error.message);
+    return false;
+  }
+}
+
+// Legacy compatibility - return transporter-like object
+const getTransporter = () => {
+  return {
+    sendMail: async (mailOptions) => {
+      return await sendEmail(
+        mailOptions.to,
+        mailOptions.subject,
+        mailOptions.html
+      );
     },
   };
-
-  const transporter = nodemailer.createTransport(config);
-
-  // Test connection on startup (non-blocking)
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error("❌ Email transporter error:", error.message);
-      console.log("⚠️ Email may not work. Check these settings:");
-      console.log(
-        "   - EMAIL_USER:",
-        process.env.EMAIL_USER ? "✓ Set" : "✗ Not set"
-      );
-      console.log(
-        "   - EMAIL_PASS:",
-        process.env.EMAIL_PASS ? "✓ Set" : "✗ Not set"
-      );
-      console.log(
-        "   - EMAIL_PORT:",
-        process.env.EMAIL_PORT || "465 (default)"
-      );
-      console.log("\n📝 To fix:");
-      console.log("   1. Go to https://myaccount.google.com/security");
-      console.log("   2. Enable 2-Step Verification");
-      console.log("   3. Generate an App Password for 'Mail'");
-      console.log("   4. Use that 16-character password as EMAIL_PASS");
-      console.log("   5. Ensure EMAIL_PORT=465 in Railway Variables");
-    } else {
-      console.log("✅ Email server is ready to send messages");
-      console.log(`📧 Using Gmail account: ${process.env.EMAIL_USER}`);
-      console.log(`📫 Using port: 465 (SSL/TLS)`);
-    }
-  });
-
-  return transporter;
 };
 
-// Singleton instance
-let transporter = null;
-
-const getTransporter = () => {
-  if (!transporter) {
-    transporter = createTransporter();
-  }
-  return transporter;
-};
-
-// Helper to check if email is configured
 const isEmailConfigured = () => {
-  return !!(process.env.EMAIL_USER && process.env.EMAIL_PASS);
+  return !!process.env.RESEND_API_KEY;
 };
 
 module.exports = {
   getTransporter,
   isEmailConfigured,
+  sendEmail,
 };
