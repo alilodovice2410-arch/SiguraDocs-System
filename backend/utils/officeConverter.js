@@ -6,30 +6,25 @@ const util = require("util");
 const { execFile, spawn } = require("child_process");
 const execFileAsync = util.promisify(execFile);
 
-// Try to require libreoffice-convert if available (but handle Promise or callback APIs)
+// Try to require libreoffice-convert if available
 let libre = null;
 try {
-  // eslint-disable-next-line global-require
   libre = require("libreoffice-convert");
-  console.log("libreoffice-convert available (buffer conversion enabled).");
+  console.log("✅ libreoffice-convert available (buffer conversion enabled).");
 } catch (e) {
-  console.warn(
-    "libreoffice-convert not installed or failed to load; will use soffice CLI fallback."
-  );
+  console.warn("⚠️ libreoffice-convert not installed; will use soffice CLI.");
 }
 
 /**
- * Helper that returns a Promise for libreoffice-convert conversion,
- * and works whether libre.convert returns a Promise or uses callback.
+ * Helper that returns a Promise for libreoffice-convert conversion
  */
 async function libreConvertToPdf(inputBuf) {
   if (!libre) throw new Error("libreoffice-convert not available");
 
   try {
-    const maybe = libre.convert(inputBuf, ".pdf", undefined, (err, done) => {});
+    const maybe = libre.convert(inputBuf, ".pdf", undefined);
     if (maybe && typeof maybe.then === "function") {
-      const result = await maybe;
-      return result;
+      return await maybe;
     }
 
     return await new Promise((resolve, reject) => {
@@ -48,128 +43,177 @@ async function libreConvertToPdf(inputBuf) {
 }
 
 /**
- * Try to find a soffice executable.
- * Priority:
- *  1. process.env.LIBREOFFICE_PATH (if set and file exists)
- *  2. Absolute Program Files paths (if they exist) — return immediately (don't run --version)
- *  3. 'soffice' on PATH (test with --version)
- *
- * We avoid calling --version on Program Files paths because on some Windows installs
- * soffice prints a "Press Enter to continue..." message and blocks when run without stdin.
+ * Find soffice executable with Railway Nix support
  */
 async function findSofficeExecutable() {
-  // 1) env override
+  console.log("🔍 Searching for LibreOffice executable...");
+
+  // 1) Check environment variable first
   const envPath = process.env.LIBREOFFICE_PATH;
   if (envPath) {
+    console.log(`   Checking LIBREOFFICE_PATH: ${envPath}`);
     if (fsSync.existsSync(envPath)) {
-      console.log(
-        `findSofficeExecutable: using LIBREOFFICE_PATH env '${envPath}'`
-      );
+      console.log(`✅ Using LibreOffice from env: ${envPath}`);
       return envPath;
-    } else {
-      console.warn(`LIBREOFFICE_PATH is set but file not found: ${envPath}`);
     }
+    console.warn(`⚠️ LIBREOFFICE_PATH set but file not found: ${envPath}`);
   }
 
-  // 2) check common absolute paths and return if file exists (skip calling --version)
-  if (process.platform === "win32") {
-    const absoluteCandidates = [
-      "C:\\Program Files\\LibreOffice\\program\\soffice.exe",
-      "C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe",
-    ];
-    for (const abs of absoluteCandidates) {
-      if (fsSync.existsSync(abs)) {
-        console.log(
-          `findSofficeExecutable: found absolute soffice at '${abs}'`
-        );
-        return abs;
-      }
-    }
-  } else {
-    const unixCandidates = [
-      "/usr/bin/soffice",
-      "/usr/lib/libreoffice/program/soffice",
-    ];
-    for (const abs of unixCandidates) {
-      if (fsSync.existsSync(abs)) {
-        console.log(
-          `findSofficeExecutable: found absolute soffice at '${abs}'`
-        );
-        return abs;
-      }
-    }
-  }
-
-  // 3) fallback to checking 'soffice' on PATH (this tests by running --version)
+  // 2) Check Railway Nix store (common path)
   try {
+    const nixStorePath = "/nix/store";
+    if (fsSync.existsSync(nixStorePath)) {
+      console.log("   Checking Railway Nix store...");
+      const nixStoreContents = fsSync.readdirSync(nixStorePath);
+
+      // Find LibreOffice directory in Nix store
+      const libreDir = nixStoreContents.find(
+        (dir) => dir.includes("libreoffice") && !dir.includes(".drv")
+      );
+
+      if (libreDir) {
+        const nixLibrePath = path.join(
+          nixStorePath,
+          libreDir,
+          "bin",
+          "soffice"
+        );
+        console.log(`   Found potential path: ${nixLibrePath}`);
+
+        if (fsSync.existsSync(nixLibrePath)) {
+          console.log(`✅ Using LibreOffice from Nix: ${nixLibrePath}`);
+          return nixLibrePath;
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("⚠️ Error checking Nix store:", err.message);
+  }
+
+  // 3) Check common absolute paths
+  const candidates =
+    process.platform === "win32"
+      ? [
+          "C:\\Program Files\\LibreOffice\\program\\soffice.exe",
+          "C:\\Program Files (x86)\\LibreOffice\\program\\soffice.exe",
+        ]
+      : [
+          "/usr/bin/soffice",
+          "/usr/lib/libreoffice/program/soffice",
+          "/app/.apt/usr/bin/soffice", // Railway apt buildpack
+        ];
+
+  for (const candidatePath of candidates) {
+    console.log(`   Checking: ${candidatePath}`);
+    if (fsSync.existsSync(candidatePath)) {
+      console.log(`✅ Found at: ${candidatePath}`);
+      return candidatePath;
+    }
+  }
+
+  // 4) Try to find soffice in PATH
+  try {
+    console.log("   Trying 'soffice' from PATH...");
     await execFileAsync("soffice", ["--version"], {
       windowsHide: true,
       timeout: 5000,
     });
-    console.log("findSofficeExecutable: using 'soffice' from PATH");
+    console.log("✅ Using 'soffice' from PATH");
     return "soffice";
   } catch (err) {
-    // give a useful error below
+    console.warn("⚠️ 'soffice' not found in PATH");
   }
 
-  throw new Error(
-    "LibreOffice (soffice) not found. Set process.env.LIBREOFFICE_PATH to the soffice exe path or ensure soffice is on PATH."
-  );
+  // 5) Last resort: check if 'which soffice' works (Unix)
+  if (process.platform !== "win32") {
+    try {
+      const { stdout } = await execFileAsync("which", ["soffice"], {
+        timeout: 3000,
+      });
+      const whichPath = stdout.trim();
+      if (whichPath && fsSync.existsSync(whichPath)) {
+        console.log(`✅ Found via 'which': ${whichPath}`);
+        return whichPath;
+      }
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  // Final error with helpful message
+  const errorMsg = `
+❌ LibreOffice (soffice) not found!
+
+Searched locations:
+${candidates.map((c) => `  - ${c}`).join("\n")}
+  - PATH environment
+  - Railway Nix store (/nix/store)
+
+Solutions:
+  1. Ensure nixpacks.toml includes 'libreoffice' in nixPkgs
+  2. Set LIBREOFFICE_PATH environment variable
+  3. Install LibreOffice in your deployment environment
+  `;
+
+  throw new Error(errorMsg);
 }
 
 /**
- * Convert an Office file on disk to PDF.
- * - inputPath: string path to the source file (docx, doc, pptx, xlsx, etc.)
- * Returns: Buffer containing the PDF bytes.
+ * Convert an Office file to PDF
  */
 async function convertOfficeToPDF(inputPath) {
   const ext = path.extname(inputPath).toLowerCase();
   const supported = [".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx"];
+
   if (!supported.includes(ext)) {
-    throw new Error(`convertOfficeToPDF: unsupported extension ${ext}`);
+    throw new Error(`Unsupported file extension: ${ext}`);
   }
 
-  console.log(
-    `convertOfficeToPDF: starting conversion for ${inputPath} at ${new Date().toISOString()}`
-  );
+  console.log(`\n📄 ===== OFFICE TO PDF CONVERSION =====`);
+  console.log(`File: ${path.basename(inputPath)}`);
+  console.log(`Type: ${ext}`);
+  console.log(`Time: ${new Date().toISOString()}`);
 
-  // 1) Try buffer-based conversion using libreoffice-convert (if available)
+  // Try buffer-based conversion first (faster)
   if (libre) {
     try {
+      console.log("🔄 Attempting buffer-based conversion...");
       const inputBuf = await fs.readFile(inputPath);
       const start = Date.now();
       const pdfBuf = await libreConvertToPdf(inputBuf);
       const duration = Date.now() - start;
+
       if (pdfBuf && Buffer.isBuffer(pdfBuf) && pdfBuf.length > 0) {
-        console.log(
-          `convertOfficeToPDF: libreoffice-convert succeeded (${pdfBuf.length} bytes) in ${duration}ms`
-        );
+        console.log(`✅ Buffer conversion succeeded!`);
+        console.log(`   Size: ${pdfBuf.length} bytes`);
+        console.log(`   Time: ${duration}ms`);
+        console.log(`=====================================\n`);
         return pdfBuf;
       }
-      throw new Error("libreoffice-convert returned empty buffer");
+      throw new Error("Empty buffer returned");
     } catch (err) {
-      console.warn(
-        "libreoffice-convert failed, falling back to soffice CLI:",
-        err && err.message ? err.message : err
-      );
-      // fall through to CLI fallback
+      console.warn(`⚠️ Buffer conversion failed: ${err.message}`);
+      console.log("   Falling back to CLI method...");
     }
   }
 
-  // 2) CLI fallback using soffice
+  // CLI fallback
   const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "office-conv-"));
-
   let sofficeCmd;
+
   try {
     sofficeCmd = await findSofficeExecutable();
   } catch (err) {
     try {
       await fs.rm(tmpDir, { recursive: true, force: true });
     } catch (e) {}
+    console.error(`=====================================\n`);
     throw err;
   }
 
   try {
+    console.log(`🔄 CLI conversion using: ${sofficeCmd}`);
+
     const args = [
       "--headless",
       "--convert-to",
@@ -178,77 +222,89 @@ async function convertOfficeToPDF(inputPath) {
       tmpDir,
       inputPath,
     ];
-    console.log(
-      `convertOfficeToPDF: spawning '${sofficeCmd}' ${args.join(" ")}`
-    );
 
-    // Use spawn so we can safely provide stdin and collect stdout/stderr.
-    // On Windows, passing the absolute path avoids command-line parsing problems.
+    console.log(`   Command: ${sofficeCmd} ${args.join(" ")}`);
+
     const child = spawn(sofficeCmd, args, {
       windowsHide: true,
       stdio: ["pipe", "pipe", "pipe"],
+      env: {
+        ...process.env,
+        HOME: tmpDir, // Prevents LibreOffice from trying to access home directory
+      },
     });
 
-    // Some soffice installs print a startup message and wait for Enter.
-    // Send a newline immediately to avoid blocking.
-    try {
-      if (child.stdin && !child.stdin.destroyed) {
-        child.stdin.write("\n");
-        child.stdin.end();
-      }
-    } catch (writeErr) {
-      // ignore
+    // Send newline to avoid any blocking prompts
+    if (child.stdin && !child.stdin.destroyed) {
+      child.stdin.write("\n");
+      child.stdin.end();
     }
 
     let stdout = "";
     let stderr = "";
+
     child.stdout.on("data", (d) => {
       stdout += d.toString();
     });
+
     child.stderr.on("data", (d) => {
       stderr += d.toString();
     });
 
-    const exitCode = await new Promise((resolve, reject) => {
-      child.on("error", (err) => reject(err));
-      child.on("close", (code) => resolve(code));
+    // Add timeout
+    const timeoutMs = 30000; // 30 seconds
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        child.kill();
+        reject(new Error(`Conversion timeout after ${timeoutMs}ms`));
+      }, timeoutMs);
     });
 
-    console.log(
-      `convertOfficeToPDF: soffice exited with code ${exitCode}. stdout len=${stdout.length} stderr len=${stderr.length}`
-    );
+    const exitCode = await Promise.race([
+      new Promise((resolve, reject) => {
+        child.on("error", (err) => reject(err));
+        child.on("close", (code) => resolve(code));
+      }),
+      timeoutPromise,
+    ]);
 
-    const generatedName = path.join(
-      tmpDir,
-      `${path.parse(inputPath).name}.pdf`
-    );
-    if (!fsSync.existsSync(generatedName)) {
-      // include some of stderr for debugging
+    console.log(`   Exit code: ${exitCode}`);
+
+    if (stderr) {
+      console.log(`   stderr: ${stderr.substring(0, 200)}`);
+    }
+
+    const outputName = `${path.parse(inputPath).name}.pdf`;
+    const outputPath = path.join(tmpDir, outputName);
+
+    if (!fsSync.existsSync(outputPath)) {
       throw new Error(
-        `soffice CLI did not produce expected output: ${generatedName}. stderr: ${stderr.slice(
-          0,
-          1000
-        )}`
+        `Output file not created: ${outputPath}\nstderr: ${stderr}`
       );
     }
 
-    const pdfBuffer = await fs.readFile(generatedName);
-    console.log(
-      `convertOfficeToPDF: soffice CLI produced ${pdfBuffer.length} bytes`
-    );
+    const pdfBuffer = await fs.readFile(outputPath);
+    console.log(`✅ CLI conversion succeeded!`);
+    console.log(`   Size: ${pdfBuffer.length} bytes`);
+    console.log(`=====================================\n`);
 
+    // Cleanup
     try {
       await fs.rm(tmpDir, { recursive: true, force: true });
-    } catch (e) {}
+    } catch (e) {
+      console.warn("⚠️ Cleanup warning:", e.message);
+    }
 
     return pdfBuffer;
   } catch (err) {
+    // Cleanup on error
     try {
       await fs.rm(tmpDir, { recursive: true, force: true });
     } catch (e) {}
-    throw new Error(
-      `Office to PDF conversion failed: ${err.message || err.toString()}`
-    );
+
+    console.error(`❌ Conversion failed: ${err.message}`);
+    console.error(`=====================================\n`);
+    throw new Error(`Office to PDF conversion failed: ${err.message}`);
   }
 }
 

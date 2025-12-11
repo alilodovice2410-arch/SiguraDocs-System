@@ -542,15 +542,21 @@ router.get(
       const filePath = document.file_path;
       const fileExt = path.extname(document.file_name).toLowerCase();
 
+      console.log(
+        `\n📄 Preview request for: ${document.file_name} (${fileExt})`
+      );
+
       if (!fs.existsSync(filePath)) {
+        console.error(`❌ File not found: ${filePath}`);
         return res.status(404).json({
           success: false,
           message: "File not found on server.",
         });
       }
 
-      // If PDF already, just stream it
+      // Direct preview for PDFs
       if (fileExt === ".pdf") {
+        console.log("✅ Serving PDF directly");
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader(
           "Content-Disposition",
@@ -562,9 +568,11 @@ router.get(
         return res.send(fileBuffer);
       }
 
-      // For Office files (doc/docx/xls/xlsx/ppt/pptx), try to convert to PDF
+      // Try to convert Office files to PDF for preview
       const convertible = [".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx"];
       if (convertible.includes(fileExt)) {
+        console.log(`🔄 Attempting ${fileExt} to PDF conversion...`);
+
         try {
           const pdfBuffer = await convertOfficeToPDF(filePath);
 
@@ -575,35 +583,24 @@ router.get(
               path.parse(document.original_file_name || document.file_name).name
             }.pdf"`
           );
+          console.log("✅ Office document converted successfully");
           return res.send(pdfBuffer);
         } catch (convErr) {
-          console.error("Preview conversion error:", convErr);
-          // Fallback: send original file for download (not preview)
-          const mimeTypes = {
-            ".doc": "application/msword",
-            ".docx":
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            ".xls": "application/vnd.ms-excel",
-            ".xlsx":
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            ".ppt": "application/vnd.ms-powerpoint",
-            ".pptx":
-              "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-          };
-          const mimeType = mimeTypes[fileExt] || "application/octet-stream";
-          res.setHeader("Content-Type", mimeType);
-          res.setHeader(
-            "Content-Disposition",
-            `attachment; filename="${
-              document.original_file_name || document.file_name
-            }"`
-          );
-          const fileBuffer = await fs.promises.readFile(filePath);
-          return res.send(fileBuffer);
+          console.error("❌ Conversion failed:", convErr.message);
+
+          // Return specific error so frontend knows conversion isn't available
+          return res.status(503).json({
+            success: false,
+            code: "CONVERSION_UNAVAILABLE",
+            message: "Document preview conversion temporarily unavailable",
+            fileType: fileExt,
+            fileName: document.original_file_name || document.file_name,
+            hint: "Please download the file to view its contents",
+          });
         }
       }
 
-      // For other types, send original inline where possible
+      // For images and text, send inline
       const mimeTypes = {
         ".jpg": "image/jpeg",
         ".jpeg": "image/jpeg",
@@ -612,7 +609,10 @@ router.get(
         ".bmp": "image/bmp",
         ".txt": "text/plain",
       };
+
       const mimeType = mimeTypes[fileExt] || "application/octet-stream";
+
+      console.log(`✅ Serving ${fileExt} as ${mimeType}`);
       res.setHeader("Content-Type", mimeType);
       res.setHeader(
         "Content-Disposition",
@@ -623,7 +623,7 @@ router.get(
       const fileBuffer = await fs.promises.readFile(filePath);
       res.send(fileBuffer);
     } catch (error) {
-      console.error("Preview error:", error);
+      console.error("❌ Preview error:", error);
       res.status(500).json({
         success: false,
         message: "Failed to generate preview.",

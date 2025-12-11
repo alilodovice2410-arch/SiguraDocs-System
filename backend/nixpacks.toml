@@ -1,10 +1,20 @@
-# Backend-specific nixpacks configuration
+# nixpacks.toml - Railway LibreOffice Configuration
+# Place this in your backend root directory (same level as server.js)
+
 [phases.setup]
-aptPkgs = ["libreoffice", "libreoffice-writer", "libreoffice-calc", "libreoffice-impress"]
-nixPkgs = ['nodejs_20']
+# Use nixPkgs for both Node.js and LibreOffice
+nixPkgs = ["nodejs_20", "libreoffice"]
 
 [phases.install]
-cmds = ["npm install"]
+cmds = ["npm ci --production"]
+
+[phases.build]
+# No build step needed for this project
+cmds = []
 
 [start]
 cmd = "node server.js"
+
+[variables]
+# Set LibreOffice path for the converter
+LIBREOFFICE_PATH = "/nix/store/$(ls /nix/store | grep libreoffice | head -n1)/bin/soffice"
