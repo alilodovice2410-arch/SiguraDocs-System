@@ -12,4 +12,8 @@ export default defineConfig({
       },
     },
   },
+  preview: {
+    port: process.env.PORT ? parseInt(process.env.PORT) : 8080,
+    host: "0.0.0.0",
+  },
 });
