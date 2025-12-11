@@ -14,6 +14,8 @@ import {
   Filter,
   Calendar,
   AlertCircle,
+  Menu,
+  X as CloseIcon,
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -33,6 +35,7 @@ function FacultyDashboard() {
   const [documents, setDocuments] = useState([]);
   const [filterStatus, setFilterStatus] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
