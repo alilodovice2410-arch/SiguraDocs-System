@@ -56,6 +56,27 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 // Serve uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// IMPORTANT: Add Railway health check endpoint FIRST (before any middleware)
+// Railway checks this endpoint to verify your service is running
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+  });
+});
+
+// Also keep your API health check
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "OK",
+    message: "SiguraDocs API is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 // IMPORTANT: Mount public password reset routes BEFORE the main authRoutes
 // so router-level auth middleware inside authRoutes won't block reset endpoints.
 app.use("/api/auth", passwordResetRouter);
@@ -72,16 +93,6 @@ app.use("/api/clustering", clusteringRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/department-head", departmentHeadRoutes);
 app.use("/api/profile", profileRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({
-    status: "OK",
-    message: "SiguraDocs API is running",
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || "development",
-  });
-});
 
 // Root endpoint
 app.get("/", (req, res) => {
@@ -123,17 +134,66 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    // Test database connection
-    await testConnection();
+    console.log("🚀 Starting SiguraDocs Backend...");
+    console.log(`📍 Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(`📍 Port: ${PORT}`);
 
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🔒 Environment: ${process.env.NODE_ENV || "development"}`);
+    // Test database connection with retry logic
+    let dbConnected = false;
+    let retries = 5;
+
+    while (!dbConnected && retries > 0) {
+      try {
+        await testConnection();
+        dbConnected = true;
+        console.log("✅ Database connected successfully");
+      } catch (error) {
+        retries--;
+        console.warn(
+          `⚠️ Database connection attempt failed. Retries left: ${retries}`
+        );
+        if (retries > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2s before retry
+        } else {
+          throw error;
+        }
+      }
+    }
+
+    // Start the server
+    const server = app.listen(PORT, "0.0.0.0", () => {
+      console.log(`✅ Server running on port ${PORT}`);
       console.log(`🔗 API: http://localhost:${PORT}/api`);
+      console.log(`🏥 Health check: http://localhost:${PORT}/health`);
       console.log(`🌐 Allowed origins:`, allowedOrigins);
+      console.log(`💾 Memory usage:`, process.memoryUsage());
+    });
+
+    // Graceful shutdown handling
+    process.on("SIGTERM", () => {
+      console.log("⚠️ SIGTERM received, starting graceful shutdown...");
+      server.close(() => {
+        console.log("✅ Server closed gracefully");
+        process.exit(0);
+      });
+
+      // Force close after 10 seconds
+      setTimeout(() => {
+        console.error("⚠️ Forced shutdown after timeout");
+        process.exit(1);
+      }, 10000);
+    });
+
+    process.on("SIGINT", () => {
+      console.log("⚠️ SIGINT received, starting graceful shutdown...");
+      server.close(() => {
+        console.log("✅ Server closed gracefully");
+        process.exit(0);
+      });
     });
   } catch (error) {
-    console.error("Failed to start server:", error);
+    console.error("❌ Failed to start server:", error);
+    console.error("Error details:", error.message);
     process.exit(1);
   }
 };
