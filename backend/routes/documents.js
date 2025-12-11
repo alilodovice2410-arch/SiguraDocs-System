@@ -91,7 +91,7 @@ async function createNotification(
 router.get("/types/all", authenticateToken, async (req, res) => {
   try {
     const [types] = await pool.query(
-      "SELECT * FROM DocumentTypes ORDER BY type_name"
+      "SELECT * FROM documenttypes ORDER BY type_name"
     );
     res.json({
       success: true,
@@ -139,7 +139,7 @@ router.post(
 
       // Get document type name
       const [docTypes] = await connection.query(
-        "SELECT type_name FROM DocumentTypes WHERE doc_type_id = ?",
+        "SELECT type_name FROM documenttypes WHERE doc_type_id = ?",
         [doc_type_id]
       );
 
