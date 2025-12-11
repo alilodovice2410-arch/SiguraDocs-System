@@ -1,4 +1,3 @@
-// contents of file
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
@@ -85,6 +84,28 @@ async function createNotification(
     console.error("Notification error:", error);
   }
 }
+
+// ============================================
+// IMPORTANT: Get document types - MUST be before /:id route
+// ============================================
+router.get("/types/all", authenticateToken, async (req, res) => {
+  try {
+    const [types] = await pool.query(
+      "SELECT * FROM DocumentTypes ORDER BY type_name"
+    );
+    res.json({
+      success: true,
+      types,
+    });
+  } catch (error) {
+    console.error("Fetch document types error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch document types.",
+      error: error.message,
+    });
+  }
+});
 
 // ============================================
 // Submit a new document
@@ -332,7 +353,9 @@ router.get("/", authenticateToken, async (req, res) => {
   }
 });
 
-// GET document by ID
+// ============================================
+// GET document by ID - MUST be after /types/all route
+// ============================================
 router.get("/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
@@ -406,26 +429,6 @@ router.get("/:id", authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch document.",
-      error: error.message,
-    });
-  }
-});
-
-// Get document types
-router.get("/types/all", authenticateToken, async (req, res) => {
-  try {
-    const [types] = await pool.query(
-      "SELECT * FROM DocumentTypes ORDER BY type_name"
-    );
-    res.json({
-      success: true,
-      types,
-    });
-  } catch (error) {
-    console.error("Fetch document types error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch document types.",
       error: error.message,
     });
   }
