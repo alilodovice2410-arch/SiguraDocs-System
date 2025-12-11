@@ -27,15 +27,23 @@ const {
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = "./uploads";
+    // ✅ Use environment variable or fallback to ./uploads for local dev
+    const uploadDir = process.env.UPLOAD_PATH || "./uploads";
+
+    console.log(`📁 Upload directory: ${uploadDir}`);
+
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
+      console.log(`✅ Created upload directory: ${uploadDir}`);
     }
+
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+    const filename = uniqueSuffix + path.extname(file.originalname);
+    console.log(`📄 Saving file as: ${filename}`);
+    cb(null, filename);
   },
 });
 
@@ -61,7 +69,6 @@ const upload = multer({
     }
   },
 });
-
 /**
  * Create notification helper (keeps backward compatibility where used locally)
  */
