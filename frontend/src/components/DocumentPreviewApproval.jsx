@@ -9,6 +9,7 @@ import {
   Download,
   AlertCircle,
   Loader,
+  Upload,
 } from "lucide-react";
 import SignatureCanvas from "react-signature-canvas";
 import api from "../services/api";
@@ -24,6 +25,7 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
   const [fileType, setFileType] = useState(null);
   const [canPreview, setCanPreview] = useState(false);
   const [convertingPreview, setConvertingPreview] = useState(false);
+  const [isFileMissing, setIsFileMissing] = useState(false);
 
   useEffect(() => {
     if (isOpen && approval) {
@@ -41,6 +43,7 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
     try {
       setLoadingDoc(true);
       setError("");
+      setIsFileMissing(false);
 
       console.log("📄 Loading document preview for ID:", approval.document_id);
 
@@ -116,7 +119,7 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
         // Request PDF conversion for preview
         setConvertingPreview(true);
         console.log(
-          "🔄 Requesting Office document conversion to PDF preview..."
+          "📄 Requesting Office document conversion to PDF preview..."
         );
 
         const response = await api.get(
@@ -138,7 +141,21 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
       }
     } catch (error) {
       console.error("❌ Failed to load document:", error);
-      setError(error.message || "Failed to load document preview");
+
+      // ✅ IMPROVED ERROR HANDLING
+      if (error.response?.status === 404) {
+        setIsFileMissing(true);
+        setError(
+          "⚠️ Document File Not Found: This document was uploaded before the storage system was properly configured. The file is no longer available on the server."
+        );
+      } else if (error.response?.status === 503) {
+        setError(
+          "Document preview conversion is temporarily unavailable. Please try downloading the file instead."
+        );
+      } else {
+        setError(error.message || "Failed to load document preview");
+      }
+
       setConvertingPreview(false);
     } finally {
       setLoadingDoc(false);
@@ -166,7 +183,14 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
       console.log("✅ File downloaded successfully");
     } catch (error) {
       console.error("Download error:", error);
-      alert("Failed to download document");
+
+      if (error.response?.status === 404) {
+        alert(
+          "❌ File not found on server. This document may need to be re-uploaded."
+        );
+      } else {
+        alert("Failed to download document");
+      }
     }
   };
 
@@ -237,6 +261,7 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
     }
     setComments("");
     setError("");
+    setIsFileMissing(false);
     onClose();
   };
 
@@ -311,19 +336,92 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
           </p>
         </div>
 
+        {/* ✅ IMPROVED: File Missing Warning */}
+        {isFileMissing && (
+          <div
+            className="file-missing-warning"
+            style={{
+              background: "#FEF3C7",
+              border: "1px solid #F59E0B",
+              borderRadius: "8px",
+              padding: "16px",
+              margin: "16px 24px",
+              display: "flex",
+              gap: "12px",
+              alignItems: "flex-start",
+            }}
+          >
+            <AlertCircle
+              size={24}
+              color="#F59E0B"
+              style={{ flexShrink: 0, marginTop: "2px" }}
+            />
+            <div style={{ flex: 1 }}>
+              <h4
+                style={{
+                  margin: "0 0 8px 0",
+                  color: "#92400E",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+              >
+                Document File Not Available
+              </h4>
+              <p
+                style={{
+                  margin: "0 0 12px 0",
+                  color: "#78350F",
+                  fontSize: "13px",
+                  lineHeight: "1.5",
+                }}
+              >
+                This document was uploaded during system development before
+                permanent storage was configured. The file is no longer
+                available on the server.
+              </p>
+              <div
+                style={{
+                  background: "white",
+                  padding: "12px",
+                  borderRadius: "6px",
+                  border: "1px solid #FCD34D",
+                }}
+              >
+                <p
+                  style={{
+                    margin: "0 0 8px 0",
+                    fontWeight: 600,
+                    color: "#92400E",
+                    fontSize: "13px",
+                  }}
+                >
+                  ✅ Recommended Action:
+                </p>
+                <p style={{ margin: 0, color: "#78350F", fontSize: "13px" }}>
+                  Contact <strong>{approval.submitter_name}</strong> to
+                  re-upload this document. All new uploads are now saved to
+                  permanent storage and will remain available.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Document Preview */}
         <div className="document-preview-section">
           <div className="preview-header">
             <FileText size={18} />
             <span>Document Preview</span>
-            <button
-              onClick={handleDownload}
-              className="download-btn-header"
-              title="Download document"
-            >
-              <Download size={16} />
-              Download
-            </button>
+            {!isFileMissing && (
+              <button
+                onClick={handleDownload}
+                className="download-btn-header"
+                title="Download document"
+              >
+                <Download size={16} />
+                Download
+              </button>
+            )}
           </div>
 
           <div className="preview-container">
@@ -335,6 +433,27 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
                     ? "Converting document for preview..."
                     : "Loading document..."}
                 </p>
+              </div>
+            ) : isFileMissing ? (
+              <div className="no-preview-available">
+                <div className="file-icon-large">❌</div>
+                <h3>File Not Found</h3>
+                <p className="file-name">
+                  {approval.file_name || approval.title}
+                </p>
+                <div
+                  className="preview-notice"
+                  style={{ background: "#FEF3C7", borderColor: "#F59E0B" }}
+                >
+                  <AlertCircle size={20} color="#F59E0B" />
+                  <p>
+                    <strong>
+                      This file is no longer available on the server.
+                    </strong>
+                    <br />
+                    Please contact the document submitter to re-upload it.
+                  </p>
+                </div>
               </div>
             ) : !canPreview ? (
               <div className="no-preview-available">
@@ -372,88 +491,97 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
         </div>
 
         {/* Signature Notice for Office Documents */}
-        {["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(fileType) && (
-          <div className="signature-embedding-notice">
-            <CheckCircle size={18} color="#0B8043" />
-            <p>
-              <strong>Signature Embedding:</strong> When you approve this
-              document, your signature will be permanently embedded into the{" "}
-              {fileType.toUpperCase()} file. The signed file will be available
-              for download with visible signatures.
-            </p>
-          </div>
-        )}
+        {!isFileMissing &&
+          ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(fileType) && (
+            <div className="signature-embedding-notice">
+              <CheckCircle size={18} color="#0B8043" />
+              <p>
+                <strong>Signature Embedding:</strong> When you approve this
+                document, your signature will be permanently embedded into the{" "}
+                {fileType.toUpperCase()} file. The signed file will be available
+                for download with visible signatures.
+              </p>
+            </div>
+          )}
 
         {/* Error Message */}
-        {error && (
+        {error && !isFileMissing && (
           <div className="error-message">
             <span>{error}</span>
           </div>
         )}
 
         {/* Comments Section */}
-        <div className="form-section">
-          <label htmlFor="comments">Comments (Optional)</label>
-          <textarea
-            id="comments"
-            value={comments}
-            onChange={(e) => setComments(e.target.value)}
-            placeholder="Add any comments about this approval..."
-            rows={3}
-            disabled={loading}
-          />
-        </div>
-
-        {/* Signature Section */}
-        <div className="signature-section">
-          <div className="signature-label-with-name">
-            <PenTool size={18} />
-            <div>
-              <span className="signature-title">Your Digital Signature *</span>
-              <p className="signer-name">
-                Signing as: <strong>{approval.approver_name || "You"}</strong>
-              </p>
-            </div>
-          </div>
-          <p className="signature-description">
-            Draw your signature below. This will be embedded in the document and
-            cryptographically secured.
-          </p>
-
-          <div className="signature-canvas-wrapper">
-            <SignatureCanvas
-              ref={sigCanvas}
-              canvasProps={{
-                className: "signature-canvas",
-                width: 600,
-                height: 200,
-              }}
-              onEnd={() => {
-                setError("");
-              }}
+        {!isFileMissing && (
+          <div className="form-section">
+            <label htmlFor="comments">Comments (Optional)</label>
+            <textarea
+              id="comments"
+              value={comments}
+              onChange={(e) => setComments(e.target.value)}
+              placeholder="Add any comments about this approval..."
+              rows={3}
+              disabled={loading}
             />
           </div>
+        )}
 
-          <button
-            type="button"
-            className="clear-button"
-            onClick={clearSignature}
-            disabled={loading}
-          >
-            <Trash2 size={16} />
-            Clear Signature
-          </button>
-        </div>
+        {/* Signature Section */}
+        {!isFileMissing && (
+          <div className="signature-section">
+            <div className="signature-label-with-name">
+              <PenTool size={18} />
+              <div>
+                <span className="signature-title">
+                  Your Digital Signature *
+                </span>
+                <p className="signer-name">
+                  Signing as: <strong>{approval.approver_name || "You"}</strong>
+                </p>
+              </div>
+            </div>
+            <p className="signature-description">
+              Draw your signature below. This will be embedded in the document
+              and cryptographically secured.
+            </p>
+
+            <div className="signature-canvas-wrapper">
+              <SignatureCanvas
+                ref={sigCanvas}
+                canvasProps={{
+                  className: "signature-canvas",
+                  width: 600,
+                  height: 200,
+                }}
+                onEnd={() => {
+                  setError("");
+                }}
+              />
+            </div>
+
+            <button
+              type="button"
+              className="clear-button"
+              onClick={clearSignature}
+              disabled={loading}
+            >
+              <Trash2 size={16} />
+              Clear Signature
+            </button>
+          </div>
+        )}
 
         {/* Security Notice */}
-        <div className="security-notice">
-          <div className="notice-icon">⚠️</div>
-          <p>
-            By clicking "Sign & Approve", you are digitally signing this
-            document. This signature will be permanently embedded and is legally
-            binding.
-          </p>
-        </div>
+        {!isFileMissing && (
+          <div className="security-notice">
+            <div className="notice-icon">⚠️</div>
+            <p>
+              By clicking "Sign & Approve", you are digitally signing this
+              document. This signature will be permanently embedded and is
+              legally binding.
+            </p>
+          </div>
+        )}
 
         {/* Modal Actions */}
         <div className="modal-actions">
@@ -465,24 +593,26 @@ function DocumentPreviewApproval({ isOpen, onClose, approval, onSuccess }) {
           >
             Cancel
           </button>
-          <button
-            type="button"
-            className="approve-button"
-            onClick={handleApprove}
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="loading-text">
-                <span className="spinner"></span>
-                Processing...
-              </span>
-            ) : (
-              <>
-                <PenTool size={18} />
-                Sign & Approve
-              </>
-            )}
-          </button>
+          {!isFileMissing && (
+            <button
+              type="button"
+              className="approve-button"
+              onClick={handleApprove}
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="loading-text">
+                  <span className="spinner"></span>
+                  Processing...
+                </span>
+              ) : (
+                <>
+                  <PenTool size={18} />
+                  Sign & Approve
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
