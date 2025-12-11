@@ -23,13 +23,33 @@ const profileRoutes = require("./routes/profile");
 
 const app = express();
 
-// Middleware
+// CORS Configuration - Allow frontend domain
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "https://siguradocs-system-smnhs.up.railway.app",
+  "http://localhost:5173",
+  "http://localhost:5174",
+].filter(Boolean); // Remove undefined values
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked origin: ${origin}`);
+        callback(null, true); // Allow in production, log warning
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
@@ -55,30 +75,46 @@ app.use("/api/profile", profileRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", message: "SiguraDocs API is running" });
+  res.json({
+    status: "OK",
+    message: "SiguraDocs API is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+  });
 });
 
-// ============================================
-// PRODUCTION: Serve React Frontend
-// ============================================
-if (process.env.NODE_ENV === "production") {
-  // Serve static files from the React app
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
-  // Handle React routing - return all requests to React app
-  // This must be AFTER all API routes
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+// Root endpoint
+app.get("/", (req, res) => {
+  res.json({
+    name: "SiguraDocs API",
+    version: "1.0.0",
+    status: "running",
+    endpoints: {
+      health: "/api/health",
+      auth: "/api/auth",
+      documents: "/api/documents",
+      approvals: "/api/approvals",
+      admin: "/api/admin",
+      dashboard: "/api/dashboard",
+    },
   });
-}
+});
+
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.method} ${req.path} not found`,
+  });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Error:", err.stack);
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
-    error: process.env.NODE_ENV === "development" ? err : {},
+    error: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 });
 
@@ -92,17 +128,9 @@ const startServer = async () => {
 
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🔒 Environment: ${process.env.NODE_ENV}`);
+      console.log(`🔒 Environment: ${process.env.NODE_ENV || "development"}`);
       console.log(`🔗 API: http://localhost:${PORT}/api`);
-
-      if (process.env.NODE_ENV === "production") {
-        console.log(
-          `📦 Serving frontend from: ${path.join(
-            __dirname,
-            "../frontend/dist"
-          )}`
-        );
-      }
+      console.log(`🌐 Allowed origins:`, allowedOrigins);
     });
   } catch (error) {
     console.error("Failed to start server:", error);
