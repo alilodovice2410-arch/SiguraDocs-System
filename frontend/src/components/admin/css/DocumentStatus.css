@@ -2,9 +2,7 @@
 .document-status {
   padding: 2rem;
   min-height: calc(100vh - 73px);
-  overflow-x: hidden;
   width: 100%;
-  max-width: 100%;
   position: relative;
 }
 
@@ -302,7 +300,6 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   margin-bottom: 1.5rem;
-  max-width: 100%;
 }
 
 /* Improved scrollbar styling */
@@ -329,7 +326,7 @@
 .ds-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 900px;
+  min-width: 1200px;
 }
 
 .ds-table thead {
