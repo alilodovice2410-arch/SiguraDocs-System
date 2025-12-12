@@ -507,6 +507,7 @@ function DepartmentHeadDocuments() {
                           title="View Details"
                         >
                           <Eye size={16} />
+                          <span>View</span>
                         </button>
                         <button
                           className="action-btn btn-download"
@@ -519,6 +520,7 @@ function DepartmentHeadDocuments() {
                           title="Download"
                         >
                           <Download size={16} />
+                          <span>Download</span>
                         </button>
                       </div>
                     </td>
