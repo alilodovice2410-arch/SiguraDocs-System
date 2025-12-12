@@ -43,7 +43,6 @@ function AdminDashboard() {
     }
   };
 
-  // Updated to async logout
   const handleLogout = async () => {
     await logout();
     navigate("/login");
@@ -273,35 +272,35 @@ function AdminDashboard() {
 
       {/* Main Content */}
       <main className="dashboard-main">
-        {/* Header - Only show for overview */}
-        {activeView === "overview" && (
-          <header className="dashboard-header">
-            <div className="header-content">
-              <div className="header-left">
-                <h1>Admin Dashboard</h1>
-              </div>
-              <div className="header-right">
-                {/* Session Indicator */}
-                <SessionIndicator />
+        {/* Header - Show for all views */}
+        <header className="dashboard-header">
+          <div className="header-content">
+            <div className="header-left">
+              <h1>
+                {activeView === "overview" && "Admin Dashboard"}
+                {activeView === "users" && "User Management"}
+                {activeView === "documents" && "Document Status"}
+                {activeView === "logs" && "Audit Logs"}
+              </h1>
+            </div>
+            <div className="header-right">
+              <SessionIndicator />
 
-                <button className="header-icon-btn">
-                  <Bell />
-                </button>
-                <div className="user-menu">
-                  <div className="user-info">
-                    <span className="user-role">Administrator</span>
-                    <span className="user-name">
-                      {user?.username || "admin"}
-                    </span>
-                  </div>
-                  <button onClick={handleLogout} className="logout-btn">
-                    Logout
-                  </button>
+              <button className="header-icon-btn">
+                <Bell />
+              </button>
+              <div className="user-menu">
+                <div className="user-info">
+                  <span className="user-role">Administrator</span>
+                  <span className="user-name">{user?.username || "admin"}</span>
                 </div>
+                <button onClick={handleLogout} className="logout-btn">
+                  Logout
+                </button>
               </div>
             </div>
-          </header>
-        )}
+          </div>
+        </header>
 
         {renderContent()}
       </main>
