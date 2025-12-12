@@ -1,18 +1,13 @@
-/* ========================================
-   DOCUMENT STATUS - GLASSMORPHISM REDESIGN
-   ======================================== */
-
 /* Document Status Container */
 .document-status {
   padding: 2rem;
   min-height: calc(100vh - 73px);
   overflow-x: hidden;
   width: 100%;
+  position: relative;
 }
 
-/* ========================================
-   HEADER SECTION - Glassmorphism
-   ======================================== */
+/* HEADER SECTION - Glassmorphism */
 .ds-header {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.15);
@@ -296,11 +291,21 @@
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  overflow-x: auto;
+  overflow-x: auto; /* keep horizontal scroll inside this container only */
+  position: relative; /* ensure scrollbar belongs to this element */
+  z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   margin-bottom: 1.5rem;
-  position: relative;
+}
+
+/* Small improvement so the inner scrollbar is visible and styled */
+.ds-table-container::-webkit-scrollbar {
+  height: 10px;
+}
+.ds-table-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
 }
 
 /* Table */
