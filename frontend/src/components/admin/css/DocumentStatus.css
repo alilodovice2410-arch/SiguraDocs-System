@@ -1,136 +1,187 @@
+/* ========================================
+   DOCUMENT STATUS - GLASSMORPHISM REDESIGN
+   ======================================== */
+
 /* Document Status Container */
 .document-status {
   padding: 2rem;
   background-image: url("../../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
-/* Header */
+/* ========================================
+   HEADER SECTION - Glassmorphism
+   ======================================== */
 .ds-header {
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 2.5rem 3rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
 }
 
 .ds-header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .ds-header-icon {
-  width: 3rem;
-  height: 3rem;
-  background: linear-gradient(135deg, #2d4739 0%, #1e2f26 100%);
-  border-radius: 0.75rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: rgba(34, 197, 94, 0.25);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #6ee7b7;
+  border: 1px solid rgba(34, 197, 94, 0.35);
 }
 
 .ds-header-icon svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 .ds-header h1 {
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  color: #1f2937;
-  margin: 0 0 0.25rem 0;
+  color: white;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .ds-header p {
-  font-size: 0.95rem;
-  color: #6b7280;
+  font-size: 1.125rem;
+  color: white;
   margin: 0;
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Buttons */
+/* ========================================
+   BUTTONS - Glassmorphism
+   ======================================== */
 .ds-btn-primary {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #2d4739;
+  gap: 0.625rem;
+  padding: 1rem 1.75rem;
+  background: rgba(34, 197, 94, 0.85);
+  backdrop-filter: blur(8px);
   color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 500;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .ds-btn-primary:hover {
-  background-color: #1e2f26;
+  background: rgba(34, 197, 94, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+.ds-btn-primary svg {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .ds-btn-secondary {
-  padding: 0.75rem 1.5rem;
-  background-color: #f3f4f6;
-  color: #374151;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  font-weight: 500;
+  padding: 1rem 1.75rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .ds-btn-secondary:hover {
-  background-color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Statistics */
+/* ========================================
+   STATISTICS - Glassmorphism
+   ======================================== */
 .ds-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .ds-stat-card {
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 1rem;
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 1.75rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  gap: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
 }
 
 .ds-stat-card:hover {
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 
 .ds-stat-icon {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.75rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  backdrop-filter: blur(8px);
+  border: 1px solid;
 }
 
 .ds-stat-total .ds-stat-icon {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .ds-stat-pending .ds-stat-icon {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  background: rgba(251, 146, 60, 0.25);
+  color: #fdba74;
+  border-color: rgba(251, 146, 60, 0.35);
 }
 
 .ds-stat-approved .ds-stat-icon {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: rgba(34, 197, 94, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(34, 197, 94, 0.35);
 }
 
 .ds-stat-rejected .ds-stat-icon {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .ds-stat-content {
@@ -139,81 +190,117 @@
 }
 
 .ds-stat-value {
-  font-size: 2rem;
+  font-size: 2.25rem;
   font-weight: 700;
-  color: #1f2937;
+  color: white;
   line-height: 1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .ds-stat-label {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin-top: 0.25rem;
+  font-size: 0.938rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 0.5rem;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Filters */
+/* ========================================
+   FILTERS - Glassmorphism
+   ======================================== */
 .ds-filters {
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  background-color: white;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  gap: 1.25rem;
 }
 
 .ds-search {
   flex: 1;
-  min-width: 250px;
+  min-width: 280px;
   position: relative;
 }
 
 .ds-search-icon {
   position: absolute;
-  left: 1rem;
+  left: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.7);
   width: 1.25rem;
   height: 1.25rem;
+  pointer-events: none;
 }
 
 .ds-search input {
   width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
+  padding: 1.125rem 1.5rem 1.125rem 3.75rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  font-size: 1rem;
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
+}
+
+.ds-search input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .ds-search input:focus {
-  border-color: #2d4739;
+  border-color: rgba(34, 197, 94, 0.6);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
 }
 
 .ds-filter-select {
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-  background-color: white;
+  padding: 1.125rem 3.5rem 1.125rem 1.5rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  font-size: 0.938rem;
+  font-weight: 500;
+  color: white;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
   cursor: pointer;
-  outline: none;
-  min-width: 160px;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.25rem center;
+  min-width: 180px;
 }
 
 .ds-filter-select:focus {
-  border-color: #2d4739;
+  outline: none;
+  border-color: rgba(34, 197, 94, 0.6);
+  background-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
 }
 
-/* Table Container */
+.ds-filter-select option {
+  background: #2d4739;
+  color: white;
+}
+
+/* ========================================
+   TABLE CONTAINER - Glassmorphism
+   ======================================== */
 .ds-table-container {
-  background-color: white;
-  border-radius: 1rem;
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   margin-bottom: 1.5rem;
 }
 
@@ -224,27 +311,28 @@
 }
 
 .ds-table thead {
-  background-color: #f9fafb;
-  border-bottom: 2px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .ds-table th {
-  padding: 1rem 1.5rem;
+  padding: 1.25rem 1.75rem;
   text-align: left;
   font-size: 0.875rem;
-  font-weight: 600;
-  color: #374151;
+  font-weight: 700;
+  color: white;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .ds-table tbody tr {
-  border-bottom: 1px solid #f3f4f6;
-  transition: background-color 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
 }
 
 .ds-table tbody tr:hover {
-  background-color: #f9fafb;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .ds-table tbody tr:last-child {
@@ -252,28 +340,31 @@
 }
 
 .ds-table td {
-  padding: 1rem 1.5rem;
-  font-size: 0.95rem;
-  color: #374151;
+  padding: 1.25rem 1.75rem;
+  font-size: 0.938rem;
+  color: white;
 }
 
 .ds-empty {
   text-align: center;
-  padding: 3rem !important;
-  color: #9ca3af;
+  padding: 4rem 2rem !important;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.125rem;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Document Title */
 .ds-doc-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
-  color: #1f2937;
+  gap: 0.625rem;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .ds-doc-title svg {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Submitter */
@@ -281,11 +372,12 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #374151;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .ds-submitter svg {
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.65);
 }
 
 /* Date */
@@ -293,188 +385,215 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.875rem;
 }
 
 .ds-date svg {
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.65);
 }
 
-/* Status Badge */
+/* Status Badge - Glassmorphism */
 .ds-status-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  padding: 0.5rem 0.875rem;
+  border-radius: 10px;
+  font-size: 0.813rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  border: 1px solid;
 }
 
 .ds-status-pending {
-  background-color: #fef3c7;
-  color: #92400e;
+  background: rgba(234, 179, 8, 0.25);
+  color: #fde047;
+  border-color: rgba(234, 179, 8, 0.35);
 }
 
 .ds-status-review {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .ds-status-approved {
-  background-color: #d1fae5;
-  color: #065f46;
+  background: rgba(34, 197, 94, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(34, 197, 94, 0.35);
 }
 
 .ds-status-rejected {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .ds-status-revision {
-  background-color: #fed7aa;
-  color: #9a3412;
+  background: rgba(251, 146, 60, 0.25);
+  color: #fdba74;
+  border-color: rgba(251, 146, 60, 0.35);
 }
 
-/* Priority Badge */
+/* Priority Badge - Glassmorphism */
 .ds-priority-badge {
   display: inline-block;
-  padding: 0.25rem 0.625rem;
-  border-radius: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 8px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  backdrop-filter: blur(8px);
+  border: 1px solid;
 }
 
 .ds-priority-low {
-  background-color: #f3f4f6;
-  color: #6b7280;
+  background: rgba(156, 163, 175, 0.25);
+  color: #d1d5db;
+  border-color: rgba(156, 163, 175, 0.35);
 }
 
 .ds-priority-medium {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .ds-priority-high {
-  background-color: #fed7aa;
-  color: #9a3412;
+  background: rgba(251, 146, 60, 0.25);
+  color: #fdba74;
+  border-color: rgba(251, 146, 60, 0.35);
 }
 
 .ds-priority-urgent {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 /* Actions */
 .ds-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.625rem;
 }
 
 .ds-action-btn {
-  padding: 0.5rem;
-  border: none;
-  background-color: transparent;
-  color: #6b7280;
+  padding: 0.625rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  color: white;
   cursor: pointer;
-  border-radius: 0.375rem;
-  transition: all 0.2s;
+  border-radius: 10px;
+  transition: all 0.2s ease;
 }
 
 .ds-action-btn:hover {
-  background-color: #f3f4f6;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .ds-action-view:hover {
-  color: #3b82f6;
-  background-color: #dbeafe;
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
 }
 
 .ds-action-download:hover {
-  color: #10b981;
-  background-color: #d1fae5;
+  background: rgba(34, 197, 94, 0.25);
+  border-color: rgba(34, 197, 94, 0.4);
+  color: #6ee7b7;
 }
 
-/* Pagination */
+/* ========================================
+   PAGINATION - Glassmorphism
+   ======================================== */
 .ds-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1.5rem;
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  gap: 0.75rem;
+  padding: 1.75rem;
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
 }
 
 .ds-page-btn {
-  padding: 0.5rem 1rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
+  padding: 0.75rem 1.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: white;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .ds-page-btn:hover:not(:disabled) {
-  background-color: #f9fafb;
-  border-color: #2d4739;
-  color: #2d4739;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .ds-page-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 .ds-page-numbers {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.5rem;
   align-items: center;
-}
-
-.ds-page-num {
-  width: 2.5rem;
-  height: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.ds-page-num:hover {
-  background-color: #f9fafb;
-  border-color: #2d4739;
-  color: #2d4739;
-}
-
-.ds-page-num.active {
-  background-color: #2d4739;
-  border-color: #2d4739;
   color: white;
 }
 
-/* Modal */
+.ds-page-num {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  font-size: 0.938rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ds-page-num:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ds-page-num.active {
+  background: rgba(34, 197, 94, 0.85);
+  border-color: rgba(34, 197, 94, 0.5);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+}
+
+/* ========================================
+   MODAL - Glassmorphism
+   ======================================== */
 .ds-modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -483,52 +602,56 @@
 }
 
 .ds-modal {
-  background-color: white;
-  border-radius: 1rem;
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 24px;
   width: 100%;
   max-width: 800px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .ds-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .ds-modal-header h2 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  color: #1f2937;
+  color: white;
   margin: 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .ds-modal-close {
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  background-color: transparent;
-  color: #6b7280;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  color: white;
   font-size: 1.5rem;
   cursor: pointer;
-  border-radius: 0.375rem;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .ds-modal-close:hover {
-  background-color: #f3f4f6;
-  color: #374151;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .ds-modal-body {
-  padding: 1.5rem;
+  padding: 2rem;
 }
 
 .ds-modal-section {
@@ -540,40 +663,44 @@
 }
 
 .ds-modal-section h3 {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #1f2937;
-  margin: 0 0 1rem 0;
+  color: white;
+  margin: 0 0 1.25rem 0;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 .ds-modal-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .ds-modal-field {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 .ds-modal-field label {
   font-size: 0.875rem;
-  font-weight: 500;
-  color: #6b7280;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
 .ds-modal-field span {
-  font-size: 0.95rem;
-  color: #1f2937;
+  font-size: 1rem;
+  color: white;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* History Timeline */
+/* History Timeline - Glassmorphism */
 .ds-history-timeline {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
   position: relative;
   padding-left: 2rem;
 }
@@ -585,7 +712,7 @@
   top: 0.5rem;
   bottom: 0.5rem;
   width: 2px;
-  background-color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .ds-history-item {
@@ -598,78 +725,86 @@
   position: absolute;
   left: -1.625rem;
   top: 0.25rem;
-  width: 0.75rem;
-  height: 0.75rem;
+  width: 0.875rem;
+  height: 0.875rem;
   border-radius: 50%;
-  background-color: #2d4739;
-  border: 2px solid white;
-  box-shadow: 0 0 0 2px #e5e7eb;
+  background: rgba(34, 197, 94, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
 }
 
 .ds-history-content {
   flex: 1;
-  background-color: #f9fafb;
-  padding: 1rem;
-  border-radius: 0.5rem;
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1.25rem;
+  border-radius: 12px;
 }
 
 .ds-history-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .ds-history-action {
   font-weight: 600;
-  color: #1f2937;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .ds-history-date {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .ds-history-user {
   font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.625rem;
 }
 
 .ds-history-comments {
-  font-size: 0.875rem;
-  color: #374151;
-  background-color: white;
-  padding: 0.75rem;
-  border-radius: 0.375rem;
-  margin-top: 0.5rem;
+  font-size: 0.938rem;
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.875rem;
+  border-radius: 8px;
+  margin-top: 0.625rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .ds-modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  padding: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  padding: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-/* Loading State */
+/* ========================================
+   LOADING STATE
+   ======================================== */
 .document-status-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-image: url("../../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
 .loading-spinner {
   width: 3rem;
   height: 3rem;
-  border: 3px solid #e5e7eb;
-  border-top-color: #2d4739;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
   margin-bottom: 1rem;
 }
 
@@ -680,11 +815,15 @@
 }
 
 .document-status-loading p {
-  color: #6b7280;
-  font-size: 0.95rem;
+  color: white;
+  font-size: 1.125rem;
+  font-weight: 500;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* Responsive Design */
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
 @media (max-width: 1024px) {
   .ds-stats {
     grid-template-columns: repeat(2, 1fr);
@@ -694,10 +833,7 @@
     flex-direction: column;
   }
 
-  .ds-search {
-    width: 100%;
-  }
-
+  .ds-search,
   .ds-filter-select {
     width: 100%;
   }
@@ -713,9 +849,14 @@
   }
 
   .ds-header {
+    padding: 2rem;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  .ds-header h1 {
+    font-size: 1.75rem;
   }
 
   .ds-btn-primary {
@@ -737,5 +878,19 @@
 
   .ds-pagination {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .ds-header {
+    padding: 1.5rem;
+  }
+
+  .ds-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .ds-filters {
+    padding: 1.25rem;
   }
 }
