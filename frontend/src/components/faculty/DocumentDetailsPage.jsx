@@ -321,21 +321,6 @@ function DocumentDetailsPage() {
             </>
           )}
         </nav>
-
-        {/* User Profile Section - Only for Principal */}
-        {isPrincipal && (
-          <div className="sidebar-user">
-            <div className="user-profile">
-              <div className="user-avatar">
-                {user?.full_name?.charAt(0) || "P"}
-              </div>
-              <div className="user-info">
-                <p className="user-name">{user?.full_name || "Principal"}</p>
-                <p className="user-role">{user?.role_name || "Principal"}</p>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </aside>
   );
