@@ -5,12 +5,9 @@
 /* Document Status Container */
 .document-status {
   padding: 2rem;
-  background-image: url("../../assets/background.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  min-height: 100vh;
+  min-height: calc(100vh - 73px);
   overflow-x: hidden;
+  width: 100%;
 }
 
 /* ========================================
