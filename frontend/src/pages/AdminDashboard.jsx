@@ -133,9 +133,19 @@ function AdminDashboard() {
 
         {/* Recent Activity */}
         <div className="activity-section">
-          <div className="section-header">
-            <h2>Recent Activity</h2>
-            <p>Latest system activities and notifications</p>
+          <div
+            className="section-header"
+            style={{
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              background: "rgba(255, 255, 255, 0.08)",
+              backgroundColor: "transparent",
+            }}
+          >
+            <h2 style={{ color: "white" }}>Recent Activity</h2>
+            <p style={{ color: "rgba(255, 255, 255, 0.8)" }}>
+              Latest system activities and notifications
+            </p>
           </div>
 
           <div className="activity-list">
@@ -180,6 +190,7 @@ function AdminDashboard() {
                       WebkitBackdropFilter: "blur(16px)",
                       background: "rgba(255, 255, 255, 0.08)",
                       backgroundColor: "transparent",
+                      color: "white",
                     }}
                   >
                     <div className={`activity-icon ${className}`}>
