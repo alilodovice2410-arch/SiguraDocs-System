@@ -266,7 +266,6 @@ function FacultyDashboard() {
                 alt="San Mariano National High School Logo"
                 className="school-logo"
               />
-              <div className="logo-icon"></div>
             </div>
             <div className="sidebar-title">
               <h2>SiguraDocs</h2>
