@@ -75,33 +75,7 @@ function AdminDashboard() {
     }
 
     return (
-      <>
-        {/* Top Bar */}
-        <header className="dashboard-header">
-          <div className="header-content">
-            <div className="header-left">
-              <h1>Admin Dashboard</h1>
-            </div>
-            <div className="header-right">
-              {/* Session Indicator - NEW */}
-              <SessionIndicator />
-
-              <button className="header-icon-btn">
-                <Bell />
-              </button>
-              <div className="user-menu">
-                <div className="user-info">
-                  <span className="user-role">Administrator</span>
-                  <span className="user-name">{user?.username || "admin"}</span>
-                </div>
-                <button onClick={handleLogout} className="logout-btn">
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
+      <div className="dashboard-content-wrapper">
         {/* Stats Cards */}
         <div className="stats-grid">
           <div className="stat-card stat-card-blue">
@@ -219,7 +193,7 @@ function AdminDashboard() {
             )}
           </div>
         </div>
-      </>
+      </div>
     );
   };
 
@@ -278,7 +252,39 @@ function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="dashboard-main">{renderContent()}</main>
+      <main className="dashboard-main">
+        {/* Header - Only show for overview */}
+        {activeView === "overview" && (
+          <header className="dashboard-header">
+            <div className="header-content">
+              <div className="header-left">
+                <h1>Admin Dashboard</h1>
+              </div>
+              <div className="header-right">
+                {/* Session Indicator */}
+                <SessionIndicator />
+
+                <button className="header-icon-btn">
+                  <Bell />
+                </button>
+                <div className="user-menu">
+                  <div className="user-info">
+                    <span className="user-role">Administrator</span>
+                    <span className="user-name">
+                      {user?.username || "admin"}
+                    </span>
+                  </div>
+                  <button onClick={handleLogout} className="logout-btn">
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
+          </header>
+        )}
+
+        {renderContent()}
+      </main>
     </div>
   );
 }

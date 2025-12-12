@@ -104,13 +104,19 @@
 .dashboard-main {
   flex: 1;
   margin-left: 280px;
+  min-height: 100vh;
+}
+
+/* Dashboard content wrapper with background */
+.dashboard-content-wrapper {
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url("../../assets/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  min-height: 100vh;
+  min-height: calc(100vh - 73px);
+  padding: 2rem;
 }
 
 /* Header */
@@ -208,7 +214,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
-  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 .stat-card {
@@ -320,7 +326,6 @@
 
 /* Activity Section with Glassmorphism */
 .activity-section {
-  margin: 2rem;
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.1);
   border-radius: 1.5rem;
@@ -539,13 +544,12 @@
     margin-left: 0;
   }
 
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .dashboard-content-wrapper {
     padding: 1rem;
   }
 
-  .activity-section {
-    margin: 1rem;
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
 
   .header-content {
