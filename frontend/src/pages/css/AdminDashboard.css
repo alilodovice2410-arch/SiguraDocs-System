@@ -105,18 +105,18 @@
   flex: 1;
   margin-left: 280px;
   min-height: 100vh;
-}
-
-/* Dashboard content wrapper with background */
-.dashboard-content-wrapper {
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url("../../assets/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  min-height: calc(100vh - 73px);
+}
+
+/* Dashboard content wrapper */
+.dashboard-content-wrapper {
   padding: 2rem;
+  min-height: calc(100vh - 73px);
 }
 
 /* Header */
@@ -218,21 +218,22 @@
 }
 
 .stat-card {
-  backdrop-filter: blur(32px);
-  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 1.5rem;
   padding: 1.5rem;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .stat-card:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.18);
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.45);
+  box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
 }
 
 .stat-header {
@@ -257,7 +258,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   flex-shrink: 0;
 }
 
@@ -326,12 +328,13 @@
 
 /* Activity Section with Glassmorphism */
 .activity-section {
-  backdrop-filter: blur(32px);
-  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 1.5rem;
   overflow: hidden;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .section-header {
@@ -385,7 +388,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .activity-icon svg {
