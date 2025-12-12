@@ -22,6 +22,19 @@
   padding: 2rem;
 }
 
+.logo-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  z-index: 1750;
+}
+
 /* Header - Glassmorphism */
 .details-header {
   backdrop-filter: blur(32px);

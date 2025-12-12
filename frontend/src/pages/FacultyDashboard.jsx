@@ -309,16 +309,6 @@ function FacultyDashboard() {
               <Folder className="nav-icon" />
               <span>My Documents</span>
             </button>
-            <button
-              className="nav-item"
-              onClick={() => {
-                setShowNotifications(true);
-                setMobileMenuOpen(false);
-              }}
-            >
-              <Bell className="nav-icon" />
-              <span>Notifications</span>
-            </button>
           </nav>
         </div>
       </aside>
