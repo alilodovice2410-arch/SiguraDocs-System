@@ -1,4 +1,4 @@
-/* DocumentPreviewApproval.css - Fixed alignment issues */
+/* DocumentPreviewApproval.css - Complete Glassmorphism Design */
 
 .preview-modal-overlay {
   position: fixed;
@@ -6,25 +6,27 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
   padding: 20px;
   overflow-y: auto;
 }
 
 .preview-modal-container {
-  background: white;
-  border-radius: 16px;
-  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  max-width: 1000px;
   width: 100%;
-  max-height: 95vh;
+  max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
   animation: modalSlideIn 0.3s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 @keyframes modalSlideIn {
@@ -43,11 +45,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px;
-  border-bottom: 1px solid #e5e7eb;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  padding: 28px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.9) 0%,
+    rgba(5, 150, 105, 0.9) 100%
+  );
+  backdrop-filter: blur(10px);
   color: white;
-  border-radius: 16px 16px 0 0;
+  border-radius: 20px 20px 0 0;
 }
 
 .header-content {
@@ -115,41 +122,48 @@
 
 /* Document Info */
 .document-info-section {
-  padding: 20px 24px;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 24px 32px;
+  background: rgba(249, 250, 251, 0.6);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
 }
 
 .document-info-section h3 {
   margin: 0 0 8px 0;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #111827;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .document-meta {
   margin: 0;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #4b5563;
+  font-weight: 500;
 }
 
 /* Document Preview Section */
 .document-preview-section {
-  margin: 20px 24px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
+  margin: 24px 32px;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  border-radius: 16px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .preview-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 10px;
+  padding: 16px 20px;
+  background: rgba(249, 250, 251, 0.8);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
   font-weight: 600;
-  color: #374151;
+  color: #1f2937;
 }
 
 .preview-header svg {
@@ -160,17 +174,23 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: #3b82f6;
+  padding: 10px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.95) 0%,
+    rgba(37, 99, 235, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
   color: white;
-  border: none;
-  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 8px;
   cursor: pointer;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   transition: all 0.2s;
   margin-left: auto;
-  min-height: 36px;
+  min-height: 38px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .download-btn-header svg {
@@ -180,9 +200,9 @@
 }
 
 .download-btn-header:hover {
-  background: #2563eb;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
 }
 
 .download-btn-header:active {
@@ -190,9 +210,10 @@
 }
 
 .preview-container {
-  background: #f3f4f6;
-  min-height: 400px;
-  max-height: 500px;
+  background: rgba(243, 244, 246, 0.5);
+  backdrop-filter: blur(10px);
+  min-height: 450px;
+  max-height: 450px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,7 +222,7 @@
 
 .document-iframe {
   width: 100%;
-  height: 500px;
+  height: 450px;
   border: none;
   background: white;
 }
@@ -252,40 +273,47 @@
   justify-content: center;
   padding: 3rem 2rem;
   text-align: center;
-  min-height: 400px;
+  min-height: 450px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
 }
 
 .file-icon-large {
-  font-size: 5rem;
-  margin-bottom: 1rem;
-  opacity: 0.8;
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .no-preview-available h3 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   color: #1f2937;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .file-name {
   font-size: 0.875rem;
-  color: #6b7280;
-  margin-bottom: 1.5rem;
-  max-width: 400px;
+  color: #4b5563;
+  margin-bottom: 2rem;
+  max-width: 450px;
   word-break: break-word;
+  font-weight: 500;
 }
 
 .preview-notice {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 1rem 1.5rem;
-  background: #fef3c7;
-  border: 1px solid #fbbf24;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  max-width: 500px;
+  padding: 1.25rem 1.75rem;
+  background: rgba(254, 243, 199, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  max-width: 550px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .preview-notice svg {
@@ -300,25 +328,32 @@
   font-size: 0.875rem;
   color: #78350f;
   text-align: left;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
+  font-weight: 500;
 }
 
 .download-btn-large {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 32px;
-  background: #3b82f6;
+  padding: 14px 36px;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.95) 0%,
+    rgba(37, 99, 235, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
   color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 12px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
   transition: all 0.2s;
   margin-bottom: 1rem;
-  min-height: 44px;
+  min-height: 48px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .download-btn-large svg {
@@ -328,9 +363,9 @@
 }
 
 .download-btn-large:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
 }
 
 .download-btn-large:active {
@@ -348,11 +383,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 1rem;
-  background-color: #e8f5e9;
+  padding: 16px 20px;
+  background: rgba(232, 245, 233, 0.9);
+  backdrop-filter: blur(10px);
   border-left: 4px solid #0b8043;
-  border-radius: 8px;
-  margin: 1rem 24px;
+  border-radius: 12px;
+  margin: 20px 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .signature-embedding-notice svg {
@@ -375,55 +412,63 @@
 
 /* Error Message */
 .error-message {
-  margin: 20px 24px;
-  padding: 12px 16px;
-  background: #fef2f2;
-  border: 1px solid #fecaca;
-  border-radius: 8px;
+  margin: 20px 32px;
+  padding: 16px 20px;
+  background: rgba(254, 242, 242, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(254, 202, 202, 0.8);
+  border-radius: 12px;
   color: #dc2626;
   font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Form Section */
 .form-section {
-  padding: 0 24px;
-  margin-top: 20px;
+  padding: 0 32px;
+  margin-top: 24px;
 }
 
 .form-section label {
   display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #374151;
+  margin-bottom: 10px;
+  font-weight: 700;
+  color: #1f2937;
   font-size: 0.875rem;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .form-section textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  padding: 14px 16px;
+  border: 1px solid rgba(209, 213, 219, 0.6);
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
   font-size: 0.875rem;
   font-family: inherit;
   resize: vertical;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
   box-sizing: border-box;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .form-section textarea:focus {
   outline: none;
   border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 1);
 }
 
 .form-section textarea:disabled {
-  background: #f3f4f6;
+  background: rgba(243, 244, 246, 0.8);
   cursor: not-allowed;
 }
 
 /* Signature Section */
 .signature-section {
-  padding: 20px 24px;
+  padding: 24px 32px;
 }
 
 .signature-label-with-name {
@@ -436,45 +481,58 @@
 .signature-label-with-name svg {
   flex-shrink: 0;
   margin-top: 2px;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  color: #10b981;
 }
 
 .signature-title {
-  font-weight: 600;
-  color: #374151;
+  font-weight: 700;
+  color: #1f2937;
   font-size: 0.875rem;
   display: block;
   margin-bottom: 4px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .signer-name {
   margin: 0;
   font-size: 0.875rem;
   color: #6b7280;
+  font-weight: 500;
 }
 
 .signer-name strong {
-  color: #10b981;
-  font-weight: 600;
+  color: #059669;
+  font-weight: 700;
 }
 
 .signature-description {
   margin: 0 0 16px 0;
   font-size: 0.875rem;
   color: #6b7280;
+  line-height: 1.5;
 }
 
 .signature-canvas-wrapper {
-  border: 2px solid #d1d5db;
-  border-radius: 12px;
-  background: #ffffff;
+  border: 2px solid rgba(16, 185, 129, 0.3);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   overflow: hidden;
-  margin-bottom: 12px;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.2s;
+}
+
+.signature-canvas-wrapper:hover {
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15),
+    inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 }
 
 .signature-canvas {
@@ -489,16 +547,22 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background: #ef4444;
+  padding: 10px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(239, 68, 68, 0.95) 0%,
+    rgba(220, 38, 38, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
   color: white;
-  border: none;
-  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 10px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
-  min-height: 36px;
+  transition: all 0.2s;
+  min-height: 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .clear-button svg {
@@ -508,53 +572,64 @@
 }
 
 .clear-button:hover:not(:disabled) {
-  background: #dc2626;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+}
+
+.clear-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .clear-button:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* Security Notice */
 .security-notice {
-  margin: 20px 24px;
-  padding: 16px;
-  background: #fef3c7;
-  border: 1px solid #fbbf24;
-  border-radius: 8px;
+  margin: 24px 32px;
+  padding: 18px 20px;
+  background: rgba(254, 243, 199, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  border-radius: 12px;
   display: flex;
-  gap: 12px;
+  gap: 14px;
   align-items: flex-start;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .notice-icon {
   font-size: 1.25rem;
   flex-shrink: 0;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
 }
 
 .security-notice p {
   margin: 0;
   font-size: 0.875rem;
-  color: #92400e;
-  line-height: 1.5;
+  color: #78350f;
+  line-height: 1.6;
+  font-weight: 500;
 }
 
 /* Modal Actions */
 .modal-actions {
   display: flex;
-  gap: 12px;
-  padding: 24px;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
-  border-radius: 0 0 16px 16px;
+  gap: 16px;
+  padding: 28px 32px;
+  border-top: 1px solid rgba(229, 231, 235, 0.5);
+  background: rgba(249, 250, 251, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 0 0 20px 20px;
 }
 
 .cancel-button,
 .approve-button {
   flex: 1;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border-radius: 12px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -562,30 +637,40 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 44px;
+  gap: 10px;
+  min-height: 48px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .cancel-button {
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
   color: #374151;
-  border: 1px solid #d1d5db;
+  border: 1px solid rgba(209, 213, 219, 0.6);
 }
 
 .cancel-button:hover:not(:disabled) {
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 1);
   border-color: #9ca3af;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 .approve-button {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.95) 0%,
+    rgba(5, 150, 105, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
   color: white;
-  border: none;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .approve-button:hover:not(:disabled) {
-  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+  transform: translateY(-2px);
 }
 
 .cancel-button:disabled,
@@ -593,6 +678,11 @@
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+}
+
+.cancel-button:active:not(:disabled),
+.approve-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .loading-text {
@@ -621,18 +711,69 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .preview-modal-overlay {
+    padding: 10px;
+  }
+
   .preview-modal-container {
     max-width: 100%;
-    border-radius: 0;
-    max-height: 100vh;
+    border-radius: 16px;
+    max-height: 95vh;
+  }
+
+  .preview-modal-header {
+    padding: 20px 24px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .header-content {
+    gap: 12px;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .preview-modal-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .preview-modal-header p {
+    font-size: 0.8125rem;
+  }
+
+  .document-info-section {
+    padding: 18px 24px;
+  }
+
+  .document-info-section h3 {
+    font-size: 1.125rem;
+  }
+
+  .document-preview-section {
+    margin: 20px 24px;
   }
 
   .signature-canvas {
     height: 150px;
   }
 
+  .signature-section,
+  .form-section {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
   .modal-actions {
     flex-direction: column;
+    padding: 24px;
+    gap: 12px;
   }
 
   .cancel-button,
@@ -641,8 +782,8 @@
   }
 
   .no-preview-available {
-    padding: 2rem 1rem;
-    min-height: 300px;
+    padding: 2rem 1.5rem;
+    min-height: 350px;
   }
 
   .file-icon-large {
@@ -650,11 +791,39 @@
   }
 
   .preview-notice {
-    padding: 0.75rem 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
   }
 
   .download-btn-large {
     width: 100%;
     justify-content: center;
+    padding: 12px 24px;
+  }
+
+  .security-notice,
+  .signature-embedding-notice,
+  .error-message {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-modal-header h2 {
+    font-size: 1.125rem;
+  }
+
+  .header-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .document-info-section h3 {
+    font-size: 1rem;
+  }
+
+  .signature-canvas {
+    height: 120px;
   }
 }
