@@ -1,13 +1,34 @@
+html,
+body {
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
 /* Document Status Container */
 .document-status {
   padding: 2rem;
   min-height: calc(100vh - 73px);
-  overflow-x: hidden;
+  /* allow horizontal scrolling only inside this container */
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
   width: 100%;
   position: relative;
+  box-sizing: border-box;
 }
 
-/* HEADER SECTION - Glassmorphism */
+/* make the document-status scrollbar visible and styled on webkit browsers */
+.document-status::-webkit-scrollbar {
+  height: 10px;
+}
+.document-status::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+}
+
+/* ========================================
+   HEADER SECTION - Glassmorphism
+   ======================================== */
 .ds-header {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.15);
@@ -291,21 +312,12 @@
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  overflow-x: auto; /* keep horizontal scroll inside this container only */
-  position: relative; /* ensure scrollbar belongs to this element */
+  overflow-x: auto; /* inner container still supports horizontal scrolling for very wide tables */
+  position: relative; /* ensure scrollbar sits on this element */
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   margin-bottom: 1.5rem;
-}
-
-/* Small improvement so the inner scrollbar is visible and styled */
-.ds-table-container::-webkit-scrollbar {
-  height: 10px;
-}
-.ds-table-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
 }
 
 /* Table */
