@@ -289,9 +289,6 @@
   font-size: 0.68rem;
 }
 
-/* Defensive override for any other rules leaking in:
-   This is specific to nav-item badges so it won't affect badges elsewhere.
-*/
 .principal-sidebar .sidebar-nav .nav-item .notification-badge {
   position: absolute !important;
   top: 50% !important;
@@ -352,10 +349,14 @@
 
 /* Header */
 .principal-header {
-  background-color: white;
-  padding: 2rem 2.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
 .header-content {
@@ -1404,8 +1405,6 @@
     font-size: 1.5rem;
   }
 }
-
-/* Add these new styles to your existing PrincipalDashboard.css */
 
 /* Stats Grid for Pending Approvals */
 .pending-stats-grid {
