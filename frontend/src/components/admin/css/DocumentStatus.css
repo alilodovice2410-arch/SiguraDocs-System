@@ -2,7 +2,7 @@
 .document-status {
   padding: 2rem;
   min-height: calc(100vh - 73px);
-  overflow-x: hidden;
+  overflow-x: visible;
   width: 100%;
   position: relative;
 }
@@ -291,27 +291,41 @@
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  overflow-x: auto; /* keep horizontal scroll inside this container only */
-  position: relative; /* ensure scrollbar belongs to this element */
+  overflow-x: auto;
+  overflow-y: visible;
+  position: relative;
   z-index: 1;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   margin-bottom: 1.5rem;
+  max-width: 100%;
 }
 
-/* Small improvement so the inner scrollbar is visible and styled */
+/* Improved scrollbar styling */
 .ds-table-container::-webkit-scrollbar {
-  height: 10px;
+  height: 12px;
 }
-.ds-table-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+
+.ds-table-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
+}
+
+.ds-table-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.05);
+}
+
+.ds-table-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Table */
 .ds-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 900px;
 }
 
 .ds-table thead {
