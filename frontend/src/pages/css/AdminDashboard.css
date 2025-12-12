@@ -419,8 +419,8 @@
 }
 
 .activity-icon svg {
-  width: 200rem;
-  height: 200rem;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .activity-icon-green {
@@ -444,10 +444,12 @@
 .activity-icon-gray {
   background: rgba(156, 163, 175, 0.2) !important;
   border: 1px solid rgba(156, 163, 175, 0.3) !important;
-  color: #9ca3af !important;
+  color: #ffffff !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
 }
 
-.activity-details {
+.activity-details p {
   flex: 1;
   color: white !important;
 }
