@@ -2,9 +2,15 @@
 .approvals-view {
   max-width: 1400px;
   margin: 0 auto;
-  /* increased top spacing to match Principal screenshot, horizontal remains tighter */
-  padding: 2rem 1.5rem 1.5rem; /* top, left/right, bottom */
+  padding: 2rem 1.5rem 1.5rem;
   box-sizing: border-box;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("../../assets/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  min-height: 100vh;
 }
 
 /*HEADER SECTION*/
