@@ -930,4 +930,233 @@ function formatTimestamp(date) {
   });
 }
 
+/**
+ * GET /api/principal/analytics/dashboard
+ * Comprehensive analytics dashboard for Principal (similar to Department Head)
+ */
+router.get(
+  "/analytics/dashboard",
+  authenticateToken,
+  checkRole("Principal"),
+  async (req, res) => {
+    try {
+      const { range = "month" } = req.query;
+      const userId = req.user.user_id;
+
+      console.log(`📊 Principal Analytics Request:`, {
+        userId,
+        range,
+      });
+
+      // Date condition based on range
+      let dateCondition = "";
+      let intervalSql = "1 MONTH";
+
+      switch (range) {
+        case "week":
+          dateCondition =
+            "WHERE d.created_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)";
+          intervalSql = "1 WEEK";
+          break;
+        case "month":
+          dateCondition =
+            "WHERE d.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+          intervalSql = "1 MONTH";
+          break;
+        case "quarter":
+          dateCondition =
+            "WHERE d.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)";
+          intervalSql = "3 MONTH";
+          break;
+        case "year":
+          dateCondition =
+            "WHERE d.created_at >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
+          intervalSql = "12 MONTH";
+          break;
+        default:
+          dateCondition =
+            "WHERE d.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
+          intervalSql = "1 MONTH";
+      }
+
+      // 1. Total documents system-wide
+      const [totalDocs] = await pool.query(
+        `SELECT COUNT(*) as count FROM documents d ${dateCondition}`
+      );
+
+      // 2. Status distribution system-wide
+      const [statusDist] = await pool.query(
+        `SELECT 
+          COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
+          COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected,
+          COUNT(CASE WHEN status = 'pending' THEN 1 END) as pending,
+          COUNT(CASE WHEN status = 'in_review' THEN 1 END) as in_review
+         FROM documents d
+         ${dateCondition}`
+      );
+
+      // 3. Approval rate
+      const totalProcessed =
+        (statusDist[0].approved || 0) + (statusDist[0].rejected || 0);
+      const approvalRate =
+        totalProcessed > 0
+          ? Math.round((statusDist[0].approved / totalProcessed) * 100)
+          : 0;
+
+      // 4. Average review time
+      const [avgTime] = await pool.query(
+        `SELECT AVG(DATEDIFF(updated_at, created_at)) as avg_days
+         FROM documents d
+         WHERE status = 'approved' 
+         AND updated_at IS NOT NULL
+         ${dateCondition ? dateCondition.replace("WHERE", "AND") : ""}`
+      );
+
+      // 5. Submission trends over time
+      const [submissionTrends] = await pool.query(
+        `SELECT 
+           DATE_FORMAT(created_at, '%b') as month,
+           COUNT(*) as submitted,
+           COUNT(CASE WHEN status = 'approved' THEN 1 END) as approved,
+           COUNT(CASE WHEN status = 'rejected' THEN 1 END) as rejected
+         FROM documents d
+         WHERE created_at >= DATE_SUB(NOW(), INTERVAL ${intervalSql})
+         GROUP BY DATE_FORMAT(created_at, '%Y-%m'), DATE_FORMAT(created_at, '%b')
+         ORDER BY DATE_FORMAT(created_at, '%Y-%m') ASC`
+      );
+
+      // 6. Document type distribution
+      const [docTypeData] = await pool.query(
+        `SELECT 
+           document_type as name,
+           COUNT(*) as value
+         FROM documents d
+         ${dateCondition}
+         GROUP BY document_type
+         ORDER BY value DESC
+         LIMIT 5`
+      );
+
+      // 7. Average approval time by document type
+      const [approvalTimeByType] = await pool.query(
+        `SELECT 
+           document_type as type,
+           AVG(DATEDIFF(updated_at, created_at)) as avgDays
+         FROM documents d
+         WHERE status = 'approved'
+         AND updated_at IS NOT NULL
+         ${dateCondition ? dateCondition.replace("WHERE", "AND") : ""}
+         GROUP BY document_type
+         ORDER BY avgDays DESC
+         LIMIT 5`
+      );
+
+      // 8. Department activity
+      const [departmentActivity] = await pool.query(
+        `SELECT 
+           d.department as name,
+           COUNT(*) as submitted,
+           COUNT(CASE WHEN d.status = 'approved' THEN 1 END) as approved,
+           COUNT(CASE WHEN d.status = 'rejected' THEN 1 END) as rejected,
+           AVG(CASE WHEN d.status = 'approved' THEN DATEDIFF(d.updated_at, d.created_at) END) as avgTime
+         FROM documents d
+         WHERE d.department IS NOT NULL AND d.department != ''
+         ${dateCondition ? dateCondition.replace("WHERE", "AND") : ""}
+         GROUP BY d.department
+         ORDER BY submitted DESC
+         LIMIT 5`
+      );
+
+      // 9. Weekly activity pattern
+      const [weeklyPattern] = await pool.query(
+        `SELECT 
+           DAYNAME(created_at) as day,
+           COUNT(*) as submissions,
+           COUNT(CASE WHEN status = 'approved' THEN 1 END) as approvals
+         FROM documents d
+         WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+         GROUP BY DAYNAME(created_at), DAYOFWEEK(created_at)
+         ORDER BY DAYOFWEEK(created_at)`
+      );
+
+      // 10. Status trends over time (weekly breakdown)
+      const [statusTrends] = await pool.query(
+        `SELECT 
+           CONCAT('Week ', WEEK(d.created_at, 1) - WEEK(DATE_SUB(NOW(), INTERVAL 1 MONTH), 1) + 1) as week,
+           COUNT(CASE WHEN d.status = 'approved' THEN 1 END) as approved,
+           COUNT(CASE WHEN d.status = 'rejected' THEN 1 END) as rejected,
+           COUNT(CASE WHEN d.status IN ('pending', 'in_review') THEN 1 END) as pending
+         FROM documents d
+         WHERE d.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+         GROUP BY WEEK(d.created_at, 1), 
+                  CONCAT('Week ', WEEK(d.created_at, 1) - WEEK(DATE_SUB(NOW(), INTERVAL 1 MONTH), 1) + 1)
+         ORDER BY WEEK(d.created_at, 1)`
+      );
+
+      const responseData = {
+        success: true,
+        data: {
+          // Summary stats
+          totalDocuments: totalDocs[0].count,
+          avgApprovalTime: avgTime[0].avg_days
+            ? parseFloat(avgTime[0].avg_days).toFixed(1)
+            : 0,
+          approvalRate,
+          pendingDocuments: statusDist[0].pending + statusDist[0].in_review,
+
+          // Charts data
+          submissionTrends: submissionTrends.map((row) => ({
+            month: row.month,
+            submitted: row.submitted,
+            approved: row.approved,
+            rejected: row.rejected,
+          })),
+
+          documentTypeData: docTypeData.map((row, idx) => ({
+            name: row.name,
+            value: row.value,
+            color: ["#8b5cf6", "#3b82f6", "#10b981", "#f59e0b", "#ef4444"][idx],
+          })),
+
+          approvalTimeByType: approvalTimeByType.map((row) => ({
+            type: row.type,
+            avgDays: parseFloat(row.avgDays).toFixed(1),
+          })),
+
+          departmentActivity: departmentActivity.map((row) => ({
+            name: row.name,
+            submitted: row.submitted,
+            approved: row.approved,
+            rejected: row.rejected,
+            avgTime: row.avgTime ? parseFloat(row.avgTime).toFixed(1) : 0,
+          })),
+
+          weeklyPattern: weeklyPattern.map((row) => ({
+            day: row.day.substring(0, 3), // Mon, Tue, etc
+            submissions: row.submissions,
+            approvals: row.approvals,
+          })),
+
+          statusTrends: statusTrends.map((row) => ({
+            week: row.week,
+            approved: row.approved,
+            rejected: row.rejected,
+            pending: row.pending,
+          })),
+        },
+      };
+
+      console.log("✅ Principal Analytics data prepared successfully");
+      res.json(responseData);
+    } catch (error) {
+      console.error("❌ Principal Analytics error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch analytics data",
+        error: error.message,
+      });
+    }
+  }
+);
+
 module.exports = router;
