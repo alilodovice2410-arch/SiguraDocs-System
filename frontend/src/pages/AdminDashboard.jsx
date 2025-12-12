@@ -172,7 +172,16 @@ function AdminDashboard() {
                 );
 
                 return (
-                  <div key={index} className="activity-item">
+                  <div
+                    key={index}
+                    className="activity-item"
+                    style={{
+                      backdropFilter: "blur(16px)",
+                      WebkitBackdropFilter: "blur(16px)",
+                      background: "rgba(255, 255, 255, 0.08)",
+                      backgroundColor: "transparent",
+                    }}
+                  >
                     <div className={`activity-icon ${className}`}>
                       <Icon />
                     </div>
