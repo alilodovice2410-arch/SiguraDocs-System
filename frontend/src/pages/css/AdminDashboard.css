@@ -1,10 +1,4 @@
 /* Admin Dashboard Layout */
-html,
-body {
-  /* Prevent the global horizontal scrollbar so only the table container scrolls horizontally */
-  overflow-x: hidden;
-}
-
 .admin-dashboard {
   display: flex;
   min-height: 100vh;
@@ -22,7 +16,6 @@ body {
   position: fixed;
   height: 100vh;
   overflow-y: auto;
-  z-index: 1200; /* keep sidebar above main content and any scrollbars */
 }
 
 .sidebar-header {
@@ -118,7 +111,6 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  overflow-x: hidden; /* keep horizontal scroll from appearing on the whole page */
 }
 
 /* Dashboard content wrapper */
