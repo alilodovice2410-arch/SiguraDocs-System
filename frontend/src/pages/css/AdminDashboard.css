@@ -105,7 +105,8 @@
   flex: 1;
   margin-left: 280px;
   min-height: 100vh;
-  overflow-x: visible;
+  overflow-x: hidden;
+  max-width: calc(100vw - 280px);
   background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url("../../assets/background.jpg");
   background-repeat: no-repeat;
@@ -118,7 +119,8 @@
 .dashboard-content-wrapper {
   padding: 2rem;
   min-height: calc(100vh - 73px);
-  overflow-x: visible;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* Header - Glassmorphism */
