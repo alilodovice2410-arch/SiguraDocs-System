@@ -711,7 +711,7 @@
 }
 
 .modal-subtitle {
-  color: #000000;
+  color: #000000 !important;
   font-size: 0.938rem;
   margin-top: 0.5rem;
 }
