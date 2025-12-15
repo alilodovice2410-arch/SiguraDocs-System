@@ -705,13 +705,13 @@
 .modal-header h2 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #111827;
+  color: #000000;
   text-transform: capitalize;
   margin: 0;
 }
 
 .modal-subtitle {
-  color: #6b7280;
+  color: #000000;
   font-size: 0.938rem;
   margin-top: 0.5rem;
 }
