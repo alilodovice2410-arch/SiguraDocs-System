@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import api from "../services/api";
 import authService from "../services/authService";
 import {
   Eye,
   EyeOff,
-  GraduationCap,
   Mail,
   Lock,
   User,
@@ -20,7 +20,7 @@ import ForgotPasswordModal from "./ForgotPasswordModal";
 
 function LoginPage() {
   const [searchParams] = useSearchParams();
-  const selectedRole = searchParams.get("role"); // Get role from URL
+  const selectedRole = searchParams.get("role");
 
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -28,15 +28,13 @@ function LoginPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login, isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
-  // Login state
   const [loginData, setLoginData] = useState({
     fullName: "",
     password: "",
   });
 
-  // Sign up state - Updated with subject field for head teachers
   const [signupData, setSignupData] = useState({
     fullName: "",
     email: "",
@@ -51,7 +49,6 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Department options
   const departments = [
     "English",
     "Mathematics",
@@ -63,7 +60,6 @@ function LoginPage() {
     "Values Education",
   ];
 
-  // Subjects per department
   const subjectsByDepartment = {
     English: ["English"],
     Mathematics: ["Mathematics"],
@@ -86,17 +82,11 @@ function LoginPage() {
     "Values Education": ["Values Education", "EsP"],
   };
 
-  // Get subjects based on selected department
-  const getSubjectsForDepartment = (dept) => {
-    return subjectsByDepartment[dept] || [];
-  };
+  const getSubjectsForDepartment = (dept) => subjectsByDepartment[dept] || [];
 
-  // Check if current role allows signup (only teacher and head-teacher)
-  const canSignUp = () => {
-    return selectedRole === "teacher" || selectedRole === "head-teacher";
-  };
+  const canSignUp = () =>
+    selectedRole === "teacher" || selectedRole === "head-teacher";
 
-  // Get role display name
   const getRoleDisplayName = (roleKey) => {
     const roleNames = {
       admin: "Administrator",
@@ -104,15 +94,12 @@ function LoginPage() {
       "head-teacher": "Head Teacher",
       teacher: "Teacher",
     };
-    // If roleKey is provided, use it; otherwise use selectedRole
-    const key = roleKey || selectedRole;
-    return roleNames[key] || "User";
+    return roleNames[roleKey || selectedRole] || "User";
   };
 
   // Redirect if already logged in - but ONLY if role matches
   useEffect(() => {
     if (isAuthenticated() && user) {
-      // If there's a selected role in URL, verify it matches before redirecting
       if (selectedRole) {
         const userRoleMapping = {
           1: "admin",
@@ -121,25 +108,15 @@ function LoginPage() {
           4: "teacher",
           5: "teacher",
         };
-
         const userRole = userRoleMapping[user.role_id];
 
-        // CRITICAL: Only redirect if roles match
         if (userRole === selectedRole) {
-          console.log(
-            "✅ Auto-redirect: Role matches, navigating to dashboard"
-          );
+          console.log("✅ Auto-redirect: Role matches");
           navigate("/dashboard", { replace: true });
         } else {
-          // Role mismatch - clear session and stay on login page
-          console.log("❌ Auto-redirect blocked: Role mismatch detected");
-          console.log("Expected:", selectedRole, "Got:", userRole);
-
-          // Clear the invalid session
+          console.log("❌ Auto-redirect blocked: Role mismatch");
           sessionStorage.clear();
           localStorage.clear();
-
-          // Show error message
           setError(
             `❌ Session Error: This account belongs to a ${getRoleDisplayName(
               userRole
@@ -149,13 +126,11 @@ function LoginPage() {
           );
         }
       } else {
-        // No selected role in URL, just redirect normally (direct dashboard access)
         navigate("/dashboard", { replace: true });
       }
     }
   }, [isAuthenticated, user, navigate, selectedRole]);
 
-  // Reset subject when department changes
   useEffect(() => {
     if (signupData.role === "head-teacher") {
       setSignupData((prev) => ({ ...prev, subject: "" }));
@@ -169,35 +144,73 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      const result = await login(loginData.fullName, loginData.password);
+      // Make API call directly without storing session yet
+      const response = await api.post("/auth/login", {
+        username: loginData.fullName,
+        password: loginData.password,
+      });
 
-      // Verify the logged-in user's role matches the selected role
-      if (result.user) {
-        const userRoleMapping = {
-          1: "admin", // Admin
-          2: "principal", // Principal
-          3: "head-teacher", // Department Head (Head Teacher)
-          4: "teacher", // Faculty (Teacher)
-          5: "teacher", // Staff (also maps to teacher)
-        };
-
-        const userRole = userRoleMapping[result.user.role_id];
-
-        if (selectedRole && userRole !== selectedRole) {
-          setError(
-            `This account is registered as ${getRoleDisplayName(
-              userRole
-            )}, not ${getRoleDisplayName()}. Please select the correct role on the previous page.`
-          );
-          // Log out the user since they selected wrong role
-          await authService.logout();
-          setLoading(false);
-          return;
-        }
+      if (!response?.data?.success || !response.data.user) {
+        throw new Error("Login failed - no user data received");
       }
 
-      navigate("/dashboard", { replace: true });
+      const { token, user: userData } = response.data;
+
+      // CRITICAL: Check role BEFORE storing anything
+      const userRoleMapping = {
+        1: "admin",
+        2: "principal",
+        3: "head-teacher",
+        4: "teacher",
+        5: "teacher",
+      };
+
+      const userRole = userRoleMapping[userData.role_id];
+
+      if (selectedRole && userRole !== selectedRole) {
+        const userRoleDisplay = getRoleDisplayName(userRole);
+        const selectedRoleDisplay = getRoleDisplayName(selectedRole);
+
+        // Clear any session data
+        sessionStorage.clear();
+        localStorage.clear();
+
+        setError(
+          `❌ Access Denied! This account belongs to a ${userRoleDisplay}, not a ${selectedRoleDisplay}. Please go back and select "${userRoleDisplay}" to continue.`
+        );
+
+        console.log("❌ Role mismatch:", {
+          selectedRole,
+          userRole,
+          userRoleId: userData.role_id,
+        });
+        setLoading(false);
+        return; // STOP - Don't store session or navigate
+      }
+
+      // Role matches - NOW store session data
+      console.log("✅ Role verification passed");
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("user", JSON.stringify(userData));
+      sessionStorage.setItem("lastActivity", Date.now().toString());
+      sessionStorage.setItem("loginTime", Date.now().toString());
+      localStorage.setItem("hasActiveSession", "true");
+
+      // Initialize session monitoring
+      authService.trackUserActivity();
+      authService.startSessionTimeout();
+      document.addEventListener(
+        "visibilitychange",
+        authService.handleVisibilityChange
+      );
+
+      // Use window.location for full page reload to ensure AuthContext reinitializes
+      window.location.href = "/dashboard";
     } catch (err) {
+      console.error("Login error:", err);
+      sessionStorage.clear();
+      localStorage.clear();
+
       const errorMessage =
         err.response?.data?.message ||
         err.message ||
@@ -213,7 +226,6 @@ function LoginPage() {
     setError("");
     setSuccess("");
 
-    // Validation
     if (
       !signupData.fullName ||
       !signupData.email ||
@@ -225,7 +237,6 @@ function LoginPage() {
       return;
     }
 
-    // Validate subject for Head Teachers
     if (signupData.role === "head-teacher" && !signupData.subject) {
       setError("Please select the subject you are Head Teacher for");
       return;
@@ -244,13 +255,7 @@ function LoginPage() {
     setLoading(true);
 
     try {
-      // Map role names to role_ids
-      const roleMapping = {
-        teacher: 4,
-        "head-teacher": 3,
-      };
-
-      const departmentValue = signupData.department;
+      const roleMapping = { teacher: 4, "head-teacher": 3 };
 
       const registrationData = {
         username: signupData.fullName,
@@ -259,11 +264,11 @@ function LoginPage() {
         full_name: signupData.fullName,
         employee_id: signupData.employeeId,
         role_id: roleMapping[signupData.role],
-        department: departmentValue,
+        department: signupData.department,
         subject: signupData.role === "head-teacher" ? signupData.subject : null,
       };
 
-      const response = await authService.register(registrationData);
+      await authService.register(registrationData);
 
       setIsLogin(true);
       setError("");
@@ -273,11 +278,7 @@ function LoginPage() {
           : "Account created successfully! Please sign in."
       );
 
-      setLoginData({
-        fullName: registrationData.full_name,
-        password: "",
-      });
-
+      setLoginData({ fullName: registrationData.full_name, password: "" });
       setSignupData({
         fullName: "",
         email: "",
@@ -304,7 +305,6 @@ function LoginPage() {
       <div className="auth-background"></div>
 
       <div className="auth-wrapper">
-        {/* Header */}
         <div className="auth-header">
           <div className="auth-logo">
             <img
@@ -325,7 +325,6 @@ function LoginPage() {
           )}
         </div>
 
-        {/* Auth Card */}
         <div className="auth-card">
           <div className="auth-card-header">
             <h2 className="auth-card-title">
@@ -342,7 +341,6 @@ function LoginPage() {
           {success && <div className="auth-success">{success}</div>}
 
           {isLogin ? (
-            // Login Form
             <div className="auth-form">
               <div className="form-group">
                 <label className="form-label">Full Name</label>
@@ -405,8 +403,8 @@ function LoginPage() {
               </button>
             </div>
           ) : (
-            // Sign Up Form - Only shown for teachers and head teachers
             <div className="auth-form">
+              {/* Sign up form fields - keeping existing implementation */}
               <div className="form-group">
                 <label className="form-label">Full Name</label>
                 <div className="input-container">
@@ -614,7 +612,6 @@ function LoginPage() {
             </div>
           )}
 
-          {/* Toggle Link - Only show for teacher and head-teacher roles */}
           {canSignUp() && (
             <div className="auth-toggle">
               <p className="auth-toggle-text">
@@ -636,7 +633,6 @@ function LoginPage() {
             </div>
           )}
 
-          {/* Back to role selection */}
           <div
             className="auth-toggle"
             style={{ marginTop: canSignUp() ? "0.5rem" : "1.5rem" }}
@@ -652,11 +648,9 @@ function LoginPage() {
           </div>
         </div>
 
-        {/* Footer */}
         <p className="auth-footer">© 2024 SiguraDocs. All rights reserved.</p>
       </div>
 
-      {/* Forgot Password Modal */}
       <ForgotPasswordModal
         isOpen={showForgotPassword}
         onClose={() => setShowForgotPassword(false)}
