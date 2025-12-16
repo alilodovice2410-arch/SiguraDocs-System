@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import authService from "../services/authService";
 import {
@@ -19,10 +19,13 @@ import sanMarianoLogo from "../assets/smnhs_logo.png";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 
 function LoginPage() {
+  const [searchParams] = useSearchParams();
+  const selectedRole = searchParams.get("role"); // Get role from URL
+
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false); // NEW
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated, user } = useAuth();
@@ -40,7 +43,7 @@ function LoginPage() {
     employeeId: "",
     department: "",
     role: "",
-    subject: "", // NEW: Subject field for Head Teachers
+    subject: "",
     password: "",
     confirmPassword: "",
   });
@@ -48,7 +51,7 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Department options (these are the main subject departments)
+  // Department options
   const departments = [
     "English",
     "Mathematics",
@@ -60,7 +63,7 @@ function LoginPage() {
     "Values Education",
   ];
 
-  // Subjects per department (for Head Teacher assignment)
+  // Subjects per department
   const subjectsByDepartment = {
     English: ["English"],
     Mathematics: ["Mathematics"],
@@ -88,6 +91,22 @@ function LoginPage() {
     return subjectsByDepartment[dept] || [];
   };
 
+  // Check if current role allows signup (only teacher and head-teacher)
+  const canSignUp = () => {
+    return selectedRole === "teacher" || selectedRole === "head-teacher";
+  };
+
+  // Get role display name
+  const getRoleDisplayName = () => {
+    const roleNames = {
+      admin: "Administrator",
+      principal: "Principal",
+      "head-teacher": "Head Teacher",
+      teacher: "Teacher",
+    };
+    return roleNames[selectedRole] || "User";
+  };
+
   // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated() && user) {
@@ -110,6 +129,32 @@ function LoginPage() {
 
     try {
       const result = await login(loginData.fullName, loginData.password);
+
+      // Verify the logged-in user's role matches the selected role
+      if (result.user) {
+        const userRoleMapping = {
+          1: "admin", // Admin
+          2: "principal", // Principal
+          3: "head-teacher", // Department Head (Head Teacher)
+          4: "teacher", // Faculty (Teacher)
+          5: "teacher", // Staff (also maps to teacher)
+        };
+
+        const userRole = userRoleMapping[result.user.role_id];
+
+        if (selectedRole && userRole !== selectedRole) {
+          setError(
+            `This account is registered as ${getRoleDisplayName(
+              userRole
+            )}, not ${getRoleDisplayName()}. Please select the correct role on the previous page.`
+          );
+          // Log out the user since they selected wrong role
+          await authService.logout();
+          setLoading(false);
+          return;
+        }
+      }
+
       navigate("/dashboard", { replace: true });
     } catch (err) {
       const errorMessage =
@@ -160,16 +205,11 @@ function LoginPage() {
     try {
       // Map role names to role_ids
       const roleMapping = {
-        teacher: 4, // Faculty/Teacher
-        "head-teacher": 3, // Head Teacher
+        teacher: 4,
+        "head-teacher": 3,
       };
 
-      // For Head Teachers, include the subject in department field
-      // Format: "Department - Subject" (e.g., "Science - Biology")
-      const departmentValue =
-        signupData.role === "head-teacher"
-          ? `${signupData.department}` // Just the department
-          : signupData.department;
+      const departmentValue = signupData.department;
 
       const registrationData = {
         username: signupData.fullName,
@@ -179,7 +219,6 @@ function LoginPage() {
         employee_id: signupData.employeeId,
         role_id: roleMapping[signupData.role],
         department: departmentValue,
-        // NEW: Include subject for head teachers
         subject: signupData.role === "head-teacher" ? signupData.subject : null,
       };
 
@@ -235,6 +274,14 @@ function LoginPage() {
           </div>
           <h1 className="auth-title">SiguraDocs</h1>
           <p className="auth-subtitle">Document Management System</p>
+          {selectedRole && (
+            <p
+              className="auth-subtitle"
+              style={{ marginTop: "0.5rem", fontSize: "0.9rem" }}
+            >
+              {getRoleDisplayName()} Portal
+            </p>
+          )}
         </div>
 
         {/* Auth Card */}
@@ -245,8 +292,8 @@ function LoginPage() {
             </h2>
             <p className="auth-card-description">
               {isLogin
-                ? "Sign in to your account to continue"
-                : "Create a new account to get started"}
+                ? `Sign in to your ${getRoleDisplayName()} account`
+                : `Create a new ${getRoleDisplayName()} account`}
             </p>
           </div>
 
@@ -317,7 +364,7 @@ function LoginPage() {
               </button>
             </div>
           ) : (
-            // Sign Up Form - Updated with Subject Selection
+            // Sign Up Form - Only shown for teachers and head teachers
             <div className="auth-form">
               <div className="form-group">
                 <label className="form-label">Full Name</label>
@@ -386,7 +433,7 @@ function LoginPage() {
                       setSignupData({
                         ...signupData,
                         role: e.target.value,
-                        subject: "", // Reset subject when role changes
+                        subject: "",
                       })
                     }
                     className="select-field"
@@ -410,7 +457,7 @@ function LoginPage() {
                       setSignupData({
                         ...signupData,
                         department: e.target.value,
-                        subject: "", // Reset subject when department changes
+                        subject: "",
                       })
                     }
                     className="select-field"
@@ -427,7 +474,6 @@ function LoginPage() {
                 </div>
               </div>
 
-              {/* NEW: Subject Selection for Head Teachers */}
               {signupData.role === "head-teacher" && signupData.department && (
                 <div className="form-group">
                   <label className="form-label">
@@ -527,24 +573,41 @@ function LoginPage() {
             </div>
           )}
 
-          {/* Toggle Link */}
-          <div className="auth-toggle">
-            <p className="auth-toggle-text">
-              {isLogin
-                ? "Don't have an account? "
-                : "Already have an account? "}
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setError("");
-                  setSuccess("");
-                }}
-                className="auth-toggle-link"
-              >
-                {isLogin ? "Sign up now" : "Sign in"}
-              </button>
-            </p>
+          {/* Toggle Link - Only show for teacher and head-teacher roles */}
+          {canSignUp() && (
+            <div className="auth-toggle">
+              <p className="auth-toggle-text">
+                {isLogin
+                  ? "Don't have an account? "
+                  : "Already have an account? "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setError("");
+                    setSuccess("");
+                  }}
+                  className="auth-toggle-link"
+                >
+                  {isLogin ? "Sign up now" : "Sign in"}
+                </button>
+              </p>
+            </div>
+          )}
+
+          {/* Back to role selection */}
+          <div
+            className="auth-toggle"
+            style={{ marginTop: canSignUp() ? "0.5rem" : "1.5rem" }}
+          >
+            <button
+              type="button"
+              onClick={() => navigate("/")}
+              className="auth-toggle-link"
+              style={{ fontSize: "0.875rem" }}
+            >
+              ← Back to role selection
+            </button>
           </div>
         </div>
 
