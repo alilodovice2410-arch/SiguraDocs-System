@@ -109,12 +109,31 @@ function LoginPage() {
     return roleNames[key] || "User";
   };
 
-  // Redirect if already logged in
+  // Redirect if already logged in - but only if no role mismatch
   useEffect(() => {
     if (isAuthenticated() && user) {
-      navigate("/dashboard", { replace: true });
+      // If there's a selected role, verify it matches before redirecting
+      if (selectedRole) {
+        const userRoleMapping = {
+          1: "admin",
+          2: "principal",
+          3: "head-teacher",
+          4: "teacher",
+          5: "teacher",
+        };
+
+        const userRole = userRoleMapping[user.role_id];
+
+        // Only redirect if roles match
+        if (userRole === selectedRole) {
+          navigate("/dashboard", { replace: true });
+        }
+      } else {
+        // No selected role, just redirect normally
+        navigate("/dashboard", { replace: true });
+      }
     }
-  }, [isAuthenticated, user, navigate]);
+  }, [isAuthenticated, user, navigate, selectedRole]);
 
   // Reset subject when department changes
   useEffect(() => {
