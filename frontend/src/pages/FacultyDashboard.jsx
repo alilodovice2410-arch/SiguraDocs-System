@@ -22,6 +22,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import UploadDocument from "../components/faculty/UploadDocument";
 import NotificationService from "../components/faculty/NotificationService";
+import SignedDocumentPreview from "../components/faculty/SignedDocumentPreview";
 import SessionIndicator from "../components/SessionIndicator";
 import sanMarianoLogo from "../assets/smnhs_logo.png";
 import "./css/FacultyDashboard.css";
@@ -31,6 +32,8 @@ function FacultyDashboard() {
   const [loading, setLoading] = useState(true);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showSignedPreview, setShowSignedPreview] = useState(false);
+  const [selectedDocForPreview, setSelectedDocForPreview] = useState(null);
   const [activeView, setActiveView] = useState("overview");
   const [documents, setDocuments] = useState([]);
   const [filterStatus, setFilterStatus] = useState("");
@@ -89,8 +92,15 @@ function FacultyDashboard() {
     return status.replace(/_/g, " ");
   };
 
-  const handleDocumentClick = (docId) => {
-    navigate(`/documents/${docId}`);
+  const handleDocumentClick = (doc) => {
+    // If document is approved, show signed preview modal
+    if (doc.status === "approved") {
+      setSelectedDocForPreview(doc);
+      setShowSignedPreview(true);
+    } else {
+      // For non-approved documents, navigate to details page
+      navigate(`/documents/${doc.document_id}`);
+    }
   };
 
   const getStatusIcon = (status) => {
@@ -736,6 +746,17 @@ function FacultyDashboard() {
       <NotificationService
         isOpen={showNotifications}
         onClose={() => setShowNotifications(false)}
+      />
+
+      {/* Signed Document Preview Modal */}
+      <SignedDocumentPreview
+        isOpen={showSignedPreview}
+        onClose={() => {
+          setShowSignedPreview(false);
+          setSelectedDocForPreview(null);
+        }}
+        documentId={selectedDocForPreview?.document_id}
+        documentTitle={selectedDocForPreview?.title}
       />
     </div>
   );
