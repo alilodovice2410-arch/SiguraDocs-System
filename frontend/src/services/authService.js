@@ -196,6 +196,9 @@ const authService = {
 
   logout: async (isSessionExpired = false) => {
     try {
+      // Get user's role before clearing session
+      const userRole = localStorage.getItem("userRole");
+
       const token = sessionStorage.getItem("token");
       if (token) {
         try {
@@ -207,6 +210,10 @@ const authService = {
     } catch (err) {
       console.error("Error during logout:", err);
     } finally {
+      // Get role before clearing
+      const userRole = localStorage.getItem("userRole");
+
+      // Clear session
       authService.clearSession();
 
       if (window.sessionTimeoutInterval) {
@@ -219,17 +226,31 @@ const authService = {
         );
       }
 
-      window.location.href = "/login";
+      // Redirect to role-specific login page or role selection
+      if (userRole) {
+        window.location.href = `/login?role=${userRole}`;
+      } else {
+        window.location.href = "/"; // Redirect to role selection
+      }
     }
   },
 
   clearSession: () => {
+    // Don't remove userRole here - we need it for logout redirect
+    const userRole = localStorage.getItem("userRole");
+
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("lastActivity");
     sessionStorage.removeItem("loginTime");
     sessionStorage.removeItem("tabHiddenAt");
     localStorage.removeItem("hasActiveSession");
+
+    // Clear userRole AFTER we've used it for redirect
+    // This will be called again after redirect in the new page load
+    if (!window.location.pathname.includes("/login")) {
+      localStorage.removeItem("userRole");
+    }
 
     document.removeEventListener(
       "visibilitychange",

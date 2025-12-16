@@ -131,6 +131,14 @@ function LoginPage() {
     }
   }, [isAuthenticated, user, navigate, selectedRole]);
 
+  // Redirect to role selection if no role is specified
+  useEffect(() => {
+    if (!selectedRole) {
+      console.log("No role selected - redirecting to role selection");
+      navigate("/", { replace: true });
+    }
+  }, [selectedRole, navigate]);
+
   useEffect(() => {
     if (signupData.role === "head-teacher") {
       setSignupData((prev) => ({ ...prev, subject: "" }));
