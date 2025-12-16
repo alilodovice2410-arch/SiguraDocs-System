@@ -530,7 +530,11 @@ function DepartmentHeadDashboard() {
         )}
 
         {/* Approvals View */}
-        {activeView === "approvals" && <HeadTeacherApprovals />}
+        {activeView === "approvals" && (
+          <div className="dashboard-content">
+            <HeadTeacherApprovals />
+          </div>
+        )}
 
         {/* Documents View */}
         {activeView === "documents" && (
