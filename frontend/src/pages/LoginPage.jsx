@@ -109,10 +109,10 @@ function LoginPage() {
     return roleNames[key] || "User";
   };
 
-  // Redirect if already logged in - but only if no role mismatch
+  // Redirect if already logged in - but ONLY if role matches
   useEffect(() => {
     if (isAuthenticated() && user) {
-      // If there's a selected role, verify it matches before redirecting
+      // If there's a selected role in URL, verify it matches before redirecting
       if (selectedRole) {
         const userRoleMapping = {
           1: "admin",
@@ -124,12 +124,32 @@ function LoginPage() {
 
         const userRole = userRoleMapping[user.role_id];
 
-        // Only redirect if roles match
+        // CRITICAL: Only redirect if roles match
         if (userRole === selectedRole) {
+          console.log(
+            "✅ Auto-redirect: Role matches, navigating to dashboard"
+          );
           navigate("/dashboard", { replace: true });
+        } else {
+          // Role mismatch - clear session and stay on login page
+          console.log("❌ Auto-redirect blocked: Role mismatch detected");
+          console.log("Expected:", selectedRole, "Got:", userRole);
+
+          // Clear the invalid session
+          sessionStorage.clear();
+          localStorage.clear();
+
+          // Show error message
+          setError(
+            `❌ Session Error: This account belongs to a ${getRoleDisplayName(
+              userRole
+            )}, not a ${getRoleDisplayName(
+              selectedRole
+            )}. Please select the correct role.`
+          );
         }
       } else {
-        // No selected role, just redirect normally
+        // No selected role in URL, just redirect normally (direct dashboard access)
         navigate("/dashboard", { replace: true });
       }
     }
