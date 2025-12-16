@@ -97,14 +97,16 @@ function LoginPage() {
   };
 
   // Get role display name
-  const getRoleDisplayName = () => {
+  const getRoleDisplayName = (roleKey) => {
     const roleNames = {
       admin: "Administrator",
       principal: "Principal",
       "head-teacher": "Head Teacher",
       teacher: "Teacher",
     };
-    return roleNames[selectedRole] || "User";
+    // If roleKey is provided, use it; otherwise use selectedRole
+    const key = roleKey || selectedRole;
+    return roleNames[key] || "User";
   };
 
   // Redirect if already logged in
