@@ -456,6 +456,7 @@
 .dept-docs-container .doc-actions {
   display: flex;
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .dept-docs-container .action-btn {
@@ -471,6 +472,16 @@
   cursor: pointer;
   transition: all 0.2s ease;
   backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+
+.dept-docs-container .action-btn span {
+  display: none;
+}
+
+.dept-docs-container .action-btn svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .dept-docs-container .action-btn:hover {
