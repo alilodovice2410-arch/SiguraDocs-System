@@ -19,7 +19,7 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
 
   useEffect(() => {
     if (isOpen && documentId) {
-      console.log("🔍 Opening preview for document:", documentId);
+      console.log("📂 Opening preview for document:", documentId);
       loadSignedDocument();
       fetchSignatures();
     }
@@ -145,7 +145,7 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
 
   const fetchSignatures = async () => {
     try {
-      console.log("🔏 Fetching signatures for document:", documentId);
+      console.log("🔍 Fetching signatures for document:", documentId);
       const response = await api.get(`/approvals/signatures/${documentId}`);
       console.log("✅ Signatures fetched:", response.data.signatures.length);
       setSignatures(response.data.signatures || []);
@@ -299,36 +299,6 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
             )}
           </div>
         </div>
-
-        {/* Signatures List */}
-        {signatures.length > 0 && (
-          <div className="signatures-summary">
-            <h3>Document Signatures</h3>
-            <div className="signatures-list-compact">
-              {signatures.map((sig, index) => (
-                <div
-                  key={sig.signature_id || index}
-                  className="signature-item-compact"
-                >
-                  <div className="signature-level">
-                    Level {sig.approval_level}
-                  </div>
-                  <div className="signature-details">
-                    <strong>{sig.signer_name}</strong>
-                    <span>{sig.signer_role}</span>
-                  </div>
-                  <div className="signature-date">
-                    {new Date(sig.signed_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Security Notice */}
         <div className="security-notice-preview">

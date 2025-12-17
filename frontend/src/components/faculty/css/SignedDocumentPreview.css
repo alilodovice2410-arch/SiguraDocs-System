@@ -262,82 +262,6 @@
   box-shadow: 0 8px 16px rgba(11, 128, 67, 0.3);
 }
 
-.signatures-summary {
-  padding: 20px 24px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
-  flex-shrink: 0;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.signatures-summary h3 {
-  margin: 0 0 12px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.signatures-list-compact {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.signature-item-compact {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  transition: all 0.2s;
-}
-
-.signature-item-compact:hover {
-  border-color: #0b8043;
-  box-shadow: 0 2px 8px rgba(11, 128, 67, 0.1);
-}
-
-.signature-level {
-  padding: 4px 12px;
-  background: linear-gradient(135deg, #0b8043, #0d9653);
-  color: white;
-  border-radius: 6px;
-  font-size: 12px;
-  font-weight: 600;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.signature-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.signature-details strong {
-  font-size: 14px;
-  color: #111827;
-}
-
-.signature-details span {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-.signature-date {
-  font-size: 12px;
-  color: #6b7280;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
 .security-notice-preview {
   display: flex;
   align-items: center;
@@ -439,10 +363,6 @@
     padding: 12px 16px;
   }
 
-  .signatures-summary {
-    padding: 16px;
-  }
-
   .modal-actions {
     flex-direction: column;
     padding: 16px;
@@ -453,11 +373,11 @@
   }
 
   .preview-container {
-    min-height: 300px;
-    max-height: 300px;
+    min-height: 400px;
+    max-height: 400px;
   }
 
   .document-iframe {
-    height: 300px;
+    height: 400px;
   }
 }
