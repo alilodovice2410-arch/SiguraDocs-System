@@ -19,12 +19,14 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
 
   useEffect(() => {
     if (isOpen && documentId) {
+      console.log("🔍 Opening preview for document:", documentId);
       loadSignedDocument();
       fetchSignatures();
     }
 
     return () => {
       if (previewUrl) {
+        console.log("🧹 Cleaning up preview URL");
         URL.revokeObjectURL(previewUrl);
       }
     };
@@ -34,19 +36,25 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
     try {
       setLoading(true);
       setError("");
+      setPreviewUrl(null); // Clear previous preview
 
       console.log("📄 Loading signed document preview for ID:", documentId);
 
-      // Get document details first to check file type
+      // Get document details first to check file type and status
       const detailsResponse = await api.get(`/documents/${documentId}`);
       const document = detailsResponse.data.document;
+
+      console.log("📋 Document details:", {
+        title: document.title,
+        status: document.status,
+        file_name: document.file_name,
+      });
 
       const fileName = document.file_name || document.title || "";
       const extension = fileName.split(".").pop().toLowerCase();
       setFileType(extension);
 
-      console.log("   - File name:", fileName);
-      console.log("   - Extension:", extension);
+      console.log("   - File extension:", extension);
       console.log("   - Status:", document.status);
 
       // Only show preview for approved documents
@@ -59,8 +67,14 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
       }
 
       // Request the signed document (backend will embed signatures automatically)
+      console.log("📥 Fetching signed document from server...");
       const response = await api.get(`/documents/${documentId}/download`, {
         responseType: "blob",
+      });
+
+      console.log("📦 Received response:", {
+        size: response.data.size,
+        type: response.data.type,
       });
 
       if (!response.data || response.data.size === 0) {
@@ -68,10 +82,11 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
       }
 
       let blob = response.data;
-
-      // For PDF preview, ensure correct MIME type
       const contentType = response.headers["content-type"] || "";
 
+      console.log("🔍 Content type:", contentType);
+
+      // For PDF preview, ensure correct MIME type
       if (contentType.includes("pdf") || extension === "pdf") {
         if (!blob.type.includes("pdf")) {
           blob = new Blob([response.data], { type: "application/pdf" });
@@ -81,13 +96,33 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
         const arrayBuffer = await blob.slice(0, 5).arrayBuffer();
         const header = new TextDecoder().decode(arrayBuffer);
 
+        console.log("📄 PDF header check:", header.substring(0, 4));
+
         if (!header.startsWith("%PDF")) {
           throw new Error("File appears to be corrupted or is not a valid PDF");
         }
 
         const url = URL.createObjectURL(blob);
+        console.log("✅ Created object URL for PDF preview");
         setPreviewUrl(url);
-        console.log("✅ Signed PDF preview loaded");
+        setFileType("pdf");
+      } else if (
+        extension === "docx" ||
+        extension === "doc" ||
+        extension === "pptx" ||
+        extension === "ppt"
+      ) {
+        // Office files are converted to PDF by backend
+        blob = new Blob([response.data], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        console.log("✅ Created object URL for converted Office document");
+        setPreviewUrl(url);
+        setFileType("pdf");
+      } else if (extension === "xlsx" || extension === "xls") {
+        // Excel files cannot be previewed in browser
+        setError(
+          `Preview is not available for Excel files. Please download the signed document to view it.`
+        );
       } else {
         // For other file types, show download message
         setError(
@@ -98,14 +133,21 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
       setLoading(false);
     } catch (error) {
       console.error("❌ Failed to load signed document:", error);
-      setError(error.message || "Failed to load document preview");
+      console.error("Error details:", error.response?.data);
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to load document preview"
+      );
       setLoading(false);
     }
   };
 
   const fetchSignatures = async () => {
     try {
+      console.log("🔏 Fetching signatures for document:", documentId);
       const response = await api.get(`/approvals/signatures/${documentId}`);
+      console.log("✅ Signatures fetched:", response.data.signatures.length);
       setSignatures(response.data.signatures || []);
     } catch (error) {
       console.error("Failed to fetch signatures:", error);
@@ -114,6 +156,7 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
 
   const handleDownload = async () => {
     try {
+      console.log("⬇️ Downloading signed document:", documentId);
       const response = await api.get(`/documents/${documentId}/download`, {
         responseType: "blob",
       });
@@ -154,6 +197,7 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
     }
     setPreviewUrl(null);
     setError("");
+    setLoading(false);
     onClose();
   };
 
@@ -186,7 +230,7 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
         </div>
 
         {/* Signature Info Banner */}
-        {signatures.length > 0 && (
+        {signatures.length > 0 && !loading && !error && (
           <div className="signature-info-banner">
             <Shield size={20} />
             <div>
@@ -220,6 +264,7 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
               <div className="preview-loading">
                 <div className="spinner"></div>
                 <p>Loading signed document...</p>
+                <small>Please wait while we prepare the preview</small>
               </div>
             ) : error ? (
               <div className="preview-error">
@@ -236,11 +281,20 @@ function SignedDocumentPreview({ isOpen, onClose, documentId, documentTitle }) {
                 src={`${previewUrl}#toolbar=1&navpanes=0&scrollbar=1&view=FitH`}
                 title="Signed Document Preview"
                 className="document-iframe"
+                onLoad={() => console.log("✅ PDF iframe loaded successfully")}
+                onError={(e) => {
+                  console.error("❌ PDF iframe load error:", e);
+                  setError("Failed to display document preview");
+                }}
               />
             ) : (
               <div className="preview-error">
                 <FileText size={48} />
                 <p>Unable to preview document</p>
+                <button onClick={handleDownload} className="download-btn-large">
+                  <Download size={20} />
+                  Download Document
+                </button>
               </div>
             )}
           </div>
