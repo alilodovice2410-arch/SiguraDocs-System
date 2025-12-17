@@ -538,9 +538,9 @@ function FacultyDashboard() {
                 ) : (
                   stats.recentDocuments.map((doc) => (
                     <div
-                      key={doc.id}
+                      key={doc.document_id}
                       className="document-item-modern"
-                      onClick={() => handleDocumentClick(doc.id)}
+                      onClick={() => handleDocumentClick(doc)}
                     >
                       <div className="doc-icon-wrapper-modern">
                         <FileText />
@@ -548,9 +548,9 @@ function FacultyDashboard() {
                       <div className="doc-info-modern">
                         <h3 className="doc-title-modern">{doc.title}</h3>
                         <div className="doc-meta-modern">
-                          <span>{doc.type}</span>
+                          <span>{doc.document_type}</span>
                           <span>•</span>
-                          <span>{doc.date}</span>
+                          <span>{formatDate(doc.created_at)}</span>
                         </div>
                       </div>
                       <div className="doc-status-modern">
@@ -710,16 +710,17 @@ function FacultyDashboard() {
 
                       <div className="card-actions-glass">
                         <button
-                          onClick={() =>
-                            navigate(`/documents/${doc.document_id}`)
-                          }
+                          onClick={() => handleDocumentClick(doc)}
                           className="action-button-glass action-view-glass"
                         >
                           <Eye />
                           <span>View</span>
                         </button>
                         <button
-                          onClick={() => handleDownload(doc)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDownload(doc);
+                          }}
                           className="action-button-glass action-download-glass"
                         >
                           <Download />
