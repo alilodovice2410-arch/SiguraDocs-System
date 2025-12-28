@@ -1,4 +1,10 @@
 /* Admin Dashboard Layout */
+:root {
+  /* header height fallback used by fixed-position dropdown */
+  --header-height-desktop: 72px;
+  --header-height-mobile: 64px;
+}
+
 .admin-dashboard {
   display: flex;
   min-height: 100vh;
@@ -154,7 +160,6 @@
 
 /* Header - Glassmorphism */
 .dashboard-header {
-  position: relative;
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.1);
@@ -162,8 +167,10 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   z-index: 9998;
+  position: relative;
 }
 
+/* Header layout */
 .header-content {
   display: flex;
   justify-content: space-between;
@@ -225,6 +232,7 @@
   gap: 1.5rem;
 }
 
+/* header-right mobile adjustments */
 @media (max-width: 768px) {
   .header-right {
     width: 100%;
@@ -242,6 +250,7 @@
   }
 }
 
+/* header icon */
 .header-icon-btn {
   width: 2.5rem;
   height: 2.5rem;
@@ -262,6 +271,7 @@
   transform: translateY(-2px);
 }
 
+/* Desktop user menu (username + logout) */
 .user-menu {
   display: flex;
   align-items: center;
@@ -306,59 +316,7 @@
   background-color: rgba(30, 47, 38, 0.95);
 }
 
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: nowrap;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.header-left h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: white;
-  margin: 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 0 0 auto;
-  white-space: nowrap;
-  min-width: 0;
-}
-
-.session-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  flex: 0 0 auto;
-  max-width: 120px;
-  overflow: hidden;
-}
-
-.user-menu.desktop-only {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-left: 1rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
+/* Avatar button (mobile) */
 .avatar-btn {
   display: none;
   width: 40px;
@@ -375,77 +333,7 @@
   position: relative;
 }
 
-.user-dropdown {
-  position: absolute;
-  right: 1rem;
-  top: calc(100% + 8px);
-  min-width: 200px;
-  background: rgba(255, 255, 255, 0.06);
-  -webkit-backdrop-filter: blur(12px) saturate(120%);
-  backdrop-filter: blur(12px) saturate(120%);
-  border-radius: 12px;
-  padding: 0.75rem;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 9999;
-}
-
-.dropdown-user-info {
-  padding: 0.25rem 0.25rem 0.6rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  margin-bottom: 0.5rem;
-}
-
-.dropdown-username {
-  font-weight: 700;
-  color: white;
-  margin-bottom: 2px;
-}
-
-.dropdown-role {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.dropdown-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.dropdown-actions .action-btn {
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0.6rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.dropdown-actions .action-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.dropdown-logout-primary {
-  width: 100%;
-  text-align: left;
-  padding: 0.5rem 0.6rem;
-  border-radius: 8px;
-  background: rgba(45, 71, 57, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.dropdown-logout-primary:hover {
-  background: rgba(30, 47, 38, 0.95);
-}
-
+/* Make avatar visible on tablet/mobile (<=768) */
 @media (max-width: 768px) {
   .user-menu.desktop-only {
     display: none;
@@ -465,14 +353,91 @@
   }
 }
 
-.header-right > * {
-  flex: 0 0 auto;
+/* User dropdown: fixed so it escapes local stacking contexts and is always on top */
+.user-dropdown {
+  /* fixed positioning avoids stacking-context clipping from header/content */
+  position: fixed;
+  right: 1rem;
+  top: calc(var(--header-height-desktop) + 8px);
+  min-width: 220px;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 99999; /* very high to ensure visibility */
 }
 
-.header-right,
-.user-menu,
-.avatar-btn {
-  z-index: 2300;
+/* mobile/top adjustments */
+@media (max-width: 480px) {
+  .user-dropdown {
+    top: calc(var(--header-height-mobile) + 8px);
+    right: 0.75rem;
+    min-width: 200px;
+  }
+}
+
+/* dropdown content */
+.dropdown-user-info {
+  padding: 0.25rem 0.25rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-username {
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.dropdown-role {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* actions: ensure logout is visually primary and sits on top */
+.dropdown-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* primary logout button in dropdown */
+.dropdown-logout-primary {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(45, 71, 57, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+  order: -1; /* ensure it's placed first visually if there are other actions */
+}
+
+.dropdown-logout-primary:hover {
+  background: rgba(30, 47, 38, 0.95);
+}
+
+/* generic secondary action (if present) */
+.dropdown-actions .action-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-actions .action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* MODERN STATS GRID  */
@@ -506,7 +471,7 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   animation: fadeInUp 0.5s ease-out backwards;
 }
 
@@ -650,30 +615,31 @@
   padding: 0.75rem;
 }
 
-.section-header {
+/* Make the section header look like the "Recent Documents" header (light pill, dark text).
+   This is scoped to activity-section only so other headers keep the darker look. */
+.activity-section .section-header {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-radius: 12px;
   padding: 1.25rem 1.5rem;
   margin-bottom: 0.75rem;
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.section-header h2 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: white !important;
-  margin: 0 0 0.25rem 0;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+.activity-section .section-header h2 {
+  color: #0f172a; /* dark navy */
+  text-shadow: none;
   display: inline-block;
-}
-
-.section-header p {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.8) !important;
   margin: 0;
-  display: inline-block;
-  margin-left: 1rem;
 }
 
+.activity-section .section-header p {
+  color: rgba(17, 24, 39, 0.6);
+  margin-left: 1rem;
+  display: inline-block;
+}
+
+/* Activity list / items remain frosted */
 .activity-list {
   display: flex;
   flex-direction: column;
@@ -767,9 +733,6 @@
 
 .activity-item .activity-details {
   overflow: hidden;
-}
-
-.activity-item + .activity-item {
 }
 
 /* Coming Soon View */
@@ -914,6 +877,11 @@
     min-height: calc(100vh - 200px);
     padding: 2rem 1rem;
   }
+
+  /* mobile header height override used by fixed dropdown */
+  :root {
+    --header-height-mobile: 64px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -933,6 +901,7 @@
   }
 }
 
+/* Force top horizontal accent bar for stat cards (place at very end of AdminDashboard.css) */
 .dashboard-content-wrapper .stats-grid .stat-card::before {
   content: "";
   position: absolute;
@@ -950,6 +919,7 @@
   background: transparent !important;
 }
 
+/* Per-color backgrounds (force override if needed) */
 .dashboard-content-wrapper .stats-grid .stat-card.stat-card-blue::before {
   background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%) !important;
 }
@@ -963,6 +933,7 @@
   background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%) !important;
 }
 
+/* restore glassmorphism for activity items */
 .dashboard-content-wrapper .activity-section .activity-list .activity-item {
   background: linear-gradient(
     180deg,
@@ -984,48 +955,7 @@
   color: rgba(255, 255, 255, 0.92) !important;
 }
 
-.dashboard-content-wrapper
-  .activity-section
-  .activity-list
-  .activity-item
-  .activity-title {
-  color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.dashboard-content-wrapper
-  .activity-section
-  .activity-list
-  .activity-item
-  .activity-description {
-  color: rgba(255, 255, 255, 0.78) !important;
-}
-
-.dashboard-content-wrapper
-  .activity-section
-  .activity-list
-  .activity-item
-  .activity-icon {
-  background: rgba(255, 255, 255, 0.06) !important;
-  -webkit-backdrop-filter: blur(6px) !important;
-  backdrop-filter: blur(6px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.06) !important;
-  color: #fff !important;
-  width: 48px !important;
-  height: 48px !important;
-  border-radius: 10px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
-.dashboard-content-wrapper
-  .activity-section
-  .activity-list
-  .activity-item:hover {
-  transform: translateY(-4px) !important;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32) !important;
-}
-
+/* ensure action badges remain visible */
 .dashboard-content-wrapper
   .activity-section
   .activity-list
@@ -1062,6 +992,7 @@
   }
 }
 
+/* stacking/tap improvements */
 .dashboard-sidebar {
   z-index: 2200;
   pointer-events: auto;
@@ -1082,6 +1013,7 @@
   pointer-events: auto;
 }
 
+/* header flex helpers */
 .header-left {
   flex: 1 1 auto;
   min-width: 0;
@@ -1106,88 +1038,6 @@
   gap: 0.75rem;
   margin-left: 0.5rem;
   white-space: nowrap;
-}
-
-.user-menu {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-left: 0.75rem;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 0, 0, 0.12) !important;
-}
-
-@media (max-width: 420px) {
-  .user-menu {
-    gap: 0.5rem;
-  }
-  .user-info {
-    flex-direction: column;
-    align-items: flex-end;
-  }
-  .user-role {
-    display: none;
-  }
-}
-
-.mobile-hamburger {
-  flex: 0 0 auto;
-  margin-right: 0.25rem;
-}
-
-.dashboard-main,
-.dashboard-content-wrapper {
-  z-index: 1;
-}
-
-.dashboard-sidebar .nav-item {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
-  touch-action: manipulation;
-}
-
-.session-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  flex: 0 0 auto;
-  margin-right: 0.25rem;
-}
-
-.header-left {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.header-left h1 {
-  flex: 1 1 auto;
-  min-width: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-}
-
-.header-right {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  white-space: nowrap;
-  overflow: visible;
-  min-width: 0;
-}
-
-.session-wrapper {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  flex: 0 0 auto;
-  max-width: 120px;
-  overflow: hidden;
-}
-
-.header-icon-btn {
-  flex: 0 0 auto;
 }
 
 .user-menu {
@@ -1240,5 +1090,5 @@
 
 .header-right,
 .user-menu {
-  z-index: 9999;
+  z-index: 2300;
 }
