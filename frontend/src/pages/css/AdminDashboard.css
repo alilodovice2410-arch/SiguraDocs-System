@@ -372,152 +372,168 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Activity Section - Unified Design */
+/* ================================
+   Activity Section - REDESIGNED
+   (layout similar to "Recent Documents")
+   ================================ */
 .activity-section {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12) !important;
   border-radius: 24px;
-  overflow: hidden;
+  overflow: visible; /* allow inner item shadows to show */
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0.75rem; /* small outer padding so header sits nicely */
 }
 
+/* Header - keep large and rounded like the example */
 .section-header {
-  padding: 2rem 2.5rem 1.5rem 2.5rem;
-  border-bottom: none;
-  background: transparent !important;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 0.75rem;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 12px;
 }
 
 .section-header h2 {
-  font-size: 1.75rem;
+  font-size: 1.6rem;
   font-weight: 700;
   color: white !important;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  display: inline-block;
 }
 
 .section-header p {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8) !important;
   margin: 0;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  display: inline-block;
+  margin-left: 1rem;
 }
 
-/* Activity List */
+/* Activity List - make items spaced and card-like */
 .activity-list {
   display: flex;
   flex-direction: column;
+  gap: 0.9rem;
+  padding: 0.75rem;
 }
 
+/* Each item becomes a rounded row with inner padding (like Recent Documents) */
 .activity-item {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1.75rem 2.5rem;
-  backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.2s ease;
-  animation: fadeInUp 0.5s ease-out backwards;
-}
-
-.activity-item:nth-child(1) {
-  animation-delay: 0.1s;
-}
-.activity-item:nth-child(2) {
-  animation-delay: 0.15s;
-}
-.activity-item:nth-child(3) {
-  animation-delay: 0.2s;
-}
-
-.activity-item:hover {
-  background: rgba(255, 255, 255, 0.12) !important;
-}
-
-.activity-item:last-child {
-  border-bottom: none;
-}
-
-.activity-icon {
-  width: 3.5rem;
-  height: 3.5rem;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.035),
+    rgba(255, 255, 255, 0.03)
+  );
   border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* hover / focus feedback */
+.activity-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Larger, clear icon area on the left (rounded square) */
+.activity-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  backdrop-filter: blur(8px) !important;
-  -webkit-backdrop-filter: blur(8px) !important;
+  background: rgba(96, 165, 250, 0.12);
+  border: 1px solid rgba(96, 165, 250, 0.18);
+  color: #60a5fa;
 }
 
+/* icon svg sizing */
 .activity-icon svg {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 20px;
+  height: 20px;
 }
 
-.activity-icon-green {
-  background: rgba(74, 222, 128, 0.25) !important;
-  border: 1px solid rgba(74, 222, 128, 0.35) !important;
-  color: #86efac !important;
-}
-
-.activity-icon-blue {
-  background: rgba(96, 165, 250, 0.25) !important;
-  border: 1px solid rgba(96, 165, 250, 0.35) !important;
-  color: #93c5fd !important;
-}
-
-.activity-icon-purple {
-  background: rgba(192, 132, 252, 0.25) !important;
-  border: 1px solid rgba(192, 132, 252, 0.35) !important;
-  color: #d8b4fe !important;
-}
-
-.activity-icon-gray {
-  background: rgba(156, 163, 175, 0.25) !important;
-  border: 1px solid rgba(156, 163, 175, 0.35) !important;
-  color: #d1d5db !important;
-}
-
+/* Titles and meta stacked */
 .activity-details {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   min-width: 0;
 }
 
+/* Title style - slightly stronger weight and upper-like appearance */
 .activity-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: white;
-  margin: 0 0 0.375rem 0;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-}
-
-.activity-description {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(15, 30, 50, 0.95); /* darker text like the example */
+  letter-spacing: 0.2px;
+  text-transform: none;
   margin: 0;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+/* Meta/description - smaller and muted */
+.activity-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0;
+}
+
+/* Actions area aligned to the right (status badge, buttons) */
+.activity-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+/* Re-use activity-document as a compact badge if present (status) */
 .activity-document {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  color: white;
-  background: rgba(96, 165, 250, 0.25);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(96, 165, 250, 0.35);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  background: rgba(96, 165, 250, 0.18);
+  border: 1px solid rgba(96, 165, 250, 0.2);
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  text-shadow: none;
   white-space: nowrap;
 }
 
-.activity-empty {
-  padding: 3rem;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.6);
+/* Optional action button (Review style) */
+.action-btn {
+  padding: 0.375rem 0.8rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* If a card has no actions, ensure the details take full width and text doesn't overflow */
+.activity-item .activity-details {
+  overflow: hidden;
+}
+
+/* remove previous heavy separators by avoiding border-bottom on list level */
+.activity-item + .activity-item {
+  /* small gap handled by gap on .activity-list */
 }
 
 /* Coming Soon View */
@@ -643,7 +659,8 @@
   }
 
   .activity-item {
-    padding: 1.25rem 1.5rem;
+    padding: 0.85rem;
+    gap: 0.75rem;
   }
 
   .header-content {
@@ -671,6 +688,12 @@
   .activity-item {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .activity-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 
