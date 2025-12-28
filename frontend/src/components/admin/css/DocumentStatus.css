@@ -45,13 +45,13 @@
   height: 5rem;
   min-width: 5rem;
   backdrop-filter: blur(16px);
-  background: rgba(168, 85, 247, 0.25);
-  border: 1px solid rgba(168, 85, 247, 0.4);
+  background: rgba(85, 247, 158, 0.25);
+  border: 1px solid rgba(85, 247, 134, 0.4);
   border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c084fc;
+  color: #72e6a4;
   flex-shrink: 0;
 }
 
@@ -85,9 +85,9 @@
   gap: 0.625rem;
   padding: 1rem 2rem;
   backdrop-filter: blur(16px);
-  background: rgba(59, 130, 246, 0.25);
-  border: 1px solid rgba(59, 130, 246, 0.4);
-  color: #93c5fd;
+  background: rgba(59, 246, 156, 0.25);
+  border: 1px solid rgba(59, 246, 153, 0.4);
+  color: #93fdbd;
   border-radius: 14px;
   font-size: 1rem;
   font-weight: 600;
@@ -579,9 +579,9 @@
 }
 
 .ds-page-num.active {
-  background: rgba(59, 130, 246, 0.3);
-  border-color: rgba(59, 130, 246, 0.5);
-  color: #93c5fd;
+  background: rgba(59, 246, 181, 0.3);
+  border-color: rgba(59, 246, 174, 0.5);
+  color: #93fdc8;
 }
 
 .ds-page-numbers {
