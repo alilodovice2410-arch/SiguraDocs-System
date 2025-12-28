@@ -220,7 +220,7 @@
 }
 
 /* ========================================
-   MODERN STATS GRID - UPDATED DESIGN
+   MODERN STATS GRID - WITH TOP COLOR BARS
    ======================================== */
 .stats-grid {
   display: grid;
@@ -243,7 +243,7 @@
   animation: fadeInUp 0.5s ease-out backwards;
 }
 
-/* Top accent bar */
+/* Top accent color bars */
 .stat-card::before {
   content: "";
   position: absolute;
@@ -251,24 +251,23 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, currentColor 0%, transparent 100%);
-  opacity: 0.7;
+  background: currentColor;
+  opacity: 1;
 }
 
-/* Accent colors for top bar */
-.stat-card-blue::before {
+.stat-card-blue {
   color: #60a5fa;
 }
 
-.stat-card-green::before {
+.stat-card-green {
   color: #4ade80;
 }
 
-.stat-card-orange::before {
+.stat-card-orange {
   color: #fb923c;
 }
 
-.stat-card-purple::before {
+.stat-card-purple {
   color: #c084fc;
 }
 
@@ -370,7 +369,7 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Activity Section with Glassmorphism */
+/* Activity Section - Unified Design */
 .activity-section {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
@@ -382,11 +381,9 @@
 }
 
 .section-header {
-  padding: 2rem 2.5rem;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
 }
 
 .section-header h2 {
@@ -416,7 +413,7 @@
   gap: 1.5rem;
   padding: 1.75rem 2.5rem;
   backdrop-filter: blur(16px);
-  background: transparent;
+  background: rgba(255, 255, 255, 0.08);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
   animation: fadeInUp 0.5s ease-out backwards;
@@ -433,7 +430,7 @@
 }
 
 .activity-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .activity-item:last-child {
