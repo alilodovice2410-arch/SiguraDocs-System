@@ -252,17 +252,18 @@ function DocumentStatus() {
 
   return (
     <div className="document-status">
-      <div className="ds-header">
-        <div className="ds-header-left">
-          <div className="ds-header-icon">
-            <FileText />
+      {/* Header Card - Matching User Management Style */}
+      <div className="ds-header-card">
+        <div className="ds-header-content">
+          <div className="ds-header-icon-wrapper">
+            <FileText size={32} />
           </div>
-          <div>
+          <div className="ds-header-text">
             <h1>Document Status</h1>
             <p>Monitor and track all documents in the system</p>
           </div>
         </div>
-        <button className="ds-btn-primary" onClick={fetchDocuments}>
+        <button className="ds-btn-refresh" onClick={fetchDocuments}>
           <RefreshCw size={20} />
           Refresh
         </button>
