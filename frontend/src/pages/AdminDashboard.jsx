@@ -303,7 +303,9 @@ function AdminDashboard() {
               </h1>
             </div>
             <div className="header-right">
-              <SessionIndicator />
+              <div className="session-wrapper">
+                <SessionIndicator />
+              </div>
 
               <button className="header-icon-btn" title="Notifications">
                 <Bell />

@@ -947,45 +947,34 @@
   }
 }
 
-/* ===== Mobile sidebar & header fixes =====
-   Fix stacking/pointer issues and keep header items visible on small screens
-   Place at the end of AdminDashboard.css
-*/
-
-/* Make sure sidebar is top-most and can receive pointer events */
 .dashboard-sidebar {
-  z-index: 2200; /* ensure above overlays / other contexts */
+  z-index: 2200;
   pointer-events: auto;
 }
 
-/* Overlay should be below the sidebar but above the page content */
 .mobile-sidebar-overlay {
   z-index: 2100;
-  pointer-events: auto; /* allow click-to-close */
+  pointer-events: auto;
 }
 
-/* Ensure the sidebar actually receives clicks when visible (avoid accidental hit by other stacking contexts) */
 .dashboard-sidebar.open {
   transform: translateX(0);
   pointer-events: auto;
 }
 
-/* If anything else created a stacking context, force pointer events on the nav buttons */
 .dashboard-sidebar .sidebar-nav,
 .dashboard-sidebar .nav-item {
   pointer-events: auto;
 }
 
-/* Header layout: allow the left block (title) to shrink and not push the right-side off the screen */
 .header-left {
   flex: 1 1 auto;
-  min-width: 0; /* allow shrinking / ellipsis */
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* Title should truncate if space is tight */
 .header-left h1 {
   flex: 1 1 auto;
   min-width: 0;
@@ -995,7 +984,6 @@
   margin: 0;
 }
 
-/* Keep header-right reachable and not wrapped away */
 .header-right {
   flex: 0 0 auto;
   display: flex;
@@ -1005,16 +993,15 @@
   white-space: nowrap;
 }
 
-/* Make user-menu more compact on small screens so the logout stays visible */
 .user-menu {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding-left: 0.75rem;
   border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 0, 0, 0.12) !important;
 }
 
-/* Stack user info vertically only if absolutely necessary (very small screens) */
 @media (max-width: 420px) {
   .user-menu {
     gap: 0.5rem;
@@ -1025,27 +1012,28 @@
   }
   .user-role {
     display: none;
-  } /* hide role label to save space on tiny screens */
+  }
 }
 
-/* Reduce the hamburger size slightly and keep it first in flow */
 .mobile-hamburger {
   flex: 0 0 auto;
   margin-right: 0.25rem;
 }
 
-/* Ensure main has no overlaying stacking context that could block clicks to sidebar */
 .dashboard-main,
 .dashboard-content-wrapper {
   z-index: 1;
 }
 
-/* Safety: ensure nav buttons are clickable even if other rules attempt to disable them */
 .dashboard-sidebar .nav-item {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
   touch-action: manipulation;
 }
 
-/* Debug helper — temporarily enable to see layers (remove after verifying) */
-/* .mobile-sidebar-overlay { outline: 1px dashed rgba(255,0,0,0.2); }
-.dashboard-sidebar { outline: 1px dashed rgba(0,255,0,0.12); } */
+.session-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+  margin-right: 0.25rem;
+}
