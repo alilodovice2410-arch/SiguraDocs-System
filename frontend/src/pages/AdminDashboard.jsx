@@ -75,76 +75,74 @@ function AdminDashboard() {
 
     return (
       <div className="dashboard-content-wrapper">
-        {/* Stats Cards */}
+        {/* Stats Cards - Updated Design */}
         <div className="stats-grid">
           <div className="stat-card stat-card-blue">
             <div className="stat-header">
-              <h3>Total Users</h3>
+              <div>
+                <h3>Total Users</h3>
+                <div className="stat-content">
+                  <p className="stat-number">{stats?.totalUsers || 0}</p>
+                  <p className="stat-label">Active system users</p>
+                </div>
+              </div>
               <div className="stat-icon stat-icon-blue">
                 <Users />
               </div>
-            </div>
-            <div className="stat-content">
-              <p className="stat-number">{stats?.totalUsers || 0}</p>
-              <p className="stat-label">Active system users</p>
             </div>
           </div>
 
           <div className="stat-card stat-card-green">
             <div className="stat-header">
-              <h3>Active Documents</h3>
+              <div>
+                <h3>Active Documents</h3>
+                <div className="stat-content">
+                  <p className="stat-number">{stats?.activeDocuments || 0}</p>
+                  <p className="stat-label">In the system</p>
+                </div>
+              </div>
               <div className="stat-icon stat-icon-green">
                 <FileText />
               </div>
-            </div>
-            <div className="stat-content">
-              <p className="stat-number">{stats?.activeDocuments || 0}</p>
-              <p className="stat-label">In the system</p>
             </div>
           </div>
 
           <div className="stat-card stat-card-orange">
             <div className="stat-header">
-              <h3>Pending Approvals</h3>
+              <div>
+                <h3>Pending Approvals</h3>
+                <div className="stat-content">
+                  <p className="stat-number">{stats?.pendingApprovals || 0}</p>
+                  <p className="stat-label">Awaiting review</p>
+                </div>
+              </div>
               <div className="stat-icon stat-icon-orange">
                 <Clock />
               </div>
-            </div>
-            <div className="stat-content">
-              <p className="stat-number">{stats?.pendingApprovals || 0}</p>
-              <p className="stat-label">Awaiting review</p>
             </div>
           </div>
 
           <div className="stat-card stat-card-purple">
             <div className="stat-header">
-              <h3>Completed Today</h3>
+              <div>
+                <h3>Completed Today</h3>
+                <div className="stat-content">
+                  <p className="stat-number">{stats?.completedToday || 0}</p>
+                  <p className="stat-label">Documents processed</p>
+                </div>
+              </div>
               <div className="stat-icon stat-icon-purple">
                 <CheckCircle />
               </div>
-            </div>
-            <div className="stat-content">
-              <p className="stat-number">{stats?.completedToday || 0}</p>
-              <p className="stat-label">Documents processed</p>
             </div>
           </div>
         </div>
 
         {/* Recent Activity */}
         <div className="activity-section">
-          <div
-            className="section-header"
-            style={{
-              backdropFilter: "blur(16px)",
-              WebkitBackdropFilter: "blur(16px)",
-              background: "rgba(255, 255, 255, 0.08)",
-              backgroundColor: "transparent",
-            }}
-          >
-            <h2 style={{ color: "white" }}>Recent Activity</h2>
-            <p style={{ color: "rgba(255, 255, 255, 0.8)" }}>
-              Latest system activities and notifications
-            </p>
+          <div className="section-header">
+            <h2>Recent Activity</h2>
+            <p>Latest system activities and notifications</p>
           </div>
 
           <div className="activity-list">
@@ -181,17 +179,7 @@ function AdminDashboard() {
                 );
 
                 return (
-                  <div
-                    key={index}
-                    className="activity-item"
-                    style={{
-                      backdropFilter: "blur(16px)",
-                      WebkitBackdropFilter: "blur(16px)",
-                      background: "rgba(255, 255, 255, 0.08)",
-                      backgroundColor: "transparent",
-                      color: "white",
-                    }}
-                  >
+                  <div key={index} className="activity-item">
                     <div className={`activity-icon ${className}`}>
                       <Icon />
                     </div>
