@@ -7,6 +7,8 @@ import {
   Bell,
   BarChart3,
   ClipboardList,
+  Menu,
+  X,
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -22,6 +24,7 @@ function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("overview");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -30,6 +33,16 @@ function AdminDashboard() {
       fetchDashboardStats();
     }
   }, [activeView]);
+
+  // prevent body scroll while mobile sidebar is open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    if (sidebarOpen) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = prev || "";
+    return () => {
+      document.body.style.overflow = prev || "";
+    };
+  }, [sidebarOpen]);
 
   const fetchDashboardStats = async () => {
     try {
@@ -46,6 +59,12 @@ function AdminDashboard() {
   const handleLogout = async () => {
     await logout();
     navigate("/login");
+  };
+
+  const handleNavClick = (view) => {
+    setActiveView(view);
+    // close sidebar on mobile after clicking nav
+    setSidebarOpen(false);
   };
 
   const renderContent = () => {
@@ -182,8 +201,10 @@ function AdminDashboard() {
                       </p>
                     </div>
                     {activity.document && (
-                      <div className="activity-document">
-                        {activity.document}
+                      <div className="activity-actions">
+                        <div className="activity-document">
+                          {activity.document}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -199,7 +220,7 @@ function AdminDashboard() {
   return (
     <div className="admin-dashboard">
       {/* Sidebar */}
-      <aside className="dashboard-sidebar">
+      <aside className={`dashboard-sidebar ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">
             <img
@@ -217,7 +238,7 @@ function AdminDashboard() {
         <nav className="sidebar-nav">
           <button
             type="button"
-            onClick={() => setActiveView("overview")}
+            onClick={() => handleNavClick("overview")}
             className={`nav-item ${activeView === "overview" ? "active" : ""}`}
           >
             <BarChart3 className="nav-icon" />
@@ -225,7 +246,7 @@ function AdminDashboard() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveView("users")}
+            onClick={() => handleNavClick("users")}
             className={`nav-item ${activeView === "users" ? "active" : ""}`}
           >
             <Users className="nav-icon" />
@@ -233,7 +254,7 @@ function AdminDashboard() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveView("documents")}
+            onClick={() => handleNavClick("documents")}
             className={`nav-item ${activeView === "documents" ? "active" : ""}`}
           >
             <FileText className="nav-icon" />
@@ -241,7 +262,7 @@ function AdminDashboard() {
           </button>
           <button
             type="button"
-            onClick={() => setActiveView("logs")}
+            onClick={() => handleNavClick("logs")}
             className={`nav-item ${activeView === "logs" ? "active" : ""}`}
           >
             <ClipboardList className="nav-icon" />
@@ -250,12 +271,30 @@ function AdminDashboard() {
         </nav>
       </aside>
 
+      {/* overlay for mobile when sidebar is open */}
+      {sidebarOpen && (
+        <div
+          className="mobile-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden
+        />
+      )}
+
       {/* Main Content */}
       <main className="dashboard-main">
         {/* Header - Show for all views */}
         <header className="dashboard-header">
           <div className="header-content">
             <div className="header-left">
+              {/* mobile hamburger */}
+              <button
+                className="mobile-hamburger"
+                onClick={() => setSidebarOpen((s) => !s)}
+                aria-label={sidebarOpen ? "Close menu" : "Open menu"}
+              >
+                {sidebarOpen ? <X /> : <Menu />}
+              </button>
+
               <h1>
                 {activeView === "overview" && "Admin Dashboard"}
                 {activeView === "users" && "User Management"}
@@ -266,7 +305,7 @@ function AdminDashboard() {
             <div className="header-right">
               <SessionIndicator />
 
-              <button className="header-icon-btn">
+              <button className="header-icon-btn" title="Notifications">
                 <Bell />
               </button>
               <div className="user-menu">

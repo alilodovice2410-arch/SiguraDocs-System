@@ -16,8 +16,36 @@
   position: fixed;
   height: 100vh;
   overflow-y: auto;
+  transition: transform 220ms ease, box-shadow 220ms ease;
+  z-index: 1200;
 }
 
+/* mobile hidden by default (keeps desktop behaviour) */
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+    box-shadow: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+
+  /* opened state — slide in */
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 0 12px 40px rgba(6, 6, 6, 0.5);
+  }
+}
+
+/* overlay behind mobile sidebar */
+.mobile-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.36);
+  z-index: 1100;
+}
+
+/* Sidebar header and logo */
 .sidebar-header {
   padding: 0 1.5rem;
   margin-bottom: 3rem;
@@ -111,6 +139,14 @@
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  transition: margin-left 220ms ease;
+}
+
+/* when sidebar is hidden on mobile, let main take full width */
+@media (max-width: 768px) {
+  .dashboard-main {
+    margin-left: 0;
+  }
 }
 
 /* Dashboard content wrapper */
@@ -122,16 +158,27 @@
 /* Header - Glassmorphism */
 .dashboard-header {
   backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.1);
   padding: 1.5rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  z-index: 1000;
 }
 
+/* allow header content to wrap on small screens */
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .header-left h1 {
@@ -149,10 +196,55 @@
   text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
+/* mobile hamburger button (hidden on desktop) */
+.mobile-hamburger {
+  display: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+}
+
+/* show hamburger on small screens and make h1 smaller */
+@media (max-width: 768px) {
+  .mobile-hamburger {
+    display: inline-flex;
+  }
+
+  .header-left h1 {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+}
+
+/* header-right */
 .header-right {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+/* on small screens keep header-right accessible */
+@media (max-width: 768px) {
+  .header-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .user-menu {
+    padding-left: 0.75rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .logout-btn {
+    font-size: 0.88rem;
+    padding: 0.45rem 0.8rem;
+  }
 }
 
 .header-icon-btn {
@@ -227,6 +319,19 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 2.5rem;
+}
+
+/* responsive grid */
+@media (max-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .stat-card {
@@ -435,6 +540,8 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  backdrop-filter: blur(6px) saturate(120%);
 }
 
 /* hover / focus feedback */
@@ -452,9 +559,11 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background: rgba(96, 165, 250, 0.12);
-  border: 1px solid rgba(96, 165, 250, 0.18);
-  color: #60a5fa;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #fff;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
 }
 
 /* icon svg sizing */
@@ -475,7 +584,7 @@
 .activity-title {
   font-size: 1rem;
   font-weight: 700;
-  color: rgba(15, 30, 50, 0.95); /* darker text like the example */
+  color: rgba(255, 255, 255, 0.95);
   letter-spacing: 0.2px;
   text-transform: none;
   margin: 0;
@@ -484,7 +593,7 @@
 /* Meta/description - smaller and muted */
 .activity-description {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.78);
   margin: 0;
 }
 
@@ -729,6 +838,7 @@
   background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%) !important;
 }
 
+/* ===== Restore glassmorphism for activity items (override high-specificity rules) ===== */
 .dashboard-content-wrapper .activity-section .activity-list .activity-item {
   /* translucent frosted background */
   background: linear-gradient(
@@ -814,4 +924,25 @@
   background: rgba(255, 255, 255, 0.06) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   color: white !important;
+}
+
+/* Small responsive tweaks */
+@media (max-width: 480px) {
+  .header-left h1 {
+    font-size: 1.05rem;
+  }
+
+  .logout-btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.82rem;
+  }
+
+  .activity-item {
+    padding: 0.7rem 0.75rem;
+  }
+
+  .activity-icon {
+    width: 40px !important;
+    height: 40px !important;
+  }
 }
