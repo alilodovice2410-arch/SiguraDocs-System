@@ -243,49 +243,35 @@
   animation: fadeInUp 0.5s ease-out backwards;
 }
 
-/* Top accent color bars - Individual bars for each card */
-.stat-card-blue::before {
+/* Top accent color bars - make them explicit horizontal top bars */
+.stat-card::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 4px;
+  width: 100%;
+  height: 6px; /* slightly taller so it's visible */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Individual gradients for each card (keeps color-specific styles) */
+.stat-card-blue::before {
   background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
-  z-index: 1;
 }
 
 .stat-card-green::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
   background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
-  z-index: 1;
 }
 
 .stat-card-orange::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
   background: linear-gradient(90deg, #fb923c 0%, #f97316 100%);
-  z-index: 1;
 }
 
 .stat-card-purple::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
   background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%);
-  z-index: 1;
 }
 
 .stat-card:hover {
