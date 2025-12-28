@@ -1,20 +1,11 @@
-/* ========================================
-   ADMIN DASHBOARD - COMPLETE REDESIGN 2024
-   Modern Glassmorphism Design System
-   ======================================== */
-
-/* ========================================
-   LAYOUT
-   ======================================== */
+/* LAYOUT */
 .admin-dashboard {
   display: flex;
   min-height: 100vh;
   background-color: #f8f9fa;
 }
 
-/* ========================================
-   SIDEBAR
-   ======================================== */
+/* SIDEBAR */
 .dashboard-sidebar {
   width: 280px;
   background: linear-gradient(180deg, #2d4739 0%, #1e2f26 100%);
@@ -132,9 +123,7 @@
   flex-shrink: 0;
 }
 
-/* ========================================
-   MAIN CONTENT
-   ======================================== */
+/* MAIN CONTENT */
 .dashboard-main {
   flex: 1;
   margin-left: 280px;
@@ -154,9 +143,7 @@
   animation: fadeIn 0.5s ease-out;
 }
 
-/* ========================================
-   HEADER - Glassmorphism
-   ======================================== */
+/* HEADER - Glassmorphism */
 .dashboard-header {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
@@ -255,9 +242,7 @@
   transform: translateY(-2px);
 }
 
-/* ========================================
-   STATS CARDS - Glassmorphism Style
-   ======================================== */
+/* STATS CARDS - Glassmorphism Style */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -407,9 +392,7 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* ========================================
-   ACTIVITY SECTION - Glassmorphism
-   ======================================== */
+/* ACTIVITY SECTION - Glassmorphism */
 .activity-section {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
@@ -570,9 +553,7 @@
   margin: 0;
 }
 
-/* ========================================
-   LOADING STATE
-   ======================================== */
+/* LOADING STATE */
 .dashboard-loading {
   display: flex;
   align-items: center;
@@ -610,9 +591,7 @@
   text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* ========================================
-   ANIMATIONS
-   ======================================== */
+/* ANIMATIONS */
 .stat-card {
   animation: fadeInUp 0.5s ease-out backwards;
 }
@@ -683,9 +662,7 @@
   }
 }
 
-/* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
+/* RESPONSIVE DESIGN */
 
 /* Ensure 4 columns on larger screens */
 @media (min-width: 1201px) {
