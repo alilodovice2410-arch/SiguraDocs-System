@@ -75,65 +75,57 @@ function AdminDashboard() {
 
     return (
       <div className="dashboard-content-wrapper">
-        {/* Stats Cards - Updated Design */}
+        {/* Stats Cards - Fixed Structure */}
         <div className="stats-grid">
           <div className="stat-card stat-card-blue">
             <div className="stat-header">
-              <div>
-                <h3>Total Users</h3>
-                <div className="stat-content">
-                  <p className="stat-number">{stats?.totalUsers || 0}</p>
-                  <p className="stat-label">Active system users</p>
-                </div>
-              </div>
+              <h3>Total Users</h3>
               <div className="stat-icon stat-icon-blue">
                 <Users />
               </div>
+            </div>
+            <div className="stat-content">
+              <p className="stat-number">{stats?.totalUsers || 0}</p>
+              <p className="stat-label">Active system users</p>
             </div>
           </div>
 
           <div className="stat-card stat-card-green">
             <div className="stat-header">
-              <div>
-                <h3>Active Documents</h3>
-                <div className="stat-content">
-                  <p className="stat-number">{stats?.activeDocuments || 0}</p>
-                  <p className="stat-label">In the system</p>
-                </div>
-              </div>
+              <h3>Active Documents</h3>
               <div className="stat-icon stat-icon-green">
                 <FileText />
               </div>
+            </div>
+            <div className="stat-content">
+              <p className="stat-number">{stats?.activeDocuments || 0}</p>
+              <p className="stat-label">In the system</p>
             </div>
           </div>
 
           <div className="stat-card stat-card-orange">
             <div className="stat-header">
-              <div>
-                <h3>Pending Approvals</h3>
-                <div className="stat-content">
-                  <p className="stat-number">{stats?.pendingApprovals || 0}</p>
-                  <p className="stat-label">Awaiting review</p>
-                </div>
-              </div>
+              <h3>Pending Approvals</h3>
               <div className="stat-icon stat-icon-orange">
                 <Clock />
               </div>
+            </div>
+            <div className="stat-content">
+              <p className="stat-number">{stats?.pendingApprovals || 0}</p>
+              <p className="stat-label">Awaiting review</p>
             </div>
           </div>
 
           <div className="stat-card stat-card-purple">
             <div className="stat-header">
-              <div>
-                <h3>Completed Today</h3>
-                <div className="stat-content">
-                  <p className="stat-number">{stats?.completedToday || 0}</p>
-                  <p className="stat-label">Documents processed</p>
-                </div>
-              </div>
+              <h3>Completed Today</h3>
               <div className="stat-icon stat-icon-purple">
                 <CheckCircle />
               </div>
+            </div>
+            <div className="stat-content">
+              <p className="stat-number">{stats?.completedToday || 0}</p>
+              <p className="stat-label">Documents processed</p>
             </div>
           </div>
         </div>
