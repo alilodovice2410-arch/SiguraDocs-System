@@ -49,7 +49,6 @@ function DocumentStatus() {
   const fetchDocuments = async () => {
     try {
       setLoading(true);
-      // Use admin endpoint for all documents
       const response = await api.get("/admin/documents");
       setDocuments(response.data.documents);
     } catch (error) {
@@ -61,7 +60,6 @@ function DocumentStatus() {
 
   const fetchDocumentTypes = async () => {
     try {
-      // Get unique document types from documents
       const uniqueTypes = [
         ...new Set(documents.map((doc) => doc.document_type)),
       ].filter(Boolean);
@@ -85,7 +83,6 @@ function DocumentStatus() {
   const filterDocuments = () => {
     let filtered = [...documents];
 
-    // Search filter
     if (searchTerm) {
       filtered = filtered.filter(
         (doc) =>
@@ -95,17 +92,14 @@ function DocumentStatus() {
       );
     }
 
-    // Status filter
     if (filterStatus !== "all") {
       filtered = filtered.filter((doc) => doc.status === filterStatus);
     }
 
-    // Type filter
     if (filterType !== "all") {
       filtered = filtered.filter((doc) => doc.document_type === filterType);
     }
 
-    // Department filter
     if (filterDepartment !== "all") {
       filtered = filtered.filter(
         (doc) => doc.uploader_department === filterDepartment
@@ -127,22 +121,51 @@ function DocumentStatus() {
     }
   };
 
-  const handleDownload = async (filePath, title) => {
+  const handleDownload = async (documentId, fileName) => {
     try {
-      const response = await fetch(`${api.defaults.baseURL}/${filePath}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+      const response = await api.get(`/documents/${documentId}/download`, {
+        responseType: "blob",
       });
-      const blob = await response.blob();
+
+      const contentType = (
+        response.headers["content-type"] || ""
+      ).toLowerCase();
+      const disposition = response.headers["content-disposition"] || "";
+
+      let downloadFileName = fileName || "document";
+
+      const filenameMatch =
+        /filename\*=(?:UTF-8'')?([^;]+)|filename="?([^";]+)"?/i.exec(
+          disposition
+        );
+      if (filenameMatch) {
+        const rawFilename = filenameMatch[1] || filenameMatch[2];
+        if (rawFilename) {
+          try {
+            downloadFileName = decodeURIComponent(
+              rawFilename.replace(/(^"|"$)/g, "")
+            );
+          } catch (e) {
+            downloadFileName = rawFilename.replace(/(^"|"$)/g, "");
+          }
+        }
+      }
+
+      const blob = new Blob([response.data], {
+        type: contentType || "application/octet-stream",
+      });
+
       const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = title;
-      a.click();
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", downloadFileName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
     } catch (error) {
-      console.error("Download failed:", error);
-      alert("Failed to download document");
+      console.error("Download error:", error);
+      alert(error.response?.data?.message || "Failed to download document.");
     }
   };
 
@@ -203,7 +226,6 @@ function DocumentStatus() {
     );
   };
 
-  // Pagination
   const indexOfLastDoc = currentPage * documentsPerPage;
   const indexOfFirstDoc = indexOfLastDoc - documentsPerPage;
   const currentDocuments = filteredDocuments.slice(
@@ -212,7 +234,6 @@ function DocumentStatus() {
   );
   const totalPages = Math.ceil(filteredDocuments.length / documentsPerPage);
 
-  // Calculate statistics
   const stats = {
     total: documents.length,
     pending: documents.filter((d) => d.status === "pending").length,
@@ -231,7 +252,6 @@ function DocumentStatus() {
 
   return (
     <div className="document-status">
-      {/* Header */}
       <div className="ds-header">
         <div className="ds-header-left">
           <div className="ds-header-icon">
@@ -248,7 +268,6 @@ function DocumentStatus() {
         </button>
       </div>
 
-      {/* Statistics */}
       <div className="ds-stats">
         <div className="ds-stat-card ds-stat-total">
           <div className="ds-stat-icon">
@@ -288,7 +307,6 @@ function DocumentStatus() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="ds-filters">
         <div className="ds-search">
           <Search className="ds-search-icon" />
@@ -340,7 +358,6 @@ function DocumentStatus() {
         </select>
       </div>
 
-      {/* Documents Table */}
       <div className="ds-table-container">
         <table className="ds-table">
           <thead>
@@ -402,7 +419,9 @@ function DocumentStatus() {
                       </button>
                       <button
                         className="ds-action-btn ds-action-download"
-                        onClick={() => handleDownload(doc.file_path, doc.title)}
+                        onClick={() =>
+                          handleDownload(doc.document_id, doc.title)
+                        }
                         title="Download"
                       >
                         <Download size={16} />
@@ -416,7 +435,6 @@ function DocumentStatus() {
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="ds-pagination">
           <button
@@ -468,7 +486,6 @@ function DocumentStatus() {
         </div>
       )}
 
-      {/* Document Details Modal */}
       {showModal && selectedDocument && (
         <div className="ds-modal-overlay" onClick={() => setShowModal(false)}>
           <div className="ds-modal" onClick={(e) => e.stopPropagation()}>
@@ -570,7 +587,7 @@ function DocumentStatus() {
                 className="ds-btn-primary"
                 onClick={() =>
                   handleDownload(
-                    selectedDocument.document.file_path,
+                    selectedDocument.document.document_id,
                     selectedDocument.document.title
                   )
                 }

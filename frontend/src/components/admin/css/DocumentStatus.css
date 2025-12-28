@@ -17,53 +17,89 @@
   overflow-x: auto;
 }
 
-/* Header Section */
-.ds-header {
+/* Header Card - Matching User Management Style */
+.ds-header-card {
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
+  gap: 2rem;
   flex-wrap: wrap;
 }
 
-.ds-header-left {
+.ds-header-content {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  flex: 1;
 }
 
-.ds-header-icon {
-  width: 3.5rem;
-  height: 3.5rem;
+.ds-header-icon-wrapper {
+  width: 5rem;
+  height: 5rem;
+  min-width: 5rem;
   backdrop-filter: blur(16px);
-  background: rgba(59, 130, 246, 0.25);
-  border: 1px solid rgba(59, 130, 246, 0.4);
-  border-radius: 16px;
+  background: rgba(168, 85, 247, 0.25);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #93c5fd;
+  color: #c084fc;
+  flex-shrink: 0;
 }
 
-.ds-header-icon svg {
+.ds-header-icon-wrapper svg {
   width: 2rem;
   height: 2rem;
 }
 
-.ds-header-left h1 {
-  font-size: 1.75rem;
+.ds-header-text {
+  flex: 1;
+}
+
+.ds-header-text h1 {
+  font-size: 2rem;
   font-weight: 700;
   color: white;
-  margin: 0 0 0.25rem 0;
+  margin: 0 0 0.5rem 0;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.ds-header-left p {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+.ds-header-text p {
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.85);
   margin: 0;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.ds-btn-refresh {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 1rem 2rem;
+  backdrop-filter: blur(16px);
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ds-btn-refresh:hover {
+  background: rgba(59, 130, 246, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
 .ds-btn-primary {
@@ -833,16 +869,27 @@
     padding: 1rem 0.75rem;
   }
 
-  .ds-header {
+  .ds-header-card {
     flex-direction: column;
     align-items: stretch;
+    padding: 1.5rem;
   }
 
-  .ds-header-left {
+  .ds-header-content {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
   }
 
-  .ds-btn-primary {
+  .ds-header-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .ds-header-text p {
+    font-size: 0.95rem;
+  }
+
+  .ds-btn-refresh {
     width: 100%;
     justify-content: center;
   }
