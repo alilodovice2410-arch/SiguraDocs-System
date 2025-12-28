@@ -311,6 +311,175 @@
   background-color: rgba(30, 47, 38, 0.95);
 }
 
+.dashboard-header {
+  position: relative;
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  z-index: 1000;
+}
+
+/* Header layout tweaks (keeps session indicator compact) */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: nowrap;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.header-left h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: white;
+  margin: 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* header-right container */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* session wrapper (keeps it small) */
+.session-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+  max-width: 120px;
+  overflow: hidden;
+}
+
+/* desktop user menu remains visible on larger screens */
+.user-menu.desktop-only {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 1rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* avatar button (mobile) - hidden on larger screens */
+.avatar-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* user dropdown (mobile) */
+.user-dropdown {
+  position: absolute;
+  right: 1rem;
+  top: calc(100% + 8px);
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 2500;
+}
+
+/* dropdown content */
+.dropdown-user-info {
+  padding: 0.25rem 0.25rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-username {
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.dropdown-role {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* dropdown actions */
+.dropdown-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.dropdown-actions .action-btn,
+.dropdown-logout {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: white;
+  cursor: pointer;
+}
+
+/* hide desktop user menu on small screens; show avatar */
+@media (max-width: 480px) {
+  .user-menu.desktop-only {
+    display: none;
+  }
+  .avatar-btn {
+    display: inline-flex;
+  }
+
+  /* slightly smaller header / spacing */
+  .dashboard-header {
+    padding: 1rem;
+  }
+  .header-left h1 {
+    font-size: 1.05rem;
+  }
+  .session-wrapper {
+    max-width: 100px;
+  }
+}
+
+/* ensure header-right items remain visible */
+.header-right > * {
+  flex: 0 0 auto;
+}
+
+/* safety z-index */
+.header-right,
+.user-menu,
+.avatar-btn {
+  z-index: 2300;
+}
+
 /* ========================================
    MODERN STATS GRID - WITH TOP COLOR BARS
    ======================================== */
@@ -477,22 +646,18 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* ================================
-   Activity Section - REDESIGNED
-   (layout similar to "Recent Documents")
-   ================================ */
+/* Activity Section  */
 .activity-section {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12) !important;
   border-radius: 24px;
-  overflow: visible; /* allow inner item shadows to show */
+  overflow: visible;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 0.75rem; /* small outer padding so header sits nicely */
+  padding: 0.75rem;
 }
 
-/* Header - keep large and rounded like the example */
 .section-header {
   padding: 1.25rem 1.5rem;
   margin-bottom: 0.75rem;
@@ -517,7 +682,6 @@
   margin-left: 1rem;
 }
 
-/* Activity List - make items spaced and card-like */
 .activity-list {
   display: flex;
   flex-direction: column;
@@ -525,7 +689,6 @@
   padding: 0.75rem;
 }
 
-/* Each item becomes a rounded row with inner padding (like Recent Documents) */
 .activity-item {
   display: flex;
   align-items: center;
@@ -544,13 +707,11 @@
   backdrop-filter: blur(6px) saturate(120%);
 }
 
-/* hover / focus feedback */
 .activity-item:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
-/* Larger, clear icon area on the left (rounded square) */
 .activity-icon {
   width: 48px;
   height: 48px;
@@ -566,13 +727,11 @@
   backdrop-filter: blur(6px);
 }
 
-/* icon svg sizing */
 .activity-icon svg {
   width: 20px;
   height: 20px;
 }
 
-/* Titles and meta stacked */
 .activity-details {
   display: flex;
   flex-direction: column;
@@ -580,7 +739,6 @@
   min-width: 0;
 }
 
-/* Title style - slightly stronger weight and upper-like appearance */
 .activity-title {
   font-size: 1rem;
   font-weight: 700;
@@ -590,14 +748,12 @@
   margin: 0;
 }
 
-/* Meta/description - smaller and muted */
 .activity-description {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.78);
   margin: 0;
 }
 
-/* Actions area aligned to the right (status badge, buttons) */
 .activity-actions {
   margin-left: auto;
   display: flex;
@@ -605,7 +761,6 @@
   align-items: center;
 }
 
-/* Re-use activity-document as a compact badge if present (status) */
 .activity-document {
   font-size: 0.85rem;
   font-weight: 600;
@@ -618,31 +773,12 @@
   white-space: nowrap;
 }
 
-/* Optional action button (Review style) */
-.action-btn {
-  padding: 0.375rem 0.8rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.12s ease, transform 0.12s ease;
-}
-
-.action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-}
-
 /* If a card has no actions, ensure the details take full width and text doesn't overflow */
 .activity-item .activity-details {
   overflow: hidden;
 }
 
-/* remove previous heavy separators by avoiding border-bottom on list level */
 .activity-item + .activity-item {
-  /* small gap handled by gap on .activity-list */
 }
 
 /* Coming Soon View */
@@ -806,7 +942,6 @@
   }
 }
 
-/* Force top horizontal accent bar for stat cards (place at very end of AdminDashboard.css) */
 .dashboard-content-wrapper .stats-grid .stat-card::before {
   content: "";
   position: absolute;

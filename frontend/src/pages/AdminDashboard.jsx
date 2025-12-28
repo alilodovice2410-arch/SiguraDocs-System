@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   FileText,
   Users,
@@ -25,8 +25,10 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     if (activeView === "overview") {
@@ -43,6 +45,27 @@ function AdminDashboard() {
       document.body.style.overflow = prev || "";
     };
   }, [sidebarOpen]);
+
+  // close user dropdown when clicking outside
+  useEffect(() => {
+    function handleDocClick(e) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    }
+    if (userMenuOpen) document.addEventListener("mousedown", handleDocClick);
+    return () => document.removeEventListener("mousedown", handleDocClick);
+  }, [userMenuOpen]);
+
+  // close user dropdown on resize to avoid layout issues
+  useEffect(() => {
+    function onResize() {
+      setUserMenuOpen(false);
+      setSidebarOpen(false);
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const fetchDashboardStats = async () => {
     try {
@@ -217,6 +240,9 @@ function AdminDashboard() {
     );
   };
 
+  // user avatar initials
+  const userInitials = (user?.username || "A").slice(0, 1).toUpperCase();
+
   return (
     <div className="admin-dashboard">
       {/* Sidebar */}
@@ -302,7 +328,7 @@ function AdminDashboard() {
                 {activeView === "logs" && "Audit Logs"}
               </h1>
             </div>
-            <div className="header-right">
+            <div className="header-right" ref={userMenuRef}>
               <div className="session-wrapper">
                 <SessionIndicator />
               </div>
@@ -310,7 +336,9 @@ function AdminDashboard() {
               <button className="header-icon-btn" title="Notifications">
                 <Bell />
               </button>
-              <div className="user-menu">
+
+              {/* Desktop user menu (username + logout) */}
+              <div className="user-menu desktop-only">
                 <div className="user-info">
                   <span className="user-role">Administrator</span>
                   <span className="user-name">{user?.username || "admin"}</span>
@@ -318,6 +346,53 @@ function AdminDashboard() {
                 <button onClick={handleLogout} className="logout-btn">
                   Logout
                 </button>
+              </div>
+
+              {/* Mobile avatar + dropdown */}
+              <div className="mobile-user">
+                <button
+                  className="avatar-btn"
+                  aria-haspopup="true"
+                  aria-expanded={userMenuOpen}
+                  onClick={() => setUserMenuOpen((s) => !s)}
+                >
+                  {userInitials}
+                </button>
+
+                {userMenuOpen && (
+                  <div
+                    className="user-dropdown"
+                    role="menu"
+                    aria-label="User menu"
+                  >
+                    <div className="dropdown-user-info">
+                      <div className="dropdown-username">
+                        {user?.username || "admin"}
+                      </div>
+                      <div className="dropdown-role">Administrator</div>
+                    </div>
+                    <div className="dropdown-actions">
+                      <button
+                        className="action-btn"
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          handleNavClick("users");
+                        }}
+                      >
+                        User Management
+                      </button>
+                      <button
+                        className="logout-btn dropdown-logout"
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
