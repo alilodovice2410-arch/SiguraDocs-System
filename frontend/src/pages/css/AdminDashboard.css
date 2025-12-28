@@ -421,8 +421,7 @@
   gap: 0.5rem;
 }
 
-.dropdown-actions .action-btn,
-.dropdown-logout {
+.dropdown-actions .action-btn {
   width: 100%;
   text-align: left;
   padding: 0.5rem 0.6rem;
@@ -431,6 +430,28 @@
   border: 1px solid rgba(255, 255, 255, 0.04);
   color: white;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dropdown-actions .action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dropdown-logout-primary {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(45, 71, 57, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.dropdown-logout-primary:hover {
+  background: rgba(30, 47, 38, 0.95);
 }
 
 @media (max-width: 768px) {
