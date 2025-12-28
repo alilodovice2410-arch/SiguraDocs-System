@@ -154,6 +154,7 @@
 
 /* Header - Glassmorphism */
 .dashboard-header {
+  position: relative;
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.1);
@@ -303,17 +304,6 @@
 
 .logout-btn:hover {
   background-color: rgba(30, 47, 38, 0.95);
-}
-
-.dashboard-header {
-  position: relative;
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  z-index: 1000;
 }
 
 .header-content {
@@ -482,7 +472,7 @@
 .header-right,
 .user-menu,
 .avatar-btn {
-  z-index: 9999;
+  z-index: 2300;
 }
 
 /* MODERN STATS GRID  */
@@ -1250,5 +1240,5 @@
 
 .header-right,
 .user-menu {
-  z-index: 2300;
+  z-index: 9999;
 }
