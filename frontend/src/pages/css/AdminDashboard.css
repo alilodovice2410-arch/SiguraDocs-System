@@ -160,7 +160,7 @@
   padding: 1.5rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  z-index: 1000;
+  z-index: 9998;
 }
 
 .header-content {
@@ -381,6 +381,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 9999;
+  position: relative;
 }
 
 .user-dropdown {
@@ -395,7 +397,7 @@
   padding: 0.75rem;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  z-index: 2500;
+  z-index: 9999;
 }
 
 .dropdown-user-info {
@@ -480,7 +482,7 @@
 .header-right,
 .user-menu,
 .avatar-btn {
-  z-index: 2300;
+  z-index: 9999;
 }
 
 /* MODERN STATS GRID  */
