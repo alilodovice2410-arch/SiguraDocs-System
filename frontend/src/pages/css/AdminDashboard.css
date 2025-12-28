@@ -1037,3 +1037,104 @@
   flex: 0 0 auto;
   margin-right: 0.25rem;
 }
+
+/* ===== Fix header small-screen layout: keep session, bell, user info & logout visible ===== */
+.header-left {
+  /* allow title to shrink instead of pushing header-right away */
+  flex: 1 1 auto;
+  min-width: 0; /* allow children to shrink */
+}
+
+.header-left h1 {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+/* keep the header-right compact and non-wrapping */
+.header-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  overflow: visible;
+  min-width: 0;
+}
+
+/* make session indicator compact so it can't grow indefinitely */
+.session-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 0 0 auto;
+  max-width: 120px; /* limit width so it won't push other items away */
+  overflow: hidden;
+}
+
+/* bell icon fixed size */
+.header-icon-btn {
+  flex: 0 0 auto;
+}
+
+/* ensure user-menu & children remain fixed-size and visible */
+.user-menu {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent !important; /* remove any accidental debug backgrounds */
+  min-width: 0;
+}
+
+/* make sure user-info doesn't push layout when long */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 0;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* small text truncation for username if necessary */
+.user-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Keep logout button visible */
+.logout-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* reduce header spacing on small screens and ensure enough height */
+@media (max-width: 768px) {
+  .dashboard-header {
+    padding: 1rem;
+    min-height: 64px;
+  }
+  .header-left h1 {
+    font-size: 1.05rem;
+  }
+  .session-wrapper {
+    max-width: 110px;
+  }
+  .user-info {
+    max-width: 110px;
+  }
+}
+
+/* If .user-menu still hidden while sidebar closed, increase its z-index to ensure visibility */
+.header-right,
+.user-menu {
+  z-index: 2300;
+}
