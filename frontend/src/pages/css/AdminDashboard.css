@@ -673,3 +673,35 @@
     align-items: flex-start;
   }
 }
+
+/* Force top horizontal accent bar for stat cards (place at very end of AdminDashboard.css) */
+.dashboard-content-wrapper .stats-grid .stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100% !important; /* override width:4px */
+  height: 6px !important; /* override height:100% */
+  bottom: auto !important; /* ensure it's not stretched from bottom */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  transform: none !important; /* reset any rotate/translate */
+  z-index: 3 !important;
+  pointer-events: none !important;
+  background: transparent !important; /* color set per-class below */
+}
+
+/* Per-color backgrounds (force override if needed) */
+.dashboard-content-wrapper .stats-grid .stat-card.stat-card-blue::before {
+  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%) !important;
+}
+.dashboard-content-wrapper .stats-grid .stat-card.stat-card-green::before {
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%) !important;
+}
+.dashboard-content-wrapper .stats-grid .stat-card.stat-card-orange::before {
+  background: linear-gradient(90deg, #fb923c 0%, #f97316 100%) !important;
+}
+.dashboard-content-wrapper .stats-grid .stat-card.stat-card-purple::before {
+  background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%) !important;
+}
