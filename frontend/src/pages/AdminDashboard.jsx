@@ -373,15 +373,6 @@ function AdminDashboard() {
                     </div>
                     <div className="dropdown-actions">
                       <button
-                        className="action-btn"
-                        onClick={() => {
-                          setUserMenuOpen(false);
-                          handleNavClick("users");
-                        }}
-                      >
-                        User Management
-                      </button>
-                      <button
                         className="dropdown-logout-primary"
                         onClick={() => {
                           setUserMenuOpen(false);
