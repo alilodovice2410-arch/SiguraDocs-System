@@ -243,32 +243,49 @@
   animation: fadeInUp 0.5s ease-out backwards;
 }
 
-/* Top accent color bars */
-.stat-card::before {
+/* Top accent color bars - Individual bars for each card */
+.stat-card-blue::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 4px;
-  background: currentColor;
-  opacity: 1;
+  background: linear-gradient(90deg, #60a5fa 0%, #3b82f6 100%);
+  z-index: 1;
 }
 
-.stat-card-blue {
-  color: #60a5fa;
+.stat-card-green::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+  z-index: 1;
 }
 
-.stat-card-green {
-  color: #4ade80;
+.stat-card-orange::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #fb923c 0%, #f97316 100%);
+  z-index: 1;
 }
 
-.stat-card-orange {
-  color: #fb923c;
-}
-
-.stat-card-purple {
-  color: #c084fc;
+.stat-card-purple::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%);
+  z-index: 1;
 }
 
 .stat-card:hover {
@@ -382,7 +399,7 @@
 
 .section-header {
   padding: 2rem 2.5rem 1.5rem 2.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: none;
   background: transparent !important;
 }
 
@@ -413,7 +430,7 @@
   gap: 1.5rem;
   padding: 1.75rem 2.5rem;
   backdrop-filter: blur(16px);
-  background: rgba(0, 0, 0, 0.25) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
   animation: fadeInUp 0.5s ease-out backwards;
@@ -430,7 +447,7 @@
 }
 
 .activity-item:hover {
-  background: rgba(0, 0, 0, 0.35) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
 }
 
 .activity-item:last-child {
