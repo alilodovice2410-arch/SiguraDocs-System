@@ -728,3 +728,90 @@
 .dashboard-content-wrapper .stats-grid .stat-card.stat-card-purple::before {
   background: linear-gradient(90deg, #c084fc 0%, #a855f7 100%) !important;
 }
+
+.dashboard-content-wrapper .activity-section .activity-list .activity-item {
+  /* translucent frosted background */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.03)
+  ) !important;
+
+  /* blur and saturation for the frosted-glass effect */
+  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
+  backdrop-filter: blur(12px) saturate(120%) !important;
+
+  /* subtle border and shadow */
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.02) inset !important;
+
+  /* preserve rounded corners and spacing */
+  border-radius: 12px !important;
+  padding: 0.9rem 1rem !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+
+  /* text color tuned for translucent background */
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+/* text / meta colors inside items */
+.dashboard-content-wrapper
+  .activity-section
+  .activity-list
+  .activity-item
+  .activity-title {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.dashboard-content-wrapper
+  .activity-section
+  .activity-list
+  .activity-item
+  .activity-description {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+/* icon box — frosted square on the left */
+.dashboard-content-wrapper
+  .activity-section
+  .activity-list
+  .activity-item
+  .activity-icon {
+  background: rgba(255, 255, 255, 0.06) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  color: #fff !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* keep hover frosted but slightly stronger */
+.dashboard-content-wrapper
+  .activity-section
+  .activity-list
+  .activity-item:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32) !important;
+}
+
+/* ensure actions/badges keep visible contrast */
+.dashboard-content-wrapper
+  .activity-section
+  .activity-list
+  .activity-item
+  .activity-document,
+.dashboard-content-wrapper
+  .activity-section
+  .activity-list
+  .activity-item
+  .action-btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: white !important;
+}
