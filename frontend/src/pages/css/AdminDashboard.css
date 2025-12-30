@@ -161,7 +161,7 @@
   padding: 1.5rem 2rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  z-index: 9998;
+  z-index: 1000;
 }
 
 .header-content {
@@ -1239,6 +1239,8 @@
 }
 
 .header-right,
-.user-menu {
+.user-menu,
+.user-dropdown {
   z-index: 9999;
+  position: relative;
 }
