@@ -200,8 +200,10 @@ function PrincipalDashboard() {
 
   const handleNavClick = (view) => {
     setActiveView(view);
-    // close sidebar (useful for mobile)
-    setSidebarOpen(false);
+    // close sidebar on mobile after clicking nav
+    if (window.innerWidth <= 1024) {
+      setSidebarOpen(false);
+    }
   };
 
   if (loading) {
