@@ -1909,61 +1909,48 @@
   }
 }
 
-/* ========= Mobile logout + header z-index fixes ========= */
-
-/* Ensure header is above the sidebar/backdrop (sidebar z-index: 1700) */
+/* Make header sit above the sidebar/backdrop so header Logout stays visible */
 .principal-header {
-  z-index: 1801; /* above sidebar (1700) but below sidebar close button (1800) if needed */
-  position: sticky; /* keep sticky behavior (already set) */
+  z-index: 1802 !important; /* above .principal-sidebar (1700) and .mobile-backdrop (1600) */
+  position: sticky; /* ensure stickiness remains */
+  top: 0;
 }
 
-/* Make header-right wrap or shrink gracefully on narrow screens */
+/* Ensure header-right content (including Logout) stacks above everything */
 .header-right {
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  z-index: 1803 !important;
+  position: relative;
 }
 
-/* Mobile-only logout button placed in sidebar user section */
+/* If a mobile logout was previously added to the sidebar, hide it (we keep header logout only) */
 .mobile-logout-btn {
-  display: none; /* hidden by default on desktop */
-  width: 100%;
-  justify-content: center;
-  padding: 0.6rem 0.75rem;
-  margin-top: 0.75rem;
-  background: rgba(30, 47, 38, 0.95);
-  color: white;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: none !important;
 }
 
-/* Make the original logout button slightly smaller on mobile */
+/* Keep header content from stacking into multiple rows that push the logout off-screen.
+   On smaller screens keep header pieces on a single wrapped row similar to Admin layout. */
 @media (max-width: 1024px) {
-  .logout-btn {
-    padding: 0.45rem 0.6rem;
-    font-size: 0.82rem;
+  .header-content {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
   }
 
-  /* show logout inside the sidebar for mobiles */
-  .mobile-logout-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-}
-
-/* Small-screen polish: ensure sidebar user area items stack nicely */
-@media (max-width: 1024px) {
-  .sidebar-user {
-    padding: 1rem;
+  .header-left {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 
-  .user-profile {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+  .header-left h1 {
+    font-size: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .user-info {
-    width: 100%;
+  /* keep the hamburger visible and small header padding */
+  .principal-header {
+    padding: 1rem !important;
   }
 }

@@ -306,28 +306,6 @@ function PrincipalDashboard() {
               <span>Analytics</span>
             </button>
           </nav>
-
-          {/* Added mobile-friendly logout inside the sidebar user area */}
-          <div className="sidebar-user">
-            <div className="user-profile">
-              <div className="user-avatar">
-                {user?.full_name ? user.full_name.charAt(0).toUpperCase() : "P"}
-              </div>
-              <div className="user-info">
-                <p className="user-name">{user?.full_name || "principal"}</p>
-                <p className="user-role">{user?.role_name || "Principal"}</p>
-              </div>
-            </div>
-
-            {/* Desktop/mobile logout: keep header logout for desktop; add this duplicate for mobile */}
-            <button
-              onClick={handleLogout}
-              className="logout-btn mobile-logout-btn"
-              aria-label="Logout"
-            >
-              Logout
-            </button>
-          </div>
         </div>
       </aside>
 
