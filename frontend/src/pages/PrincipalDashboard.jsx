@@ -17,6 +17,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { useRef } from "react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +40,8 @@ function PrincipalDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPriority, setFilterPriority] = useState("all");
   const [processingApproval, setProcessingApproval] = useState(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
   // mobile sidebar open state
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -65,6 +68,26 @@ function PrincipalDashboard() {
     return () => window.removeEventListener("resize", onResize);
   }, [sidebarOpen]);
 
+  // Close user dropdown when clicking outside
+  useEffect(() => {
+    function handleDocClick(e) {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    }
+    if (userMenuOpen) document.addEventListener("mousedown", handleDocClick);
+    return () => document.removeEventListener("mousedown", handleDocClick);
+  }, [userMenuOpen]);
+
+  // Close user dropdown on resize to avoid layout issues
+  useEffect(() => {
+    function onResize() {
+      setUserMenuOpen(false);
+    }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   // Close on Escape key for better UX
   useEffect(() => {
     function onKeyDown(e) {
@@ -74,6 +97,19 @@ function PrincipalDashboard() {
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
+  }, [sidebarOpen]);
+
+  // Prevent body scroll when mobile sidebar is open (same pattern used in Admin)
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    if (sidebarOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = prev || "";
+    }
+    return () => {
+      document.body.style.overflow = prev || "";
+    };
   }, [sidebarOpen]);
 
   const fetchDashboardData = async () => {
@@ -341,12 +377,13 @@ function PrincipalDashboard() {
               </h1>
             </div>
 
-            <div className="header-right">
+            <div className="header-right" ref={userMenuRef}>
               <SessionIndicator />
 
               <NotificationBell />
 
-              <div className="header-user-info">
+              {/* Desktop user menu */}
+              <div className="header-user-info desktop-only">
                 <div className="header-user-details">
                   <p className="header-user-name">
                     {user?.full_name || "principal"}
@@ -360,6 +397,46 @@ function PrincipalDashboard() {
               <button onClick={handleLogout} className="logout-btn">
                 Logout
               </button>
+
+              {/* Mobile avatar + dropdown */}
+              <div className="mobile-user">
+                <button
+                  className="avatar-btn"
+                  aria-haspopup="true"
+                  aria-expanded={userMenuOpen}
+                  onClick={() => setUserMenuOpen((s) => !s)}
+                >
+                  {(user?.full_name || "P").charAt(0).toUpperCase()}
+                </button>
+
+                {userMenuOpen && (
+                  <div
+                    className="user-dropdown"
+                    role="menu"
+                    aria-label="User menu"
+                  >
+                    <div className="dropdown-user-info">
+                      <div className="dropdown-username">
+                        {user?.full_name || "Principal"}
+                      </div>
+                      <div className="dropdown-role">
+                        {user?.role_name || "Principal"}
+                      </div>
+                    </div>
+                    <div className="dropdown-actions">
+                      <button
+                        className="dropdown-logout-primary"
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>

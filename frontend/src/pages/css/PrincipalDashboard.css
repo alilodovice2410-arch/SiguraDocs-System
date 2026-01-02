@@ -428,6 +428,90 @@
   margin: 0;
 }
 
+/* Hide desktop user info on mobile, show avatar instead */
+.header-user-info.desktop-only {
+  display: flex;
+}
+
+.avatar-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  font-weight: 700;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 1rem;
+  top: calc(100% + 8px);
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.06);
+  -webkit-backdrop-filter: blur(12px) saturate(120%);
+  backdrop-filter: blur(12px) saturate(120%);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 9999;
+}
+
+.dropdown-user-info {
+  padding: 0.25rem 0.25rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  margin-bottom: 0.5rem;
+}
+
+.dropdown-username {
+  font-weight: 700;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.dropdown-role {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.dropdown-logout-primary {
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(45, 71, 57, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.dropdown-logout-primary:hover {
+  background: rgba(30, 47, 38, 0.95);
+}
+
+@media (max-width: 768px) {
+  .header-user-info.desktop-only {
+    display: none;
+  }
+
+  .avatar-btn {
+    display: inline-flex;
+  }
+
+  .logout-btn {
+    display: none;
+  }
+}
+
 .logout-btn {
   padding: 0.5rem 1rem;
   backdrop-filter: blur(8px);
@@ -1906,51 +1990,5 @@
 
   .glass-action-buttons {
     grid-template-columns: 1fr;
-  }
-}
-
-/* Make header sit above the sidebar/backdrop so header Logout stays visible */
-.principal-header {
-  z-index: 1802 !important; /* above .principal-sidebar (1700) and .mobile-backdrop (1600) */
-  position: sticky; /* ensure stickiness remains */
-  top: 0;
-}
-
-/* Ensure header-right content (including Logout) stacks above everything */
-.header-right {
-  z-index: 1803 !important;
-  position: relative;
-}
-
-/* If a mobile logout was previously added to the sidebar, hide it (we keep header logout only) */
-.mobile-logout-btn {
-  display: none !important;
-}
-
-/* Keep header content from stacking into multiple rows that push the logout off-screen.
-   On smaller screens keep header pieces on a single wrapped row similar to Admin layout. */
-@media (max-width: 1024px) {
-  .header-content {
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-  }
-
-  .header-left {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .header-left h1 {
-    font-size: 1.25rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  /* keep the hamburger visible and small header padding */
-  .principal-header {
-    padding: 1rem !important;
   }
 }
