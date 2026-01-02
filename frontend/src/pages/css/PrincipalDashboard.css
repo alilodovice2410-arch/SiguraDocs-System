@@ -454,31 +454,31 @@
   right: 1rem;
   top: calc(100% + 8px);
   min-width: 200px;
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.98); /* Much more opaque for visibility */
   -webkit-backdrop-filter: blur(12px) saturate(120%);
   backdrop-filter: blur(12px) saturate(120%);
   border-radius: 12px;
   padding: 0.75rem;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  border: 1px solid rgba(0, 0, 0, 0.08); /* Dark border for contrast */
   z-index: 9999;
 }
 
 .dropdown-user-info {
   padding: 0.25rem 0.25rem 0.6rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* Dark border */
   margin-bottom: 0.5rem;
 }
 
 .dropdown-username {
   font-weight: 700;
-  color: white;
+  color: #111827; /* Dark text */
   margin-bottom: 2px;
 }
 
 .dropdown-role {
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.78);
+  color: #6b7280; /* Gray text */
 }
 
 .dropdown-logout-primary {
@@ -486,8 +486,8 @@
   text-align: left;
   padding: 0.5rem 0.6rem;
   border-radius: 8px;
-  background: rgba(45, 71, 57, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(45, 71, 57, 0.95); /* More opaque */
+  border: 1px solid rgba(45, 71, 57, 1);
   color: white;
   cursor: pointer;
   font-weight: 600;
@@ -495,7 +495,21 @@
 }
 
 .dropdown-logout-primary:hover {
-  background: rgba(30, 47, 38, 0.95);
+  background: rgba(30, 47, 38, 1);
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .user-dropdown {
+    background: white; /* Solid white on mobile */
+    right: 0.5rem; /* Adjust position slightly */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5); /* Even stronger shadow */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .dropdown-user-info {
+    border-bottom: 1px solid #e5e7eb;
+  }
 }
 
 @media (max-width: 768px) {
