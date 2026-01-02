@@ -236,10 +236,7 @@ function PrincipalDashboard() {
 
   const handleNavClick = (view) => {
     setActiveView(view);
-    // close sidebar on mobile after clicking nav
-    if (window.innerWidth <= 1024) {
-      setSidebarOpen(false);
-    }
+    setSidebarOpen(false);
   };
 
   if (loading) {
@@ -290,6 +287,7 @@ function PrincipalDashboard() {
               className={`nav-item ${
                 activeView === "overview" ? "active" : ""
               }`}
+              type="button"
             >
               <BarChart3 className="nav-icon" />
               <span>Overview</span>
@@ -300,6 +298,7 @@ function PrincipalDashboard() {
               className={`nav-item ${
                 activeView === "clusters" ? "active" : ""
               }`}
+              type="button"
             >
               <Grid className="nav-icon" />
               <span>Document Clusters</span>
@@ -310,6 +309,7 @@ function PrincipalDashboard() {
               className={`nav-item ${
                 activeView === "approvals" ? "active" : ""
               }`}
+              type="button"
             >
               <CheckCircle className="nav-icon" />
               <span>Pending Approvals</span>
@@ -327,6 +327,7 @@ function PrincipalDashboard() {
             <button
               onClick={() => handleNavClick("history")}
               className={`nav-item ${activeView === "history" ? "active" : ""}`}
+              type="button"
             >
               <History className="nav-icon" />
               <span>Approval History</span>

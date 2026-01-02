@@ -24,27 +24,25 @@
   transition: transform 220ms ease-in-out, visibility 220ms;
   z-index: 1700;
   pointer-events: auto;
-}
-
-/* keep visible on desktop by default */
-.principal-sidebar {
-  transform: translateX(0);
-}
-
-/* when sidebar has .open on small screens it slides in */
-.principal-sidebar.open {
-  transform: translateX(0);
   visibility: visible;
-  pointer-events: auto;
 }
 
-/* Desktop/mobile behavior - default hide on small screens (controlled by .open) */
+/* Desktop behavior */
+@media (min-width: 1025px) {
+  .principal-sidebar {
+    transform: translateX(0);
+    visibility: visible;
+  }
+}
+
+/* Mobile behavior - hide by default */
 @media (max-width: 1024px) {
   .principal-sidebar {
     transform: translateX(-100%);
     visibility: hidden;
     pointer-events: none;
   }
+
   .principal-sidebar.open {
     transform: translateX(0);
     visibility: visible;
