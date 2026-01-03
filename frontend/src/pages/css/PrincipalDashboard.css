@@ -1,13 +1,15 @@
 /* mobile backdrop used when sidebar is open on small screens */
 .mobile-backdrop {
   display: none;
+  pointer-events: none;
 }
 .mobile-backdrop.open {
   display: block;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
-  z-index: 1600;
+  z-index: 2100;
+  pointer-events: auto;
 }
 
 /* Sidebar Styles */
@@ -21,10 +23,9 @@
   height: 100vh;
   overflow-y: auto;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-  transition: transform 220ms ease-in-out, visibility 220ms;
-  z-index: 1700;
+  transition: transform 220ms ease-in-out, box-shadow 220ms ease;
+  z-index: 2200;
   pointer-events: auto;
-  visibility: visible;
 }
 
 /* Desktop behavior */
@@ -39,13 +40,12 @@
 @media (max-width: 1024px) {
   .principal-sidebar {
     transform: translateX(-100%);
-    visibility: hidden;
-    pointer-events: none;
+    box-shadow: none;
   }
 
   .principal-sidebar.open {
     transform: translateX(0);
-    visibility: visible;
+    box-shadow: 0 12px 40px rgba(6, 6, 6, 0.5);
     pointer-events: auto;
   }
 }
@@ -214,6 +214,12 @@
   position: relative;
 }
 
+.principal-sidebar .nav-item {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.05);
+  touch-action: manipulation;
+  pointer-events: auto;
+}
+
 .nav-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
@@ -348,6 +354,11 @@
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+}
+
+.principal-main,
+.dashboard-content {
+  z-index: 1;
 }
 
 /* Header */
