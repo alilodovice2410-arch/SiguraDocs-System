@@ -310,11 +310,12 @@
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
   margin-bottom: 2rem;
-  /* Prevent horizontal overflow from affecting parent */
   position: relative;
   width: 100%;
+}
 }
 
 /* Inner scroll wrapper */
