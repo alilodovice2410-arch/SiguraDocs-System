@@ -393,6 +393,26 @@ function UserManagement() {
 
               <div className="um-form-row">
                 <div className="um-form-group">
+                  <label htmlFor="role_id">
+                    Role <span className="required">*</span>
+                  </label>
+                  <select
+                    id="role_id"
+                    name="role_id"
+                    value={formData.role_id}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Select a role</option>
+                    {roles.map((role) => (
+                      <option key={role.role_id} value={role.role_id}>
+                        {role.role_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="um-form-group">
                   <label htmlFor="password">
                     Password{" "}
                     {modalMode === "create" && (
@@ -421,26 +441,6 @@ function UserManagement() {
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
-                </div>
-
-                <div className="um-form-group">
-                  <label htmlFor="role_id">
-                    Role <span className="required">*</span>
-                  </label>
-                  <select
-                    id="role_id"
-                    name="role_id"
-                    value={formData.role_id}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select a role</option>
-                    {roles.map((role) => (
-                      <option key={role.role_id} value={role.role_id}>
-                        {role.role_name}
-                      </option>
-                    ))}
-                  </select>
                 </div>
               </div>
 
