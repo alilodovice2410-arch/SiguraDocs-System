@@ -308,6 +308,7 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Make scrolling smooth on iOS */
   overflow-y: visible;
   margin-bottom: 2rem;
   position: relative;
@@ -886,11 +887,14 @@
   }
 }
 
-/* Consolidated mobile rules (max-width: 768px) */
+/* Mobile adjustments (max-width: 768px)
+   --- Important: allow horizontal scrolling for the table on small screens.
+   We'll avoid hiding overflow on the root wrapper so the table container can show a horizontal scrollbar. */
 @media (max-width: 768px) {
   .document-status {
     padding: 1rem 0.5rem;
-    overflow-x: hidden; /* Prevent double scrollbars */
+    /* Do NOT hide overflow here — allow inner table container to provide horizontal scrolling */
+    overflow-x: visible;
   }
 
   .ds-header-card {
@@ -940,7 +944,7 @@
     min-width: auto;
   }
 
-  /* Table container - CRITICAL for mobile scrolling */
+  /* Table container - ensure it always allows horizontal scrolling on mobile */
   .ds-table-container {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
@@ -949,7 +953,7 @@
     margin-right: 0;
   }
 
-  /* Force scrollbar to always show on mobile */
+  /* Make the scrollbar visible and touch-friendly */
   .ds-table-container::-webkit-scrollbar {
     height: 12px;
     -webkit-appearance: none;
@@ -973,11 +977,12 @@
     background: rgba(34, 197, 94, 0.8);
   }
 
+  /* Hide the helper ::after used on touch devices so it doesn't block quick scrolls */
   .ds-table-container::after {
     display: none !important;
   }
 
-  /* Table sizing for mobile */
+  /* Table sizing for mobile: allow the table to be wider than the viewport to enable scrolling */
   .ds-table {
     min-width: 900px;
     width: max-content;
@@ -1045,7 +1050,7 @@
     font-size: 0.875rem;
   }
 
-  .ds-header-card {
+  .ds-header_card {
     padding: 1.25rem;
   }
 
