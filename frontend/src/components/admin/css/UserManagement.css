@@ -1,7 +1,3 @@
-/* ========================================
-   USER MANAGEMENT - GLASSMORPHISM REDESIGN
-   ======================================== */
-
 /* User Management Container */
 .user-management {
   padding: 2rem;
@@ -13,9 +9,7 @@
   min-height: 100vh;
 }
 
-/* ========================================
-   HEADER SECTION - Glassmorphism
-   ======================================== */
+/* HEADER SECTION - Glassmorphism */
 .um-header {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.15);
@@ -72,9 +66,7 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* ========================================
-   BUTTONS - Glassmorphism
-   ======================================== */
+/* BUTTONS - Glassmorphism */
 .um-btn-primary {
   display: flex;
   align-items: center;
@@ -123,9 +115,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* ========================================
-   FILTERS - Glassmorphism
-   ======================================== */
+/* FILTERS - Glassmorphism */
 .um-filters {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
@@ -207,21 +197,41 @@
   color: white;
 }
 
-/* ========================================
-   TABLE CONTAINER - Glassmorphism
-   ======================================== */
+/* TABLE CONTAINER - Glassmorphism */
 .um-table-container {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  overflow-x: auto; /* Enable horizontal scroll */
+  overflow-y: visible;
+}
+
+/* Custom Scrollbar for Table Container */
+.um-table-container::-webkit-scrollbar {
+  height: 12px;
+}
+
+.um-table-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 24px 24px;
+}
+
+.um-table-container::-webkit-scrollbar-thumb {
+  background: rgba(168, 85, 247, 0.5);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+}
+
+.um-table-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(168, 85, 247, 0.7);
 }
 
 /* Table */
 .um-table {
   width: 100%;
+  min-width: 1200px; /* Ensure minimum width for all columns to fit */
   border-collapse: collapse;
 }
 
@@ -239,6 +249,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  white-space: nowrap; /* Prevent header wrapping */
 }
 
 .um-table tbody tr {
@@ -258,6 +269,7 @@
   padding: 1.25rem 1.75rem;
   font-size: 0.938rem;
   color: white;
+  white-space: nowrap; /* Prevent cell content wrapping */
 }
 
 .um-empty {
@@ -266,6 +278,7 @@
   color: rgba(255, 255, 255, 0.7);
   font-size: 1.125rem;
   text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
+  white-space: normal; /* Allow wrapping for empty state */
 }
 
 /* User Info - Glassmorphism */

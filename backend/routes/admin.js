@@ -15,7 +15,8 @@ router.get(
     try {
       const [users] = await pool.query(`
         SELECT u.user_id, u.username, u.email, u.full_name, u.department, 
-               u.role_id, r.role_name, u.status, u.created_at
+               u.role_id, r.role_name, u.status, u.created_at, 
+               u.employee_id, u.subject
         FROM users u
         JOIN roles r ON u.role_id = r.role_id
         ORDER BY u.created_at DESC

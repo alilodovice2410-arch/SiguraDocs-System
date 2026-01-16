@@ -140,9 +140,10 @@ function UserManagement() {
         const registrationData = {
           ...formData,
           // Only include subject if role is Head Teacher (role_id = 3)
-          subject: parseInt(formData.role_id) === 3 ? formData.subject : undefined,
+          subject:
+            parseInt(formData.role_id) === 3 ? formData.subject : undefined,
         };
-        
+
         await api.post("/auth/register", registrationData);
         alert("User created successfully!");
       } else {
@@ -251,6 +252,7 @@ function UserManagement() {
               <th>Email</th>
               <th>Role</th>
               <th>Department</th>
+              <th>Subject</th>
               <th>Employee ID</th>
               <th>Created At</th>
               <th>Actions</th>
@@ -259,7 +261,7 @@ function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan="7" className="um-empty">
+                <td colSpan="8" className="um-empty">
                   No users found
                 </td>
               </tr>
@@ -284,6 +286,15 @@ function UserManagement() {
                     </span>
                   </td>
                   <td>{user.department || "—"}</td>
+                  <td>
+                    {user.role_id === 3 ? (
+                      <span className="um-subject-badge">
+                        {user.subject || "—"}
+                      </span>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                   <td>{user.employee_id || "—"}</td>
                   <td>
                     {new Date(user.created_at).toLocaleDateString("en-US", {
