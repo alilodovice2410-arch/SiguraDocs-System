@@ -5,16 +5,13 @@
   padding: 2rem 1.5rem 1.5rem;
   min-height: 100vh;
   box-sizing: border-box;
+  width: 100%;
+  overflow-x: auto;
 }
 
 /* Prevent horizontal scroll overlap with sidebar */
 .dashboard-main {
   overflow-x: hidden;
-}
-
-.document-status {
-  width: 100%;
-  overflow-x: auto;
 }
 
 /* Header Card */
@@ -310,13 +307,34 @@
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  overflow-x: auto !important;
+  overflow-x: auto;
   overflow-y: visible;
   margin-bottom: 2rem;
   position: relative;
   width: 100%;
   scrollbar-width: thin;
   scrollbar-color: rgba(34, 197, 94, 0.6) rgba(255, 255, 255, 0.1);
+}
+
+/* Custom Scrollbar for Table Container */
+.ds-table-container::-webkit-scrollbar {
+  height: 12px;
+}
+
+.ds-table-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 24px 24px;
+}
+
+.ds-table-container::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.6);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.ds-table-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.8);
 }
 
 /* Inner scroll wrapper */
@@ -868,21 +886,25 @@
   }
 }
 
+/* Consolidated mobile rules (max-width: 768px) */
 @media (max-width: 768px) {
   .document-status {
-    padding: 1rem 0.75rem;
+    padding: 1rem 0.5rem;
+    overflow-x: hidden; /* Prevent double scrollbars */
   }
 
   .ds-header-card {
     flex-direction: column;
     align-items: stretch;
     padding: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .ds-header-content {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    gap: 1rem;
   }
 
   .ds-header-text h1 {
@@ -900,67 +922,22 @@
 
   .ds-stats {
     grid-template-columns: 1fr;
-  }
-
-  .ds-filters {
-    padding: 1.25rem;
+    gap: 1rem;
   }
 
   .ds-stat-value {
     font-size: 2rem;
   }
 
-  .ds-modal {
-    max-width: 100%;
-    margin: 0.5rem;
-  }
-
-  .ds-modal-grid {
+  .ds-filters {
+    padding: 1.25rem;
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
-  .ds-modal-body {
-    padding: 1.5rem;
-  }
-
-  .ds-modal-footer {
-    flex-direction: column;
-  }
-
-  .ds-btn-secondary,
-  .ds-btn-primary {
+  .ds-filter-select {
     width: 100%;
-    justify-content: center;
-  }
-}
-
-@media (max-width: 480px) {
-  .document-status {
-    padding: 0.75rem 0.5rem;
-  }
-
-  .ds-stat-card {
-    padding: 1.5rem;
-  }
-
-  .ds-stat-icon {
-    width: 3rem;
-    height: 3rem;
-    min-width: 3rem;
-    min-height: 3rem;
-  }
-
-  .ds-stat-icon svg {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-}
-
-/* Ensure proper scrolling on mobile devices */
-@media (max-width: 768px) {
-  .document-status {
-    padding: 1rem 0.5rem;
-    overflow-x: hidden; /* Prevent double scrollbars */
+    min-width: auto;
   }
 
   /* Table container - CRITICAL for mobile scrolling */
@@ -1013,46 +990,6 @@
     padding: 1rem 0.75rem; /* Slightly reduced padding */
   }
 
-  /* Header adjustments */
-  .ds-header-card {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .ds-header-content {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  /* Filters - stack on mobile */
-  .ds-filters {
-    flex-direction: column;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    gap: 1rem;
-  }
-
-  .ds-filter-select {
-    width: 100%;
-    min-width: auto;
-  }
-
-  /* Buttons */
-  .ds-btn-refresh,
-  .ds-btn-primary {
-    width: 100%;
-    justify-content: center;
-  }
-
-  /* Stats grid */
-  .ds-stats {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
   /* Modal adjustments */
   .ds-modal {
     max-width: calc(100vw - 1rem);
@@ -1073,9 +1010,22 @@
     gap: 0.75rem;
   }
 
-  .ds-btn-secondary {
+  .ds-btn-secondary,
+  .ds-btn-primary {
     width: 100%;
     justify-content: center;
+  }
+
+  .ds-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
+  }
+
+  .ds-stat-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }
 
@@ -1103,21 +1053,8 @@
     padding: 1rem;
   }
 
-  /* Smaller stat cards */
   .ds-stat-card {
     padding: 1.25rem;
-  }
-
-  .ds-stat-icon {
-    width: 3rem;
-    height: 3rem;
-    min-width: 3rem;
-    min-height: 3rem;
-  }
-
-  .ds-stat-icon svg {
-    width: 1.5rem;
-    height: 1.5rem;
   }
 
   .ds-stat-value {
@@ -1155,15 +1092,15 @@
     pointer-events: none;
     animation: fadeInOut 3s ease-in-out infinite;
   }
+}
 
-  @keyframes fadeInOut {
-    0%,
-    100% {
-      opacity: 0.5;
-    }
-    50% {
-      opacity: 1;
-    }
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
