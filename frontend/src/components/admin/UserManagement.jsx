@@ -31,6 +31,8 @@ function UserManagement() {
     full_name: "",
     role_id: "",
     department: "",
+    employee_id: "", // Added employee_id field
+    subject: "", // Added subject field for Head Teachers
   });
 
   useEffect(() => {
@@ -62,7 +64,6 @@ function UserManagement() {
 
   const fetchRoles = async () => {
     try {
-      // Assuming you have a roles endpoint
       const response = await api.get("/admin/roles");
       setRoles(response.data.roles);
     } catch (error) {
@@ -71,8 +72,8 @@ function UserManagement() {
       setRoles([
         { role_id: 1, role_name: "Admin" },
         { role_id: 2, role_name: "Principal" },
-        { role_id: 3, role_name: "Department Head" },
-        { role_id: 4, role_name: "Faculty" },
+        { role_id: 3, role_name: "Head Teacher" },
+        { role_id: 4, role_name: "Teacher" },
         { role_id: 5, role_name: "Staff" },
       ]);
     }
@@ -89,6 +90,8 @@ function UserManagement() {
         full_name: user.full_name,
         role_id: user.role_id,
         department: user.department || "",
+        employee_id: user.employee_id || "", // Include employee_id for edit
+        subject: user.subject || "", // Include subject for edit
       });
     } else {
       setFormData({
@@ -98,6 +101,8 @@ function UserManagement() {
         full_name: "",
         role_id: "",
         department: "",
+        employee_id: "", // Reset employee_id
+        subject: "", // Reset subject
       });
     }
     setShowModal(true);
@@ -113,6 +118,8 @@ function UserManagement() {
       full_name: "",
       role_id: "",
       department: "",
+      employee_id: "",
+      subject: "",
     });
     setShowPassword(false);
   };
@@ -129,7 +136,14 @@ function UserManagement() {
     e.preventDefault();
     try {
       if (modalMode === "create") {
-        await api.post("/auth/register", formData);
+        // Prepare data for registration
+        const registrationData = {
+          ...formData,
+          // Only include subject if role is Head Teacher (role_id = 3)
+          subject: parseInt(formData.role_id) === 3 ? formData.subject : undefined,
+        };
+        
+        await api.post("/auth/register", registrationData);
         alert("User created successfully!");
       } else {
         // Update user endpoint
@@ -168,6 +182,9 @@ function UserManagement() {
 
     return matchesSearch && matchesRole;
   });
+
+  // Check if selected role is Head Teacher
+  const isHeadTeacher = parseInt(formData.role_id) === 3;
 
   if (loading) {
     return (
@@ -234,6 +251,7 @@ function UserManagement() {
               <th>Email</th>
               <th>Role</th>
               <th>Department</th>
+              <th>Employee ID</th>
               <th>Created At</th>
               <th>Actions</th>
             </tr>
@@ -241,7 +259,7 @@ function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan="6" className="um-empty">
+                <td colSpan="7" className="um-empty">
                   No users found
                 </td>
               </tr>
@@ -266,6 +284,7 @@ function UserManagement() {
                     </span>
                   </td>
                   <td>{user.department || "—"}</td>
+                  <td>{user.employee_id || "—"}</td>
                   <td>
                     {new Date(user.created_at).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -357,6 +376,43 @@ function UserManagement() {
                 </div>
 
                 <div className="um-form-group">
+                  <label htmlFor="employee_id">
+                    Employee ID <span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="employee_id"
+                    name="employee_id"
+                    value={formData.employee_id}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter employee ID"
+                  />
+                </div>
+              </div>
+
+              <div className="um-form-row">
+                <div className="um-form-group">
+                  <label htmlFor="role_id">
+                    Role <span className="required">*</span>
+                  </label>
+                  <select
+                    id="role_id"
+                    name="role_id"
+                    value={formData.role_id}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Select a role</option>
+                    {roles.map((role) => (
+                      <option key={role.role_id} value={role.role_id}>
+                        {role.role_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="um-form-group">
                   <label htmlFor="password">
                     Password{" "}
                     {modalMode === "create" && (
@@ -390,34 +446,17 @@ function UserManagement() {
 
               <div className="um-form-row">
                 <div className="um-form-group">
-                  <label htmlFor="role_id">
-                    Role <span className="required">*</span>
+                  <label htmlFor="department">
+                    Department <span className="required">*</span>
                   </label>
-                  <select
-                    id="role_id"
-                    name="role_id"
-                    value={formData.role_id}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select a role</option>
-                    {roles.map((role) => (
-                      <option key={role.role_id} value={role.role_id}>
-                        {role.role_name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="um-form-group">
-                  <label htmlFor="department">Department</label>
                   <select
                     id="department"
                     name="department"
                     value={formData.department}
                     onChange={handleInputChange}
+                    required
                   >
-                    <option value="">Select a department (optional)</option>
+                    <option value="">Select a department</option>
                     {departments.map((dept) => (
                       <option
                         key={dept.department_id}
@@ -428,6 +467,23 @@ function UserManagement() {
                     ))}
                   </select>
                 </div>
+
+                {isHeadTeacher && (
+                  <div className="um-form-group">
+                    <label htmlFor="subject">
+                      Subject <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      required={isHeadTeacher}
+                      placeholder="e.g., Mathematics, Science"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="um-modal-actions">
