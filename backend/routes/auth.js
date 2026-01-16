@@ -6,7 +6,7 @@ const { pool } = require("../config/database");
 const authenticateToken = require("../middleware/auth");
 const { logActivity, ACTIONS } = require("../utils/auditLogger");
 
-// Register new user - UPDATED with subject support for Head Teachers
+// Register new user - UPDATED to allow admins to create any role
 router.post("/register", async (req, res) => {
   try {
     const {
@@ -17,7 +17,7 @@ router.post("/register", async (req, res) => {
       role_id,
       department,
       employee_id,
-      subject, // NEW: Subject field for Head Teachers
+      subject,
     } = req.body;
 
     // Validation
@@ -37,16 +37,47 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // Validate role_id - Only allow Teacher (4) and Head Teacher (3)
-    if (![3, 4].includes(parseInt(role_id))) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Invalid role. Only Teacher and Head Teacher roles are allowed for registration.",
-      });
+    // Check if request is from authenticated admin/principal
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    let isAdminRequest = false;
+
+    if (token) {
+      try {
+        const jwt = require("jsonwebtoken");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Check if user is Admin or Principal
+        if (decoded.role === "Admin" || decoded.role === "Principal") {
+          isAdminRequest = true;
+        }
+      } catch (error) {
+        // Token invalid, treat as public registration
+        isAdminRequest = false;
+      }
     }
 
-    // NEW: Validate subject for Head Teachers
+    // Role validation based on who's registering
+    if (!isAdminRequest) {
+      // Public registration - only allow Teacher (4) and Head Teacher (3)
+      if (![3, 4].includes(parseInt(role_id))) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Invalid role. Only Teacher and Head Teacher roles are allowed for registration.",
+        });
+      }
+    } else {
+      // Admin/Principal registration - allow any valid role (1-5)
+      if (![1, 2, 3, 4, 5].includes(parseInt(role_id))) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid role ID provided.",
+        });
+      }
+    }
+
+    // Validate subject for Head Teachers
     if (parseInt(role_id) === 3 && !subject) {
       return res.status(400).json({
         success: false,
@@ -67,7 +98,7 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // NEW: Check if Head Teacher already exists for this department + subject
+    // Check if Head Teacher already exists for this department + subject
     if (parseInt(role_id) === 3) {
       const [existingHeadTeacher] = await pool.query(
         `SELECT user_id, full_name FROM users 
@@ -99,22 +130,32 @@ router.post("/register", async (req, res) => {
         role_id,
         department,
         employee_id,
-        parseInt(role_id) === 3 ? subject : null, // Only store subject for Head Teachers
+        parseInt(role_id) === 3 ? subject : null,
       ]
     );
 
     const newUserId = result.insertId;
 
-    // Log activity
-    const actorUserId = req.user ? req.user.user_id : newUserId;
+    // Log activity - use authenticated user if admin, otherwise the new user
+    const actorUserId =
+      isAdminRequest && req.user ? req.user.user_id : newUserId;
+
+    // Get role name for logging
+    const [roleInfo] = await pool.query(
+      "SELECT role_name FROM roles WHERE role_id = ?",
+      [role_id]
+    );
+    const roleName = roleInfo[0]?.role_name || "User";
     const roleType =
-      parseInt(role_id) === 3 ? `Head Teacher (${subject})` : "Teacher";
+      parseInt(role_id) === 3 ? `${roleName} (${subject})` : roleName;
 
     await logActivity(
       actorUserId,
       ACTIONS.USER_CREATED,
       null,
-      `New ${roleType} registered: ${username} (${full_name}) - ${department}`,
+      `New ${roleType} ${
+        isAdminRequest ? "created by admin" : "registered"
+      }: ${username} (${full_name}) - ${department}`,
       req.ip,
       req.get("user-agent")
     );
@@ -122,7 +163,7 @@ router.post("/register", async (req, res) => {
     console.log(
       `✅ User created: ${username} (Employee ID: ${employee_id}) in ${department}${
         subject ? ` - Subject: ${subject}` : ""
-      }`
+      } - Role: ${roleName}`
     );
 
     res.status(201).json({
@@ -130,7 +171,7 @@ router.post("/register", async (req, res) => {
       message:
         parseInt(role_id) === 3
           ? `Head Teacher for ${subject} registered successfully.`
-          : "User registered successfully.",
+          : `${roleName} registered successfully.`,
       userId: newUserId,
     });
   } catch (error) {
