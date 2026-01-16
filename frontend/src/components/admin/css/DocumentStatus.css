@@ -338,23 +338,20 @@
   background: rgba(34, 197, 94, 0.8);
 }
 
-/* Inner scroll wrapper
-   NOTE: don't force the table (or immediate child) to be 100% wide — allow it to size to content so overflow works. */
+/* Inner scroll wrapper */
 .ds-table-container > * {
   overflow-x: auto;
   overflow-y: visible;
-  width: auto; /* changed from 100% to auto so table can be wider than container */
+  width: 100%;
 }
 
-/* Table Styles
-   Make table size itself to content (so it can overflow container and trigger horizontal scrollbar). */
+/* Table Styles */
 .ds-table {
-  width: max-content; /* allow table to be as wide as needed */
+  width: 100%;
   border-collapse: collapse;
-  min-width: 900px; /* minimum width to encourage overflow on small screens */
+  min-width: 1200px; /* Ensures table has minimum width */
 }
 
-/* keep thead sticky inside container */
 .ds-table thead {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
@@ -389,7 +386,6 @@
   color: white;
   font-size: 0.9rem;
   vertical-align: middle;
-  white-space: nowrap;
 }
 
 .ds-table td.ds-empty {
@@ -892,16 +888,12 @@
 }
 
 /* Mobile adjustments (max-width: 768px)
-   Important: allow horizontal scrolling for the table on small screens.
-   Ensure ancestor doesn't block it and the table sizes to content to create overflow. */
+   --- Important: allow horizontal scrolling for the table on small screens.
+   We'll avoid hiding overflow on the root wrapper so the table container can show a horizontal scrollbar. */
 @media (max-width: 768px) {
-  /* override any ancestor hiding overflow on very small screens */
-  .dashboard-main {
-    overflow-x: visible !important;
-  }
-
   .document-status {
     padding: 1rem 0.5rem;
+    /* Do NOT hide overflow here — allow inner table container to provide horizontal scrolling */
     overflow-x: visible;
   }
 
@@ -985,6 +977,7 @@
     background: rgba(34, 197, 94, 0.8);
   }
 
+  /* Hide the helper ::after used on touch devices so it doesn't block quick scrolls */
   .ds-table-container::after {
     display: none !important;
   }
@@ -1057,7 +1050,7 @@
     font-size: 0.875rem;
   }
 
-  .ds-header-card {
+  .ds-header_card {
     padding: 1.25rem;
   }
 
