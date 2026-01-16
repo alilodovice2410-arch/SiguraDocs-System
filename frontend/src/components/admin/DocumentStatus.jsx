@@ -360,80 +360,83 @@ function DocumentStatus() {
       </div>
 
       <div className="ds-table-container">
-        <table className="ds-table">
-          <thead>
-            <tr>
-              <th>Document</th>
-              <th>Type</th>
-              <th>Submitted By</th>
-              <th>Department</th>
-              <th>Status</th>
-              <th>Priority</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentDocuments.length === 0 ? (
+        {/* New scroll wrapper: handles horizontal scrolling inside the container (keeps page width stable) */}
+        <div className="ds-table-scroll">
+          <table className="ds-table">
+            <thead>
               <tr>
-                <td colSpan="8" className="ds-empty">
-                  No documents found
-                </td>
+                <th>Document</th>
+                <th>Type</th>
+                <th>Submitted By</th>
+                <th>Department</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Date</th>
+                <th>Actions</th>
               </tr>
-            ) : (
-              currentDocuments.map((doc) => (
-                <tr key={doc.document_id}>
-                  <td>
-                    <div className="ds-doc-title">
-                      <FileText size={18} />
-                      <span>{doc.title}</span>
-                    </div>
-                  </td>
-                  <td>{doc.document_type || "—"}</td>
-                  <td>
-                    <div className="ds-submitter">
-                      <User size={14} />
-                      {doc.uploader_name}
-                    </div>
-                  </td>
-                  <td>{doc.uploader_department || "—"}</td>
-                  <td>{getStatusBadge(doc.status)}</td>
-                  <td>{getPriorityBadge(doc.priority)}</td>
-                  <td>
-                    <div className="ds-date">
-                      <Calendar size={14} />
-                      {new Date(doc.created_at).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="ds-actions">
-                      <button
-                        className="ds-action-btn ds-action-view"
-                        onClick={() => handleViewDocument(doc.document_id)}
-                        title="View details"
-                      >
-                        <Eye size={16} />
-                      </button>
-                      <button
-                        className="ds-action-btn ds-action-download"
-                        onClick={() =>
-                          handleDownload(doc.document_id, doc.title)
-                        }
-                        title="Download"
-                      >
-                        <Download size={16} />
-                      </button>
-                    </div>
+            </thead>
+            <tbody>
+              {currentDocuments.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="ds-empty">
+                    No documents found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                currentDocuments.map((doc) => (
+                  <tr key={doc.document_id}>
+                    <td>
+                      <div className="ds-doc-title">
+                        <FileText size={18} />
+                        <span>{doc.title}</span>
+                      </div>
+                    </td>
+                    <td>{doc.document_type || "—"}</td>
+                    <td>
+                      <div className="ds-submitter">
+                        <User size={14} />
+                        {doc.uploader_name}
+                      </div>
+                    </td>
+                    <td>{doc.uploader_department || "—"}</td>
+                    <td>{getStatusBadge(doc.status)}</td>
+                    <td>{getPriorityBadge(doc.priority)}</td>
+                    <td>
+                      <div className="ds-date">
+                        <Calendar size={14} />
+                        {new Date(doc.created_at).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="ds-actions">
+                        <button
+                          className="ds-action-btn ds-action-view"
+                          onClick={() => handleViewDocument(doc.document_id)}
+                          title="View details"
+                        >
+                          <Eye size={16} />
+                        </button>
+                        <button
+                          className="ds-action-btn ds-action-download"
+                          onClick={() =>
+                            handleDownload(doc.document_id, doc.title)
+                          }
+                          title="Download"
+                        >
+                          <Download size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {totalPages > 1 && (

@@ -6,7 +6,9 @@
   min-height: 100vh;
   box-sizing: border-box;
   width: 100%;
-  overflow-x: auto;
+  /* Do not rely on the root wrapper for horizontal scrolling.
+     Inner table wrapper will own horizontal scroll. */
+  overflow-x: visible;
 }
 
 /* Prevent horizontal scroll overlap with sidebar */
@@ -30,6 +32,8 @@
   flex-wrap: wrap;
   position: relative;
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-header-content {
@@ -61,6 +65,7 @@
 
 .ds-header-text {
   flex: 1;
+  min-width: 0;
 }
 
 .ds-header-text h1 {
@@ -129,6 +134,8 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.25rem;
   margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-stat-card {
@@ -143,6 +150,8 @@
   gap: 1.25rem;
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   min-height: 120px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-stat-card:hover {
@@ -229,6 +238,8 @@
   grid-template-columns: 2fr repeat(3, 1fr);
   gap: 1rem;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-search {
@@ -307,7 +318,7 @@
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
+  overflow: hidden; /* container itself hides overflow; inner scroll wrapper will scroll horizontally */
   -webkit-overflow-scrolling: touch; /* Make scrolling smooth on iOS */
   overflow-y: visible;
   margin-bottom: 2rem;
@@ -315,41 +326,54 @@
   width: 100%;
   scrollbar-width: thin;
   scrollbar-color: rgba(34, 197, 94, 0.6) rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 }
 
-/* Custom Scrollbar for Table Container */
-.ds-table-container::-webkit-scrollbar {
+/* New inner scroll wrapper: ensures the table's horizontal scroll doesn't expand the page */
+.ds-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbar for Table Container (inner scroll) */
+.ds-table-scroll::-webkit-scrollbar {
   height: 12px;
 }
 
-.ds-table-container::-webkit-scrollbar-track {
+.ds-table-scroll::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 0 0 24px 24px;
 }
 
-.ds-table-container::-webkit-scrollbar-thumb {
+.ds-table-scroll::-webkit-scrollbar-thumb {
   background: rgba(34, 197, 94, 0.6);
   border-radius: 6px;
   backdrop-filter: blur(8px);
   border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.ds-table-container::-webkit-scrollbar-thumb:hover {
+.ds-table-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(34, 197, 94, 0.8);
 }
 
 /* Inner scroll wrapper */
 .ds-table-container > * {
-  overflow-x: auto;
+  /* don't force width here; keep it fluid; the scroll wrapper above will handle overflow */
+  overflow-x: visible;
   overflow-y: visible;
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* Table Styles */
+/* Let table be flexible on desktop (so the whole page can shrink), but on small screens we switch it to max-content to allow horizontal scroll inside ds-table-scroll */
 .ds-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1200px; /* Ensures table has minimum width */
+  min-width: 0; /* don't force the page to widen */
+  box-sizing: border-box;
 }
 
 .ds-table thead {
@@ -946,7 +970,7 @@
 
   /* Table container - ensure it always allows horizontal scrolling on mobile */
   .ds-table-container {
-    overflow-x: auto !important;
+    overflow: hidden; /* keep container fixed, inner wrapper will scroll */
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     width: 100%;
     margin-left: 0;
@@ -954,26 +978,26 @@
   }
 
   /* Make the scrollbar visible and touch-friendly */
-  .ds-table-container::-webkit-scrollbar {
+  .ds-table-scroll::-webkit-scrollbar {
     height: 12px;
     -webkit-appearance: none;
     display: block !important;
   }
 
-  .ds-table-container::-webkit-scrollbar-track {
+  .ds-table-scroll::-webkit-scrollbar-track {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 0 0 20px 20px;
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
   }
 
-  .ds-table-container::-webkit-scrollbar-thumb {
+  .ds-table-scroll::-webkit-scrollbar-thumb {
     background: rgba(34, 197, 94, 0.6);
     border-radius: 6px;
     backdrop-filter: blur(8px);
     border: 2px solid rgba(255, 255, 255, 0.1);
   }
 
-  .ds-table-container::-webkit-scrollbar-thumb:hover {
+  .ds-table-scroll::-webkit-scrollbar-thumb:hover {
     background: rgba(34, 197, 94, 0.8);
   }
 
@@ -1041,7 +1065,7 @@
   }
 
   .ds-table {
-    min-width: 800px; /* Even smaller for tiny devices */
+    min-width: 800px; /* Even smaller for tiny devices, still scrollable inside wrapper */
   }
 
   .ds-table th,
@@ -1067,14 +1091,14 @@
   }
 
   /* Scrollbar - even smaller on tiny screens */
-  .ds-table-container::-webkit-scrollbar {
+  .ds-table-scroll::-webkit-scrollbar {
     height: 6px;
   }
 }
 
 /* Force scrollbar visibility on touch devices */
 @media (hover: none) and (pointer: coarse) {
-  .ds-table-container {
+  .ds-table-scroll {
     overflow-x: scroll !important;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin; /* For Firefox */
