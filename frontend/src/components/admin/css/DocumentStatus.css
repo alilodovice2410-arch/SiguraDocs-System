@@ -953,3 +953,239 @@
     height: 1.5rem;
   }
 }
+
+/* Ensure proper scrolling on mobile devices */
+@media (max-width: 768px) {
+  /* Container adjustments */
+  .user-management,
+  .document-status {
+    padding: 1rem 0.5rem;
+    overflow-x: hidden; /* Prevent double scrollbars */
+  }
+
+  /* Table container - CRITICAL for mobile scrolling */
+  .um-table-container,
+  .ds-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Force scrollbar to always show on mobile */
+  .um-table-container::-webkit-scrollbar,
+  .ds-table-container::-webkit-scrollbar {
+    height: 8px; /* Smaller on mobile */
+    -webkit-appearance: none;
+  }
+
+  .um-table-container::-webkit-scrollbar-track,
+  .ds-table-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 20px 20px;
+  }
+
+  .um-table-container::-webkit-scrollbar-thumb,
+  .ds-table-container::-webkit-scrollbar-thumb {
+    background: rgba(168, 85, 247, 0.6);
+    border-radius: 4px;
+  }
+
+  /* Table sizing for mobile */
+  .um-table,
+  .ds-table {
+    min-width: 900px; /* Reduced from 1200px for mobile */
+    width: max-content; /* Allow table to be as wide as needed */
+  }
+
+  /* Ensure all cells are visible */
+  .um-table th,
+  .um-table td,
+  .ds-table th,
+  .ds-table td {
+    white-space: nowrap;
+    padding: 1rem 0.75rem; /* Slightly reduced padding */
+  }
+
+  /* Header adjustments */
+  .um-header,
+  .ds-header-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .um-header-left,
+  .ds-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Filters - stack on mobile */
+  .um-filters,
+  .ds-filters {
+    flex-direction: column;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .um-filter-select,
+  .ds-filter-select {
+    width: 100%;
+    min-width: auto;
+  }
+
+  /* Buttons */
+  .um-btn-primary,
+  .ds-btn-refresh,
+  .ds-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Stats grid */
+  .ds-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  /* Modal adjustments */
+  .um-modal,
+  .ds-modal {
+    max-width: calc(100vw - 1rem);
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
+  }
+
+  .um-form-row,
+  .ds-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .um-modal-form,
+  .ds-modal-body {
+    padding: 1.5rem;
+  }
+
+  .um-modal-actions,
+  .ds-modal-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .um-btn-secondary,
+  .ds-btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .user-management,
+  .document-status {
+    padding: 0.75rem 0.25rem;
+  }
+
+  /* Further reduce table for very small screens */
+  .um-table,
+  .ds-table {
+    min-width: 800px; /* Even smaller for tiny devices */
+  }
+
+  .um-table th,
+  .um-table td,
+  .ds-table th,
+  .ds-table td {
+    padding: 0.875rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .um-header,
+  .ds-header-card {
+    padding: 1.25rem;
+  }
+
+  .um-filters,
+  .ds-filters {
+    padding: 1rem;
+  }
+
+  /* Smaller stat cards */
+  .ds-stat-card {
+    padding: 1.25rem;
+  }
+
+  .ds-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
+  }
+
+  .ds-stat-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .ds-stat-value {
+    font-size: 2rem;
+  }
+
+  /* Scrollbar - even smaller on tiny screens */
+  .um-table-container::-webkit-scrollbar,
+  .ds-table-container::-webkit-scrollbar {
+    height: 6px;
+  }
+}
+
+/* Force scrollbar visibility on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .um-table-container,
+  .ds-table-container {
+    overflow-x: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; /* For Firefox */
+  }
+
+  /* Show scrollbar indicator */
+  .um-table-container::after,
+  .ds-table-container::after {
+    content: "← Scroll to see more →";
+    position: sticky;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
+    text-align: center;
+    background: rgba(168, 85, 247, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    animation: fadeInOut 3s ease-in-out infinite;
+  }
+
+  @keyframes fadeInOut {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .um-table,
+  .ds-table {
+    min-width: 1000px; /* Slightly wider in landscape */
+  }
+}
