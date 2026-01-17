@@ -5,10 +5,12 @@ import {
   Plus,
   Edit,
   Trash2,
-  MoreVertical,
-  X,
   Eye,
   EyeOff,
+  X,
+  Clock,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import api from "../../services/api";
 import "./css/UserManagement.css";
@@ -20,8 +22,9 @@ function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all"); // NEW: Filter by approval status
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("create"); // 'create' or 'edit'
+  const [modalMode, setModalMode] = useState("create");
   const [selectedUser, setSelectedUser] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,8 +34,8 @@ function UserManagement() {
     full_name: "",
     role_id: "",
     department: "",
-    employee_id: "", // Added employee_id field
-    subject: "", // Added subject field for Head Teachers
+    employee_id: "",
+    subject: "",
   });
 
   useEffect(() => {
@@ -68,7 +71,6 @@ function UserManagement() {
       setRoles(response.data.roles);
     } catch (error) {
       console.error("Failed to fetch roles:", error);
-      // Fallback roles if endpoint doesn't exist
       setRoles([
         { role_id: 1, role_name: "Admin" },
         { role_id: 2, role_name: "Principal" },
@@ -90,8 +92,8 @@ function UserManagement() {
         full_name: user.full_name,
         role_id: user.role_id,
         department: user.department || "",
-        employee_id: user.employee_id || "", // Include employee_id for edit
-        subject: user.subject || "", // Include subject for edit
+        employee_id: user.employee_id || "",
+        subject: user.subject || "",
       });
     } else {
       setFormData({
@@ -101,8 +103,8 @@ function UserManagement() {
         full_name: "",
         role_id: "",
         department: "",
-        employee_id: "", // Reset employee_id
-        subject: "", // Reset subject
+        employee_id: "",
+        subject: "",
       });
     }
     setShowModal(true);
@@ -136,10 +138,8 @@ function UserManagement() {
     e.preventDefault();
     try {
       if (modalMode === "create") {
-        // Prepare data for registration
         const registrationData = {
           ...formData,
-          // Only include subject if role is Head Teacher (role_id = 3)
           subject:
             parseInt(formData.role_id) === 3 ? formData.subject : undefined,
         };
@@ -147,7 +147,6 @@ function UserManagement() {
         await api.post("/auth/register", registrationData);
         alert("User created successfully!");
       } else {
-        // Update user endpoint
         await api.put(`/admin/users/${selectedUser.user_id}`, formData);
         alert("User updated successfully!");
       }
@@ -181,10 +180,40 @@ function UserManagement() {
     const matchesRole =
       filterRole === "all" || user.role_id === parseInt(filterRole);
 
-    return matchesSearch && matchesRole;
+    // NEW: Filter by approval status
+    const matchesStatus =
+      filterStatus === "all" || user.approval_status === filterStatus;
+
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
-  // Check if selected role is Head Teacher
+  // Get approval status badge
+  const getApprovalBadge = (approvalStatus) => {
+    if (approvalStatus === "pending") {
+      return (
+        <span className="um-approval-badge pending">
+          <Clock size={14} />
+          Pending
+        </span>
+      );
+    } else if (approvalStatus === "approved") {
+      return (
+        <span className="um-approval-badge approved">
+          <CheckCircle size={14} />
+          Approved
+        </span>
+      );
+    } else if (approvalStatus === "rejected") {
+      return (
+        <span className="um-approval-badge rejected">
+          <XCircle size={14} />
+          Rejected
+        </span>
+      );
+    }
+    return null;
+  };
+
   const isHeadTeacher = parseInt(formData.role_id) === 3;
 
   if (loading) {
@@ -241,6 +270,17 @@ function UserManagement() {
             </option>
           ))}
         </select>
+        {/* NEW: Approval Status Filter */}
+        <select
+          className="um-filter-select"
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="all">All Status</option>
+          <option value="approved">Approved</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+        </select>
       </div>
 
       {/* Users Table */}
@@ -254,6 +294,7 @@ function UserManagement() {
               <th>Department</th>
               <th>Subject</th>
               <th>Employee ID</th>
+              <th>Status</th> {/* NEW: Approval Status Column */}
               <th>Created At</th>
               <th>Actions</th>
             </tr>
@@ -261,7 +302,7 @@ function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan="8" className="um-empty">
+                <td colSpan="9" className="um-empty">
                   No users found
                 </td>
               </tr>
@@ -285,17 +326,18 @@ function UserManagement() {
                       {roles.find((r) => r.role_id === user.role_id)?.role_name}
                     </span>
                   </td>
-                  <td>{user.department || "—"}</td>
+                  <td>{user.department || "–"}</td>
                   <td>
                     {user.role_id === 3 ? (
                       <span className="um-subject-badge">
-                        {user.subject || "—"}
+                        {user.subject || "–"}
                       </span>
                     ) : (
-                      "—"
+                      "–"
                     )}
                   </td>
-                  <td>{user.employee_id || "—"}</td>
+                  <td>{user.employee_id || "–"}</td>
+                  <td>{getApprovalBadge(user.approval_status)}</td> {/* NEW */}
                   <td>
                     {new Date(user.created_at).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -328,7 +370,7 @@ function UserManagement() {
         </table>
       </div>
 
-      {/* Modal */}
+      {/* Modal (unchanged) */}
       {showModal && (
         <div className="um-modal-overlay" onClick={handleCloseModal}>
           <div className="um-modal" onClick={(e) => e.stopPropagation()}>

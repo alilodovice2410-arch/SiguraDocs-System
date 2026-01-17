@@ -6,7 +6,7 @@ const checkRole = require("../middleware/roleCheck");
 const bcrypt = require("bcryptjs");
 const { logActivity, ACTIONS } = require("../utils/auditLogger");
 
-// Get all users (Admin only)
+// Get all users (Admin/Principal only) - UPDATED to include approval_status
 router.get(
   "/users",
   authenticateToken,
@@ -16,7 +16,7 @@ router.get(
       const [users] = await pool.query(`
         SELECT u.user_id, u.username, u.email, u.full_name, u.department, 
                u.role_id, r.role_name, u.status, u.created_at, 
-               u.employee_id, u.subject
+               u.employee_id, u.subject, u.approval_status
         FROM users u
         JOIN roles r ON u.role_id = r.role_id
         ORDER BY u.created_at DESC
@@ -77,7 +77,7 @@ router.get("/departments", authenticateToken, async (req, res) => {
   }
 });
 
-// Update user
+// Update user - UPDATED to handle approval_status and subject
 router.put(
   "/users/:userId",
   authenticateToken,
@@ -85,11 +85,19 @@ router.put(
   async (req, res) => {
     try {
       const { userId } = req.params;
-      const { email, password, full_name, role_id, department } = req.body;
+      const {
+        email,
+        password,
+        full_name,
+        role_id,
+        department,
+        employee_id,
+        subject,
+      } = req.body;
 
       // Get user info before update for logging
       const [userBefore] = await pool.query(
-        "SELECT username, full_name, email, role_id, department FROM users WHERE user_id = ?",
+        "SELECT username, full_name, email, role_id, department, employee_id, subject FROM users WHERE user_id = ?",
         [userId]
       );
 
@@ -98,6 +106,33 @@ router.put(
           success: false,
           message: "User not found.",
         });
+      }
+
+      // Validate subject for Head Teachers
+      if (parseInt(role_id) === 3 && !subject) {
+        return res.status(400).json({
+          success: false,
+          message: "Subject is required for Head Teacher role.",
+        });
+      }
+
+      // Check if email or employee_id is already used by another user
+      if (email || employee_id) {
+        const [existingUsers] = await pool.query(
+          "SELECT user_id FROM users WHERE (email = ? OR employee_id = ?) AND user_id != ?",
+          [
+            email || userBefore[0].email,
+            employee_id || userBefore[0].employee_id,
+            userId,
+          ]
+        );
+
+        if (existingUsers.length > 0) {
+          return res.status(400).json({
+            success: false,
+            message: "Email or Employee ID already in use by another user.",
+          });
+        }
       }
 
       // Build update query dynamically
@@ -129,6 +164,30 @@ router.put(
         changes.push(`department updated`);
       }
 
+      if (
+        employee_id !== undefined &&
+        employee_id !== userBefore[0].employee_id
+      ) {
+        updateFields.push("employee_id = ?");
+        updateValues.push(employee_id);
+        changes.push(`employee ID updated`);
+      }
+
+      // Handle subject - only for Head Teachers (role_id = 3)
+      if (parseInt(role_id) === 3) {
+        if (subject !== undefined && subject !== userBefore[0].subject) {
+          updateFields.push("subject = ?");
+          updateValues.push(subject);
+          changes.push(`subject updated to ${subject}`);
+        }
+      } else {
+        // Clear subject for non-Head Teachers
+        if (userBefore[0].subject) {
+          updateFields.push("subject = NULL");
+          changes.push(`subject cleared`);
+        }
+      }
+
       if (password) {
         const password_hash = await bcrypt.hash(password, 10);
         updateFields.push("password_hash = ?");
@@ -157,7 +216,7 @@ router.put(
         });
       }
 
-      // ⭐ Log the update activity
+      // Log the update activity
       await logActivity(
         req.user.user_id,
         ACTIONS.USER_UPDATED,
@@ -227,7 +286,7 @@ router.delete(
         });
       }
 
-      // ⭐ Log activity
+      // Log activity
       await logActivity(
         req.user.user_id,
         ACTIONS.USER_DELETED,
@@ -358,7 +417,7 @@ router.post(
         [doc_type_id, step_order, approver_role, target_department_id || null]
       );
 
-      // ⭐ Log activity
+      // Log activity
       await logActivity(
         req.user.user_id,
         ACTIONS.MATRIX_UPDATED,
