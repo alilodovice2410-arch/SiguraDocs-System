@@ -6,6 +6,8 @@
   background-position: center;
   background-attachment: fixed;
   min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* ========================================
@@ -22,8 +24,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  z-index: 1;
 }
 
 .um-header-left {
@@ -51,7 +51,7 @@
 }
 
 .um-header h1 {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 700;
   color: white;
   margin: 0 0 0.5rem 0;
@@ -60,7 +60,7 @@
 }
 
 .um-header p {
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: white;
   margin: 0;
   font-weight: 500;
@@ -72,13 +72,13 @@
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 1rem 1.75rem;
+  padding: 0.875rem 1.5rem;
   background: rgba(34, 197, 94, 0.85);
   backdrop-filter: blur(8px);
   color: white;
   border: 1px solid rgba(34, 197, 94, 0.5);
   border-radius: 14px;
-  font-size: 1rem;
+  font-size: 0.938rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -93,8 +93,8 @@
 }
 
 .um-btn-primary svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.125rem;
+  height: 1.125rem;
 }
 
 .um-btn-secondary {
@@ -122,38 +122,36 @@
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 20px;
-  padding: 1.75rem;
+  padding: 1.5rem;
   margin-bottom: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1rem;
 }
 
 .um-search {
-  flex: 1;
-  min-width: 280px;
   position: relative;
 }
 
 .um-search-icon {
   position: absolute;
-  left: 1.25rem;
+  left: 1.125rem;
   top: 50%;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.7);
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.125rem;
+  height: 1.125rem;
   pointer-events: none;
 }
 
 .um-search input {
   width: 100%;
-  padding: 1.125rem 1.5rem 1.125rem 3.75rem;
+  padding: 0.875rem 1.25rem 0.875rem 3.25rem;
   border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  font-size: 1rem;
+  border-radius: 12px;
+  font-size: 0.938rem;
   color: white;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
@@ -172,10 +170,10 @@
 }
 
 .um-filter-select {
-  padding: 1.125rem 3.5rem 1.125rem 1.5rem;
+  padding: 0.875rem 3rem 0.875rem 1.25rem;
   border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  font-size: 0.938rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
   font-weight: 500;
   color: white;
   background: rgba(255, 255, 255, 0.08);
@@ -185,8 +183,7 @@
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1.25rem center;
-  min-width: 180px;
+  background-position: right 1rem center;
 }
 
 .um-filter-select:focus {
@@ -216,7 +213,6 @@
 .um-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1200px;
 }
 
 .um-table thead {
@@ -225,9 +221,9 @@
 }
 
 .um-table th {
-  padding: 1.25rem 1.5rem;
+  padding: 1.125rem 1.5rem;
   text-align: left;
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   font-weight: 700;
   color: white;
   text-transform: uppercase;
@@ -251,9 +247,9 @@
 }
 
 .um-table td {
-  padding: 1.25rem 1.5rem;
+  padding: 1.125rem 1.5rem;
   color: white;
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   vertical-align: middle;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
@@ -266,8 +262,8 @@
 }
 
 .um-user-avatar {
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
   border-radius: 12px;
   background: rgba(34, 197, 94, 0.25);
   backdrop-filter: blur(8px);
@@ -275,7 +271,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 1rem;
   color: #6ee7b7;
   border: 1px solid rgba(34, 197, 94, 0.35);
   flex-shrink: 0;
@@ -285,19 +281,20 @@
   font-weight: 600;
   color: white;
   margin-bottom: 0.25rem;
+  font-size: 0.875rem;
 }
 
 .um-user-username {
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   color: rgba(255, 255, 255, 0.7);
 }
 
 /* Role Badges */
 .um-role-badge {
   display: inline-block;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.875rem;
   border-radius: 10px;
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
   border: 1px solid;
@@ -341,7 +338,7 @@
   border: 1px solid rgba(59, 130, 246, 0.35);
   padding: 0.375rem 0.875rem;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
   display: inline-block;
@@ -352,13 +349,19 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.875rem;
   border-radius: 10px;
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
   border: 1px solid;
   white-space: nowrap;
+}
+
+.um-approval-badge svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
 }
 
 .um-approval-badge.pending {
@@ -382,9 +385,9 @@
 /* Status Badges */
 .um-status-badge {
   display: inline-block;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.875rem;
   border-radius: 10px;
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
   border: 1px solid;
@@ -406,12 +409,12 @@
 /* Action Buttons */
 .um-actions {
   display: flex;
-  gap: 0.625rem;
+  gap: 0.5rem;
 }
 
 .um-action-btn {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.125rem;
+  height: 2.125rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -423,6 +426,11 @@
   background: rgba(59, 130, 246, 0.25);
   color: #93c5fd;
   border-color: rgba(59, 130, 246, 0.35);
+}
+
+.um-action-btn svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .um-action-btn:hover {
@@ -535,7 +543,7 @@
 
 .um-form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -547,7 +555,7 @@
 }
 
 .um-form-group label {
-  font-size: 0.938rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: white;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -559,10 +567,10 @@
 
 .um-form-group input,
 .um-form-group select {
-  padding: 1rem 1.25rem;
+  padding: 0.875rem 1.125rem;
   border: 1.5px solid rgba(255, 255, 255, 0.25);
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.938rem;
   color: white;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
@@ -677,19 +685,8 @@
    RESPONSIVE DESIGN
    ======================================== */
 @media (max-width: 1200px) {
-  .um-table {
-    min-width: 1000px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .um-filters {
-    flex-direction: column;
-  }
-
-  .um-search,
-  .um-filter-select {
-    width: 100%;
+  .user-management {
+    padding: 1.5rem;
   }
 }
 
@@ -699,44 +696,17 @@
   }
 
   .um-header {
-    padding: 2rem;
     flex-direction: column;
     align-items: flex-start;
     gap: 1.5rem;
+    padding: 1.5rem;
   }
 
-  .um-header h1 {
-    font-size: 1.75rem;
-  }
-
-  .um-btn-primary {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .um-modal {
-    max-width: 100%;
+  .um-filters {
+    grid-template-columns: 1fr;
   }
 
   .um-form-row {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .um-header {
-    padding: 1.5rem;
-  }
-
-  .um-header h1 {
-    font-size: 1.5rem;
-  }
-
-  .um-filters {
-    padding: 1.25rem;
-  }
-
-  .um-modal-form {
-    padding: 1.5rem;
   }
 }
