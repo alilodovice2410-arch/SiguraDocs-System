@@ -5,11 +5,12 @@
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  background-repeat: no-repeat;
   min-height: 100vh;
 }
 
-/* HEADER SECTION - Glassmorphism */
+/* ========================================
+   HEADER SECTION - Glassmorphism
+   ======================================== */
 .um-header {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.15);
@@ -34,19 +35,19 @@
 .um-header-icon {
   width: 3.5rem;
   height: 3.5rem;
-  background: rgba(168, 85, 247, 0.25);
+  background: rgba(34, 197, 94, 0.25);
   backdrop-filter: blur(8px);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #c4b5fd;
-  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: #6ee7b7;
+  border: 1px solid rgba(34, 197, 94, 0.35);
 }
 
 .um-header-icon svg {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .um-header h1 {
@@ -66,29 +67,29 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* BUTTONS - Glassmorphism */
+/* Buttons - Glassmorphism */
 .um-btn-primary {
   display: flex;
   align-items: center;
   gap: 0.625rem;
   padding: 1rem 1.75rem;
-  background: rgba(168, 85, 247, 0.85);
+  background: rgba(34, 197, 94, 0.85);
   backdrop-filter: blur(8px);
   color: white;
-  border: 1px solid rgba(168, 85, 247, 0.5);
+  border: 1px solid rgba(34, 197, 94, 0.5);
   border-radius: 14px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .um-btn-primary:hover {
-  background: rgba(168, 85, 247, 1);
+  background: rgba(34, 197, 94, 1);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
 }
 
 .um-btn-primary svg {
@@ -97,11 +98,11 @@
 }
 
 .um-btn-secondary {
-  padding: 1rem 1.75rem;
-  background: rgba(255, 255, 255, 0.15);
+  padding: 0.875rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 14px;
   font-size: 1rem;
   font-weight: 600;
@@ -110,12 +111,13 @@
 }
 
 .um-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* FILTERS - Glassmorphism */
+/* ========================================
+   FILTERS - Glassmorphism
+   ======================================== */
 .um-filters {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
@@ -125,11 +127,13 @@
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   display: flex;
+  flex-wrap: wrap;
   gap: 1.25rem;
 }
 
 .um-search {
   flex: 1;
+  min-width: 280px;
   position: relative;
 }
 
@@ -162,9 +166,9 @@
 }
 
 .um-search input:focus {
-  border-color: rgba(168, 85, 247, 0.6);
+  border-color: rgba(34, 197, 94, 0.6);
   background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
 }
 
 .um-filter-select {
@@ -183,13 +187,13 @@
   background-repeat: no-repeat;
   background-position: right 1.25rem center;
   min-width: 180px;
-  outline: none;
 }
 
 .um-filter-select:focus {
-  border-color: rgba(168, 85, 247, 0.6);
+  outline: none;
+  border-color: rgba(34, 197, 94, 0.6);
   background-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
 }
 
 .um-filter-select option {
@@ -197,64 +201,45 @@
   color: white;
 }
 
-/* TABLE CONTAINER - Glassmorphism */
+/* ========================================
+   TABLE CONTAINER - Glassmorphism
+   ======================================== */
 .um-table-container {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
+  overflow-x: auto;
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  overflow-x: auto; /* Enable horizontal scroll */
-  overflow-y: visible;
 }
 
-/* Custom Scrollbar for Table Container */
-.um-table-container::-webkit-scrollbar {
-  height: 12px;
-}
-
-.um-table-container::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0 0 24px 24px;
-}
-
-.um-table-container::-webkit-scrollbar-thumb {
-  background: rgba(168, 85, 247, 0.5);
-  border-radius: 6px;
-  backdrop-filter: blur(8px);
-}
-
-.um-table-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(168, 85, 247, 0.7);
-}
-
-/* Table */
 .um-table {
   width: 100%;
-  min-width: 1200px; /* Ensure minimum width for all columns to fit */
   border-collapse: collapse;
+  min-width: 1200px;
 }
 
 .um-table thead {
   background: rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
 }
 
 .um-table th {
-  padding: 1.25rem 1.75rem;
+  padding: 1.25rem 1.5rem;
   text-align: left;
   font-size: 0.875rem;
   font-weight: 700;
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  white-space: nowrap;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  white-space: nowrap; /* Prevent header wrapping */
 }
 
 .um-table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .um-table tbody tr:hover {
@@ -266,22 +251,14 @@
 }
 
 .um-table td {
-  padding: 1.25rem 1.75rem;
-  font-size: 0.938rem;
+  padding: 1.25rem 1.5rem;
   color: white;
-  white-space: nowrap; /* Prevent cell content wrapping */
+  font-size: 0.938rem;
+  vertical-align: middle;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
-.um-empty {
-  text-align: center;
-  padding: 4rem 2rem !important;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.125rem;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  white-space: normal; /* Allow wrapping for empty state */
-}
-
-/* User Info - Glassmorphism */
+/* User Info Cell */
 .um-user-info {
   display: flex;
   align-items: center;
@@ -291,98 +268,195 @@
 .um-user-avatar {
   width: 2.75rem;
   height: 2.75rem;
-  border-radius: 50%;
-  background: rgba(168, 85, 247, 0.25);
+  border-radius: 12px;
+  background: rgba(34, 197, 94, 0.25);
   backdrop-filter: blur(8px);
-  color: #c4b5fd;
-  border: 1px solid rgba(168, 85, 247, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1.125rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  color: #6ee7b7;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  flex-shrink: 0;
 }
 
 .um-user-name {
   font-weight: 600;
   color: white;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.25rem;
 }
 
 .um-user-username {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Role Badge - Glassmorphism */
+/* Role Badges */
 .um-role-badge {
   display: inline-block;
-  padding: 0.5rem 0.875rem;
+  padding: 0.5rem 1rem;
   border-radius: 10px;
-  font-size: 0.813rem;
+  font-size: 0.875rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
   border: 1px solid;
+  white-space: nowrap;
 }
 
 .um-role-1 {
-  background: rgba(234, 179, 8, 0.25);
-  color: #fde047;
-  border-color: rgba(234, 179, 8, 0.35);
-}
-
-.um-role-2 {
-  background: rgba(59, 130, 246, 0.25);
-  color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.35);
-}
-
-.um-role-3 {
-  background: rgba(34, 197, 94, 0.25);
-  color: #6ee7b7;
-  border-color: rgba(34, 197, 94, 0.35);
-}
-
-.um-role-4 {
-  background: rgba(168, 85, 247, 0.25);
-  color: #c4b5fd;
-  border-color: rgba(168, 85, 247, 0.35);
-}
-
-.um-role-5 {
   background: rgba(239, 68, 68, 0.25);
   color: #fca5a5;
   border-color: rgba(239, 68, 68, 0.35);
 }
 
-/* Actions */
+.um-role-2 {
+  background: rgba(168, 85, 247, 0.25);
+  color: #c4b5fd;
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+.um-role-3 {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.um-role-4 {
+  background: rgba(34, 197, 94, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.um-role-5 {
+  background: rgba(156, 163, 175, 0.25);
+  color: #d1d5db;
+  border-color: rgba(156, 163, 175, 0.35);
+}
+
+/* Subject Badge */
+.um-subject-badge {
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  display: inline-block;
+}
+
+/* Approval Badges */
+.um-approval-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.um-approval-badge.pending {
+  background: rgba(251, 146, 60, 0.25);
+  color: #fdba74;
+  border-color: rgba(251, 146, 60, 0.35);
+}
+
+.um-approval-badge.approved {
+  background: rgba(34, 197, 94, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.um-approval-badge.rejected {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* Status Badges */
+.um-status-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.um-status-badge.active {
+  background: rgba(34, 197, 94, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.um-status-badge.inactive {
+  background: rgba(156, 163, 175, 0.25);
+  color: #d1d5db;
+  border-color: rgba(156, 163, 175, 0.35);
+}
+
+/* Action Buttons */
 .um-actions {
   display: flex;
   gap: 0.625rem;
 }
 
 .um-action-btn {
-  padding: 0.625rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  color: white;
-  cursor: pointer;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 10px;
+  border: 1px solid;
+  cursor: pointer;
   transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  background: rgba(59, 130, 246, 0.25);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .um-action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(59, 130, 246, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.um-action-delete:hover {
+.um-action-disable {
   background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.4);
   color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.um-action-disable:hover {
+  background: rgba(239, 68, 68, 0.4);
+}
+
+.um-action-enable {
+  background: rgba(34, 197, 94, 0.25);
+  color: #6ee7b7;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.um-action-enable:hover {
+  background: rgba(34, 197, 94, 0.4);
+}
+
+/* Empty State */
+.um-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.125rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 /* ========================================
@@ -394,32 +468,32 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .um-modal {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 700px;
   width: 100%;
-  max-width: 650px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
 .um-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem;
+  padding: 2rem 2.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -434,33 +508,36 @@
 .um-modal-close {
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  color: white;
-  cursor: pointer;
-  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .um-modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  background: rgba(239, 68, 68, 0.3);
+  transform: rotate(90deg);
 }
 
-/* Form - Glassmorphism */
+.um-modal-close svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .um-modal-form {
-  padding: 2rem;
+  padding: 2.5rem;
 }
 
 .um-form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  margin-bottom: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .um-form-group {
@@ -472,7 +549,7 @@
 .um-form-group label {
   font-size: 0.938rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.9);
+  color: white;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
@@ -482,10 +559,10 @@
 
 .um-form-group input,
 .um-form-group select {
-  padding: 1.125rem 1.5rem;
+  padding: 1rem 1.25rem;
   border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  font-size: 0.938rem;
+  border-radius: 12px;
+  font-size: 1rem;
   color: white;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(8px);
@@ -499,15 +576,23 @@
 
 .um-form-group input:focus,
 .um-form-group select:focus {
-  border-color: rgba(168, 85, 247, 0.6);
+  border-color: rgba(34, 197, 94, 0.6);
   background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.15);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
 }
 
 .um-form-group input:disabled {
-  background: rgba(255, 255, 255, 0.05);
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+}
+
+.um-form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 3rem;
 }
 
 .um-form-group select option {
@@ -515,14 +600,12 @@
   color: white;
 }
 
-/* Password Input */
 .um-password-input {
   position: relative;
 }
 
 .um-password-input input {
-  width: 100%;
-  padding-right: 3rem;
+  padding-right: 3.5rem;
 }
 
 .um-password-toggle {
@@ -530,30 +613,26 @@
   right: 1rem;
   top: 50%;
   transform: translateY(-50%);
+  background: transparent;
   border: none;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .um-password-toggle:hover {
-  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
-/* Modal Actions */
 .um-modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -597,6 +676,23 @@
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
+@media (max-width: 1200px) {
+  .um-table {
+    min-width: 1000px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .um-filters {
+    flex-direction: column;
+  }
+
+  .um-search,
+  .um-filter-select {
+    width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .user-management {
     padding: 1rem;
@@ -618,29 +714,12 @@
     justify-content: center;
   }
 
-  .um-filters {
-    flex-direction: column;
-  }
-
-  .um-filter-select {
-    width: 100%;
-  }
-
-  .um-table-container {
-    overflow-x: auto;
-  }
-
-  .um-table {
-    min-width: 800px;
+  .um-modal {
+    max-width: 100%;
   }
 
   .um-form-row {
     grid-template-columns: 1fr;
-  }
-
-  .um-modal {
-    max-width: 100%;
-    margin: 1rem;
   }
 }
 
@@ -660,83 +739,4 @@
   .um-modal-form {
     padding: 1.5rem;
   }
-}
-
-.um-approval-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-}
-
-.um-approval-badge.pending {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fbbf24;
-}
-
-.um-approval-badge.approved {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #10b981;
-}
-
-.um-approval-badge.rejected {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #ef4444;
-}
-
-.um-approval-badge svg {
-  width: 14px;
-  height: 14px;
-}
-
-/* Update table to accommodate new column */
-.um-table th:nth-child(7),
-.um-table td:nth-child(7) {
-  text-align: center;
-  min-width: 120px;
-}
-
-.um-action-disable:hover {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
-}
-
-.um-action-enable:hover {
-  background: rgba(34, 197, 94, 0.25);
-  border-color: rgba(34, 197, 94, 0.4);
-  color: #6ee7b7;
-}
-
-/* Status Badge */
-.um-status-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
-  border-radius: 10px;
-  font-size: 0.813rem;
-  font-weight: 600;
-  backdrop-filter: blur(8px);
-  border: 1px solid;
-}
-
-.um-status-badge.active {
-  background: rgba(34, 197, 94, 0.25);
-  color: #6ee7b7;
-  border-color: rgba(34, 197, 94, 0.35);
-}
-
-.um-status-badge.inactive {
-  background: rgba(156, 163, 175, 0.25);
-  color: #d1d5db;
-  border-color: rgba(156, 163, 175, 0.35);
 }
