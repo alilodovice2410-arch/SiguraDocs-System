@@ -243,7 +243,83 @@ router.put(
   }
 );
 
-// Delete user
+// Toggle user status (Admin only) - Disable/Enable instead of delete
+router.put(
+  "/users/:userId/toggle-status",
+  authenticateToken,
+  checkRole("Admin"),
+  async (req, res) => {
+    try {
+      const { userId } = req.params;
+
+      // Prevent toggling own account
+      if (parseInt(userId) === req.user.user_id) {
+        return res.status(400).json({
+          success: false,
+          message: "You cannot disable your own account.",
+        });
+      }
+
+      // Get user info
+      const [user] = await pool.query(
+        "SELECT username, full_name, status FROM users WHERE user_id = ?",
+        [userId]
+      );
+
+      if (user.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found.",
+        });
+      }
+
+      // Toggle status
+      const newStatus = user[0].status === "active" ? "inactive" : "active";
+
+      const [result] = await pool.query(
+        "UPDATE users SET status = ? WHERE user_id = ?",
+        [newStatus, userId]
+      );
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "User not found.",
+        });
+      }
+
+      // Log activity
+      const action = newStatus === "inactive" ? "disabled" : "enabled";
+      await logActivity(
+        req.user.user_id,
+        ACTIONS.USER_UPDATED,
+        null,
+        `${action.charAt(0).toUpperCase() + action.slice(1)} user: ${
+          user[0].username
+        } (${user[0].full_name})`,
+        req.ip,
+        req.get("user-agent")
+      );
+
+      console.log(`✅ User ${action}: ${user[0].username}`);
+
+      res.json({
+        success: true,
+        message: `User ${action} successfully.`,
+        newStatus: newStatus,
+      });
+    } catch (error) {
+      console.error("Toggle user status error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update user status.",
+        error: error.message,
+      });
+    }
+  }
+);
+
+// Keep the original delete route but make it only for Admins and truly delete
 router.delete(
   "/users/:userId",
   authenticateToken,
@@ -273,7 +349,7 @@ router.delete(
         });
       }
 
-      // Instead of hard delete, we'll set status to 'inactive'
+      // Set status to 'inactive' (soft delete)
       const [result] = await pool.query(
         "UPDATE users SET status = 'inactive' WHERE user_id = ?",
         [userId]

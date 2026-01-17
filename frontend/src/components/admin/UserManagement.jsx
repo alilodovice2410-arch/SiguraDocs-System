@@ -4,13 +4,14 @@ import {
   Search,
   Plus,
   Edit,
-  Trash2,
   Eye,
   EyeOff,
   X,
   Clock,
   CheckCircle,
   XCircle,
+  UserX,
+  UserCheck,
 } from "lucide-react";
 import api from "../../services/api";
 import "./css/UserManagement.css";
@@ -22,7 +23,8 @@ function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("all"); // NEW: Filter by approval status
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterAccountStatus, setFilterAccountStatus] = useState("all"); // NEW: Filter by active/inactive
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [selectedUser, setSelectedUser] = useState(null);
@@ -158,16 +160,18 @@ function UserManagement() {
     }
   };
 
-  const handleDeleteUser = async (userId) => {
-    if (!confirm("Are you sure you want to delete this user?")) return;
+  // NEW: Toggle user status (active/inactive)
+  const handleToggleStatus = async (userId, currentStatus, userName) => {
+    const action = currentStatus === "active" ? "disable" : "enable";
+    if (!confirm(`Are you sure you want to ${action} ${userName}?`)) return;
 
     try {
-      await api.delete(`/admin/users/${userId}`);
-      alert("User deleted successfully!");
+      const response = await api.put(`/admin/users/${userId}/toggle-status`);
+      alert(response.data.message);
       fetchUsers();
     } catch (error) {
-      console.error("Failed to delete user:", error);
-      alert(error.response?.data?.message || "Failed to delete user");
+      console.error("Failed to toggle user status:", error);
+      alert(error.response?.data?.message || `Failed to ${action} user`);
     }
   };
 
@@ -180,11 +184,17 @@ function UserManagement() {
     const matchesRole =
       filterRole === "all" || user.role_id === parseInt(filterRole);
 
-    // NEW: Filter by approval status
+    // Filter by approval status
     const matchesStatus =
       filterStatus === "all" || user.approval_status === filterStatus;
 
-    return matchesSearch && matchesRole && matchesStatus;
+    // NEW: Filter by account status (active/inactive)
+    const matchesAccountStatus =
+      filterAccountStatus === "all" || user.status === filterAccountStatus;
+
+    return (
+      matchesSearch && matchesRole && matchesStatus && matchesAccountStatus
+    );
   });
 
   // Get approval status badge
@@ -270,16 +280,26 @@ function UserManagement() {
             </option>
           ))}
         </select>
-        {/* NEW: Approval Status Filter */}
+        {/* Approval Status Filter */}
         <select
           className="um-filter-select"
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
         >
-          <option value="all">All Status</option>
+          <option value="all">All Approval Status</option>
           <option value="approved">Approved</option>
           <option value="pending">Pending</option>
           <option value="rejected">Rejected</option>
+        </select>
+        {/* NEW: Account Status Filter */}
+        <select
+          className="um-filter-select"
+          value={filterAccountStatus}
+          onChange={(e) => setFilterAccountStatus(e.target.value)}
+        >
+          <option value="all">All Accounts</option>
+          <option value="active">Active Only</option>
+          <option value="inactive">Inactive Only</option>
         </select>
       </div>
 
@@ -294,7 +314,8 @@ function UserManagement() {
               <th>Department</th>
               <th>Subject</th>
               <th>Employee ID</th>
-              <th>Status</th> {/* NEW: Approval Status Column */}
+              <th>Approval</th>
+              <th>Account</th> {/* NEW: Account Status Column */}
               <th>Created At</th>
               <th>Actions</th>
             </tr>
@@ -302,7 +323,7 @@ function UserManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan="9" className="um-empty">
+                <td colSpan="10" className="um-empty">
                   No users found
                 </td>
               </tr>
@@ -337,7 +358,17 @@ function UserManagement() {
                     )}
                   </td>
                   <td>{user.employee_id || "–"}</td>
-                  <td>{getApprovalBadge(user.approval_status)}</td> {/* NEW */}
+                  <td>{getApprovalBadge(user.approval_status)}</td>
+                  {/* NEW: Account Status Badge */}
+                  <td>
+                    <span
+                      className={`um-status-badge ${
+                        user.status === "active" ? "active" : "inactive"
+                      }`}
+                    >
+                      {user.status === "active" ? "Active" : "Inactive"}
+                    </span>
+                  </td>
                   <td>
                     {new Date(user.created_at).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -354,12 +385,31 @@ function UserManagement() {
                       >
                         <Edit size={16} />
                       </button>
+                      {/* NEW: Toggle Status Button */}
                       <button
-                        className="um-action-btn um-action-delete"
-                        onClick={() => handleDeleteUser(user.user_id)}
-                        title="Delete user"
+                        className={`um-action-btn ${
+                          user.status === "active"
+                            ? "um-action-disable"
+                            : "um-action-enable"
+                        }`}
+                        onClick={() =>
+                          handleToggleStatus(
+                            user.user_id,
+                            user.status,
+                            user.full_name
+                          )
+                        }
+                        title={
+                          user.status === "active"
+                            ? "Disable user"
+                            : "Enable user"
+                        }
                       >
-                        <Trash2 size={16} />
+                        {user.status === "active" ? (
+                          <UserX size={16} />
+                        ) : (
+                          <UserCheck size={16} />
+                        )}
                       </button>
                     </div>
                   </td>
@@ -370,7 +420,7 @@ function UserManagement() {
         </table>
       </div>
 
-      {/* Modal (unchanged) */}
+      {/* Modal */}
       {showModal && (
         <div className="um-modal-overlay" onClick={handleCloseModal}>
           <div className="um-modal" onClick={(e) => e.stopPropagation()}>
