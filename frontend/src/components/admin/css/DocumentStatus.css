@@ -1,124 +1,171 @@
 /* Document Status Container */
 .document-status {
-  padding: 2rem;
-  background-image: url("../../assets/background.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1.5rem;
   min-height: 100vh;
+  box-sizing: border-box;
+  width: 100%;
+  /* Do not rely on the root wrapper for horizontal scrolling.
+     Inner table wrapper will own horizontal scroll. */
+  overflow-x: visible;
 }
 
-/* ========================================
-   HEADER SECTION - Glassmorphism
-   ======================================== */
+/* Prevent horizontal scroll overlap with sidebar */
+.dashboard-main {
+  overflow-x: hidden;
+}
+
+/* Header Card */
 .ds-header-card {
   backdrop-filter: blur(32px);
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
-  padding: 2.5rem 3rem;
+  padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
   position: relative;
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-header-content {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+  flex: 1;
 }
 
 .ds-header-icon-wrapper {
-  width: 3.5rem;
-  height: 3.5rem;
-  background: rgba(59, 130, 246, 0.25);
-  backdrop-filter: blur(8px);
-  border-radius: 16px;
+  width: 5rem;
+  height: 5rem;
+  min-width: 5rem;
+  backdrop-filter: blur(16px);
+  background: rgba(85, 247, 158, 0.25);
+  border: 1px solid rgba(85, 247, 134, 0.4);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #72e6a4;
+  flex-shrink: 0;
+}
+
+.ds-header-icon-wrapper svg {
+  width: 2rem;
+  height: 2rem;
+}
+
+.ds-header-text {
+  flex: 1;
+  min-width: 0;
 }
 
 .ds-header-text h1 {
-  font-size: 2.25rem;
+  font-size: 2rem;
   font-weight: 700;
   color: white;
   margin: 0 0 0.5rem 0;
-  letter-spacing: -0.02em;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .ds-header-text p {
-  font-size: 1.125rem;
-  color: white;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.85);
   margin: 0;
-  font-weight: 500;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .ds-btn-refresh {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 1rem 1.75rem;
-  background: rgba(59, 130, 246, 0.85);
-  backdrop-filter: blur(8px);
-  color: white;
-  border: 1px solid rgba(59, 130, 246, 0.5);
+  padding: 1rem 2rem;
+  backdrop-filter: blur(16px);
+  background: rgba(59, 246, 156, 0.25);
+  border: 1px solid rgba(59, 246, 153, 0.4);
+  color: #93fdbd;
   border-radius: 14px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .ds-btn-refresh:hover {
-  background: rgba(59, 130, 246, 1);
+  background: rgba(59, 130, 246, 0.35);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
-/* ========================================
-   STATS CARDS - Glassmorphism
-   ======================================== */
+.ds-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  backdrop-filter: blur(16px);
+  background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #93c5fd;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ds-btn-primary:hover {
+  background: rgba(59, 130, 246, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Statistics Cards */
 .ds-stats {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
   margin-bottom: 2rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-stat-card {
   backdrop-filter: blur(32px);
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 1.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  min-height: 120px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-stat-card:hover {
-  background: rgba(255, 255, 255, 0.18);
   transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .ds-stat-icon {
-  width: 3.5rem;
-  height: 3.5rem;
-  border-radius: 12px;
+  width: 4rem;
+  height: 4rem;
+  min-width: 4rem;
+  min-height: 4rem;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -126,54 +173,59 @@
   flex-shrink: 0;
 }
 
+.ds-stat-icon svg {
+  width: 2rem;
+  height: 2rem;
+}
+
 .ds-stat-total .ds-stat-icon {
   background: rgba(59, 130, 246, 0.25);
+  border: 1px solid rgba(59, 130, 246, 0.4);
   color: #93c5fd;
-  border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
 .ds-stat-pending .ds-stat-icon {
   background: rgba(251, 146, 60, 0.25);
+  border: 1px solid rgba(251, 146, 60, 0.4);
   color: #fdba74;
-  border: 1px solid rgba(251, 146, 60, 0.35);
 }
 
 .ds-stat-approved .ds-stat-icon {
   background: rgba(34, 197, 94, 0.25);
-  color: #6ee7b7;
-  border: 1px solid rgba(34, 197, 94, 0.35);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #86efac;
 }
 
 .ds-stat-rejected .ds-stat-icon {
   background: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.35);
 }
 
 .ds-stat-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .ds-stat-value {
-  font-size: 2rem;
+  display: block;
+  font-size: 2.5rem;
   font-weight: 700;
   color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   line-height: 1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .ds-stat-label {
-  font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 500;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
-/* ========================================
-   FILTERS - Glassmorphism
-   ======================================== */
+/* Filters Section */
 .ds-filters {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
@@ -181,13 +233,16 @@
   padding: 1.75rem;
   margin-bottom: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-  display: flex;
-  gap: 1.25rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: 1rem;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .ds-search {
-  flex: 1;
   position: relative;
 }
 
@@ -196,58 +251,58 @@
   left: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(255, 255, 255, 0.7);
   width: 1.25rem;
   height: 1.25rem;
+  color: rgba(255, 255, 255, 0.7);
   pointer-events: none;
 }
 
 .ds-search input {
   width: 100%;
-  padding: 1.125rem 1.5rem 1.125rem 3.75rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  font-size: 1rem;
-  color: white;
+  padding: 1rem 1.5rem 1rem 3.5rem;
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  outline: none;
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  color: white;
+  font-size: 0.95rem;
   transition: all 0.2s ease;
-}
-
-.ds-search input::placeholder {
-  color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
 }
 
 .ds-search input:focus {
-  border-color: rgba(59, 130, 246, 0.6);
+  outline: none;
   background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  border-color: rgba(45, 71, 57, 0.5);
+  box-shadow: 0 0 0 4px rgba(45, 71, 57, 0.12);
+}
+
+.ds-search input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .ds-filter-select {
-  padding: 1.125rem 3.5rem 1.125rem 1.5rem;
-  border: 1.5px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  font-size: 0.938rem;
-  font-weight: 500;
-  color: white;
+  padding: 1rem 1.25rem;
   background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1.25rem center;
-  min-width: 180px;
-  outline: none;
+  background-position: right 1rem center;
+  padding-right: 3rem;
 }
 
 .ds-filter-select:focus {
-  border-color: rgba(59, 130, 246, 0.6);
-  background-color: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+  outline: none;
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(45, 71, 57, 0.5);
+  box-shadow: 0 0 0 4px rgba(45, 71, 57, 0.12);
 }
 
 .ds-filter-select option {
@@ -255,25 +310,34 @@
   color: white;
 }
 
-/* ========================================
-   TABLE CONTAINER - Glassmorphism with Horizontal Scroll
-   ======================================== */
+/* Table Container - Prevents sidebar overlap */
 .ds-table-container {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 24px;
+  padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
-}
-
-/* NEW: Scroll wrapper for horizontal scrolling */
-.ds-table-scroll {
-  overflow-x: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* container itself hides overflow; inner scroll wrapper will scroll horizontally */
+  -webkit-overflow-scrolling: touch; /* Make scrolling smooth on iOS */
   overflow-y: visible;
+  margin-bottom: 2rem;
+  position: relative;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(34, 197, 94, 0.6) rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 }
 
-/* Custom Scrollbar */
+/* New inner scroll wrapper: ensures the table's horizontal scroll doesn't expand the page */
+.ds-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+/* Custom Scrollbar for Table Container (inner scroll) */
 .ds-table-scroll::-webkit-scrollbar {
   height: 12px;
 }
@@ -284,36 +348,51 @@
 }
 
 .ds-table-scroll::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.5);
+  background: rgba(34, 197, 94, 0.6);
   border-radius: 6px;
   backdrop-filter: blur(8px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .ds-table-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.7);
+  background: rgba(34, 197, 94, 0.8);
 }
 
-/* Table */
+/* Inner scroll wrapper */
+.ds-table-container > * {
+  /* don't force width here; keep it fluid; the scroll wrapper above will handle overflow */
+  overflow-x: visible;
+  overflow-y: visible;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Table Styles */
+/* Let table be flexible on desktop (so the whole page can shrink), but on small screens we switch it to max-content to allow horizontal scroll inside ds-table-scroll */
 .ds-table {
   width: 100%;
-  min-width: 1200px; /* Ensure minimum width for all columns */
   border-collapse: collapse;
+  min-width: 0; /* don't force the page to widen */
+  box-sizing: border-box;
 }
 
 .ds-table thead {
-  background: rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .ds-table th {
-  padding: 1.25rem 1.75rem;
+  padding: 1.25rem 1rem;
   text-align: left;
   font-size: 0.875rem;
   font-weight: 700;
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15);
   white-space: nowrap;
 }
 
@@ -326,40 +405,36 @@
   background: rgba(255, 255, 255, 0.08);
 }
 
-.ds-table tbody tr:last-child {
-  border-bottom: none;
-}
-
 .ds-table td {
-  padding: 1.25rem 1.75rem;
-  font-size: 0.938rem;
+  padding: 1.25rem 1rem;
   color: white;
-  white-space: nowrap;
+  font-size: 0.9rem;
+  vertical-align: middle;
 }
 
-.ds-empty {
+.ds-table td.ds-empty {
   text-align: center;
-  padding: 4rem 2rem !important;
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 1.125rem;
-  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
-  white-space: normal;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
 }
 
-/* Document Title */
+/* Document Title Cell */
 .ds-doc-title {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   color: white;
+  font-weight: 600;
+  min-width: 200px;
 }
 
 .ds-doc-title svg {
-  color: rgba(255, 255, 255, 0.7);
   flex-shrink: 0;
+  color: #93c5fd;
 }
 
-/* Submitter */
+/* Submitter Info */
 .ds-submitter {
   display: flex;
   align-items: center;
@@ -368,168 +443,181 @@
 }
 
 .ds-submitter svg {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* Date */
-.ds-date {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.ds-date svg {
-  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Status Badges */
 .ds-status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.375rem;
-  padding: 0.375rem 0.75rem;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
   border-radius: 10px;
-  font-size: 0.813rem;
+  font-size: 0.8rem;
   font-weight: 600;
   backdrop-filter: blur(8px);
-  border: 1px solid;
+  white-space: nowrap;
+}
+
+.ds-status-badge svg {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex-shrink: 0;
 }
 
 .ds-status-pending {
   background: rgba(251, 146, 60, 0.25);
   color: #fdba74;
-  border-color: rgba(251, 146, 60, 0.35);
+  border: 1px solid rgba(251, 146, 60, 0.4);
 }
 
 .ds-status-review {
   background: rgba(59, 130, 246, 0.25);
   color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.35);
+  border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
 .ds-status-approved {
   background: rgba(34, 197, 94, 0.25);
-  color: #6ee7b7;
-  border-color: rgba(34, 197, 94, 0.35);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.4);
 }
 
 .ds-status-rejected {
   background: rgba(239, 68, 68, 0.25);
   color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.35);
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 .ds-status-revision {
-  background: rgba(234, 179, 8, 0.25);
-  color: #fde047;
-  border-color: rgba(234, 179, 8, 0.35);
+  background: rgba(168, 85, 247, 0.25);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.4);
 }
 
 /* Priority Badges */
 .ds-priority-badge {
   display: inline-block;
-  padding: 0.375rem 0.75rem;
-  border-radius: 10px;
-  font-size: 0.813rem;
-  font-weight: 600;
-  backdrop-filter: blur(8px);
-  border: 1px solid;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .ds-priority-low {
   background: rgba(156, 163, 175, 0.25);
   color: #d1d5db;
-  border-color: rgba(156, 163, 175, 0.35);
+  border: 1px solid rgba(156, 163, 175, 0.4);
 }
 
 .ds-priority-medium {
   background: rgba(59, 130, 246, 0.25);
   color: #93c5fd;
-  border-color: rgba(59, 130, 246, 0.35);
+  border: 1px solid rgba(59, 130, 246, 0.4);
 }
 
 .ds-priority-high {
   background: rgba(251, 146, 60, 0.25);
   color: #fdba74;
-  border-color: rgba(251, 146, 60, 0.35);
+  border: 1px solid rgba(251, 146, 60, 0.4);
 }
 
 .ds-priority-urgent {
   background: rgba(239, 68, 68, 0.25);
   color: #fca5a5;
-  border-color: rgba(239, 68, 68, 0.35);
+  border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
-/* Actions */
+/* Date Cell */
+.ds-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+}
+
+.ds-date svg {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Action Buttons */
 .ds-actions {
   display: flex;
-  gap: 0.625rem;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 .ds-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.625rem;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
   color: white;
   cursor: pointer;
-  border-radius: 10px;
   transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.ds-action-btn svg {
+  width: 1rem;
+  height: 1rem;
 }
 
 .ds-action-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .ds-action-view:hover {
-  background: rgba(59, 130, 246, 0.25);
-  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.5);
   color: #93c5fd;
 }
 
 .ds-action-download:hover {
-  background: rgba(34, 197, 94, 0.25);
-  border-color: rgba(34, 197, 94, 0.4);
-  color: #6ee7b7;
+  background: rgba(34, 197, 94, 0.3);
+  border-color: rgba(34, 197, 94, 0.5);
+  color: #86efac;
 }
 
-/* ========================================
-   PAGINATION - Glassmorphism
-   ======================================== */
+/* Pagination */
 .ds-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1.75rem;
-  backdrop-filter: blur(32px);
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  gap: 0.5rem;
   margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
-.ds-page-btn {
+.ds-page-btn,
+.ds-page-num {
   padding: 0.75rem 1.25rem;
+  backdrop-filter: blur(16px);
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
-  font-size: 0.938rem;
-  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.ds-page-btn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.2);
+.ds-page-btn:hover:not(:disabled),
+.ds-page-num:hover {
+  background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .ds-page-btn:disabled {
@@ -537,111 +625,91 @@
   cursor: not-allowed;
 }
 
+.ds-page-num.active {
+  background: rgba(59, 246, 181, 0.3);
+  border-color: rgba(59, 246, 174, 0.5);
+  color: #93fdc8;
+}
+
 .ds-page-numbers {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  color: white;
 }
 
-.ds-page-num {
-  width: 2.75rem;
-  height: 2.75rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
-  font-size: 0.938rem;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.ds-page-numbers span {
+  color: rgba(255, 255, 255, 0.6);
+  padding: 0 0.5rem;
 }
 
-.ds-page-num:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.ds-page-num.active {
-  background: rgba(59, 130, 246, 0.85);
-  border-color: rgba(59, 130, 246, 0.5);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-}
-
-/* ========================================
-   MODAL - Glassmorphism
-   ======================================== */
+/* Modal Overlay */
 .ds-modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(12px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 2000;
   padding: 1rem;
 }
 
 .ds-modal {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 24px;
-  max-width: 700px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
   width: 100%;
   max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .ds-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .ds-modal-header h2 {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: white;
   margin: 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .ds-modal-close {
   width: 2.5rem;
   height: 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  color: white;
-  cursor: pointer;
   border-radius: 10px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  transition: all 0.2s ease;
 }
 
 .ds-modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  background: rgba(239, 68, 68, 0.3);
+  transform: scale(1.05);
 }
 
 .ds-modal-body {
   padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .ds-modal-section {
@@ -653,17 +721,17 @@
 }
 
 .ds-modal-section h3 {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   color: white;
-  margin: 0 0 1.25rem 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  margin: 0 0 1rem 0;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
 }
 
 .ds-modal-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
 .ds-modal-field {
@@ -676,76 +744,137 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .ds-modal-field span {
+  font-size: 0.95rem;
   color: white;
-  font-size: 0.938rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* History Timeline */
+.ds-history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ds-history-item {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+}
+
+.ds-history-item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 2rem;
+  bottom: -1.5rem;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ds-history-marker {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.5);
+  border: 2px solid white;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  z-index: 1;
+}
+
+.ds-history-content {
+  flex: 1;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.ds-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ds-history-action {
+  font-weight: 700;
+  color: white;
+  text-transform: capitalize;
+}
+
+.ds-history-date {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ds-history-user {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 0.5rem;
+}
+
+.ds-history-comments {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  color: white;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border-left: 3px solid rgba(59, 130, 246, 0.5);
 }
 
 .ds-modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  padding: 1.75rem 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.ds-btn-primary {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  padding: 1rem 1.75rem;
-  background: rgba(59, 130, 246, 0.85);
-  backdrop-filter: blur(8px);
-  color: white;
-  border: 1px solid rgba(59, 130, 246, 0.5);
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-}
-
-.ds-btn-primary:hover {
-  background: rgba(59, 130, 246, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  padding: 1.5rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .ds-btn-secondary {
-  padding: 1rem 1.75rem;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
+  padding: 0.875rem 1.5rem;
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 14px;
-  font-size: 1rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .ds-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* ========================================
-   LOADING STATE
-   ======================================== */
+/* Loading State */
 .document-status-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background-image: url("../../assets/background.jpg");
-  background-size: cover;
-  background-position: center;
+  min-height: 60vh;
+  backdrop-filter: blur(32px);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  margin: 2rem;
 }
 
 .loading-spinner {
@@ -758,42 +887,60 @@
   margin-bottom: 1rem;
 }
 
+.document-status-loading p {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-.document-status-loading p {
-  color: white;
-  font-size: 1.125rem;
-  font-weight: 500;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-/* ========================================
-   RESPONSIVE DESIGN
-   ======================================== */
+/* Responsive Design */
 @media (max-width: 1200px) {
+  .ds-filters {
+    grid-template-columns: 1fr;
+  }
+
   .ds-stats {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+/* Mobile adjustments (max-width: 768px)
+   --- Important: allow horizontal scrolling for the table on small screens.
+   We'll avoid hiding overflow on the root wrapper so the table container can show a horizontal scrollbar. */
 @media (max-width: 768px) {
   .document-status {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
+    /* Do NOT hide overflow here — allow inner table container to provide horizontal scrolling */
+    overflow-x: visible;
   }
 
   .ds-header-card {
-    padding: 2rem;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
+    align-items: stretch;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .ds-header-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
   }
 
   .ds-header-text h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+  }
+
+  .ds-header-text p {
+    font-size: 0.95rem;
   }
 
   .ds-btn-refresh {
@@ -803,44 +950,192 @@
 
   .ds-stats {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .ds-stat-value {
+    font-size: 2rem;
   }
 
   .ds-filters {
-    flex-direction: column;
+    padding: 1.25rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .ds-filter-select {
     width: 100%;
+    min-width: auto;
   }
 
+  /* Table container - ensure it always allows horizontal scrolling on mobile */
+  .ds-table-container {
+    overflow: hidden; /* keep container fixed, inner wrapper will scroll */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* Make the scrollbar visible and touch-friendly */
+  .ds-table-scroll::-webkit-scrollbar {
+    height: 12px;
+    -webkit-appearance: none;
+    display: block !important;
+  }
+
+  .ds-table-scroll::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0 0 20px 20px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .ds-table-scroll::-webkit-scrollbar-thumb {
+    background: rgba(34, 197, 94, 0.6);
+    border-radius: 6px;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .ds-table-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 197, 94, 0.8);
+  }
+
+  /* Hide the helper ::after used on touch devices so it doesn't block quick scrolls */
+  .ds-table-container::after {
+    display: none !important;
+  }
+
+  /* Table sizing for mobile: allow the table to be wider than the viewport to enable scrolling */
   .ds-table {
     min-width: 900px;
+    width: max-content;
+  }
+
+  /* Ensure all cells are visible */
+  .ds-table th,
+  .ds-table td {
+    white-space: nowrap;
+    padding: 1rem 0.75rem; /* Slightly reduced padding */
+  }
+
+  /* Modal adjustments */
+  .ds-modal {
+    max-width: calc(100vw - 1rem);
+    margin: 0.5rem;
+    max-height: calc(100vh - 1rem);
   }
 
   .ds-modal-grid {
     grid-template-columns: 1fr;
   }
 
-  .ds-modal-footer {
-    flex-direction: column;
-  }
-
-  .ds-btn-primary,
-  .ds-btn-secondary {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .ds-header-card {
+  .ds-modal-body {
     padding: 1.5rem;
   }
 
-  .ds-header-text h1 {
-    font-size: 1.5rem;
+  .ds-modal-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .ds-btn-secondary,
+  .ds-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ds-stat-icon {
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
+  }
+
+  .ds-stat-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .document-status {
+    padding: 0.75rem 0.25rem;
+  }
+
+  .ds-table {
+    min-width: 800px; /* Even smaller for tiny devices, still scrollable inside wrapper */
+  }
+
+  .ds-table th,
+  .ds-table td {
+    padding: 0.875rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .ds-header_card {
+    padding: 1.25rem;
   }
 
   .ds-filters {
+    padding: 1rem;
+  }
+
+  .ds-stat-card {
     padding: 1.25rem;
+  }
+
+  .ds-stat-value {
+    font-size: 2rem;
+  }
+
+  /* Scrollbar - even smaller on tiny screens */
+  .ds-table-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+}
+
+/* Force scrollbar visibility on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  .ds-table-scroll {
+    overflow-x: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin; /* For Firefox */
+  }
+
+  /* Show scrollbar indicator */
+  .ds-table-container::after {
+    content: "← Scroll to see more →";
+    position: sticky;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0.5rem;
+    text-align: center;
+    background: rgba(168, 85, 247, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+    animation: fadeInOut 3s ease-in-out infinite;
+  }
+}
+
+@keyframes fadeInOut {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .ds-table {
+    min-width: 1000px; /* Slightly wider in landscape */
   }
 }
