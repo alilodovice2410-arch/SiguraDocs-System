@@ -13,8 +13,66 @@ import {
   Calendar,
   RefreshCw,
 } from "lucide-react";
-import api from "../../services/api";
-import "./css/DocumentStatus.css";
+
+// Mock API
+const mockApi = {
+  get: async (url) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    if (url === "/admin/documents") {
+      return {
+        data: {
+          documents: [
+            {
+              document_id: 1,
+              title: "Q4 Financial Report",
+              document_type: "Report",
+              uploader_name: "John Doe",
+              uploader_department: "Finance",
+              status: "approved",
+              priority: "high",
+              created_at: "2025-01-15T10:30:00",
+            },
+            {
+              document_id: 2,
+              title: "Staff Meeting Minutes",
+              document_type: "Minutes",
+              uploader_name: "Jane Smith",
+              uploader_department: "Administration",
+              status: "pending",
+              priority: "medium",
+              created_at: "2025-01-16T14:20:00",
+            },
+            {
+              document_id: 3,
+              title: "Budget Proposal 2025",
+              document_type: "Proposal",
+              uploader_name: "Mike Johnson",
+              uploader_department: "Finance",
+              status: "in_review",
+              priority: "urgent",
+              created_at: "2025-01-17T09:15:00",
+            },
+          ],
+        },
+      };
+    }
+
+    if (url === "/admin/departments") {
+      return {
+        data: {
+          departments: [
+            { department_id: 1, department_name: "Finance" },
+            { department_id: 2, department_name: "Administration" },
+            { department_id: 3, department_name: "HR" },
+          ],
+        },
+      };
+    }
+
+    return { data: {} };
+  },
+};
 
 function DocumentStatus() {
   const [documents, setDocuments] = useState([]);
@@ -26,8 +84,6 @@ function DocumentStatus() {
   const [filterDepartment, setFilterDepartment] = useState("all");
   const [documentTypes, setDocumentTypes] = useState([]);
   const [departments, setDepartments] = useState([]);
-  const [selectedDocument, setSelectedDocument] = useState(null);
-  const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const documentsPerPage = 15;
 
@@ -49,7 +105,7 @@ function DocumentStatus() {
   const fetchDocuments = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/admin/documents");
+      const response = await mockApi.get("/admin/documents");
       setDocuments(response.data.documents);
     } catch (error) {
       console.error("Failed to fetch documents:", error);
@@ -73,7 +129,7 @@ function DocumentStatus() {
 
   const fetchDepartments = async () => {
     try {
-      const response = await api.get("/admin/departments");
+      const response = await mockApi.get("/admin/departments");
       setDepartments(response.data.departments);
     } catch (error) {
       console.error("Failed to fetch departments:", error);
@@ -108,65 +164,6 @@ function DocumentStatus() {
 
     setFilteredDocuments(filtered);
     setCurrentPage(1);
-  };
-
-  const handleViewDocument = async (documentId) => {
-    try {
-      const response = await api.get(`/documents/${documentId}`);
-      setSelectedDocument(response.data);
-      setShowModal(true);
-    } catch (error) {
-      console.error("Failed to fetch document details:", error);
-      alert("Failed to load document details");
-    }
-  };
-
-  const handleDownload = async (documentId, fileName) => {
-    try {
-      const response = await api.get(`/documents/${documentId}/download`, {
-        responseType: "blob",
-      });
-
-      const contentType = (
-        response.headers["content-type"] || ""
-      ).toLowerCase();
-      const disposition = response.headers["content-disposition"] || "";
-
-      let downloadFileName = fileName || "document";
-
-      const filenameMatch =
-        /filename\*=(?:UTF-8'')?([^;]+)|filename="?([^";]+)"?/i.exec(
-          disposition
-        );
-      if (filenameMatch) {
-        const rawFilename = filenameMatch[1] || filenameMatch[2];
-        if (rawFilename) {
-          try {
-            downloadFileName = decodeURIComponent(
-              rawFilename.replace(/(^"|"$)/g, "")
-            );
-          } catch (e) {
-            downloadFileName = rawFilename.replace(/(^"|"$)/g, "");
-          }
-        }
-      }
-
-      const blob = new Blob([response.data], {
-        type: contentType || "application/octet-stream",
-      });
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", downloadFileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-    } catch (error) {
-      console.error("Download error:", error);
-      alert(error.response?.data?.message || "Failed to download document.");
-    }
   };
 
   const getStatusBadge = (status) => {
@@ -252,62 +249,44 @@ function DocumentStatus() {
 
   return (
     <div className="document-status">
-      {/* Header Card - Matching User Management Style */}
-      <div className="ds-header-card">
-        <div className="ds-header-content">
-          <div className="ds-header-icon-wrapper">
-            <FileText size={32} />
+      {/* Header - UPDATED TO MATCH OTHER PAGES */}
+      <div className="ds-header">
+        <div className="ds-header-left">
+          <div className="ds-header-icon">
+            <FileText />
           </div>
-          <div className="ds-header-text">
+          <div>
             <h1>Document Status</h1>
             <p>Monitor and track all documents in the system</p>
           </div>
         </div>
-        <button className="ds-btn-refresh" onClick={fetchDocuments}>
+        <button className="ds-btn-primary" onClick={fetchDocuments}>
           <RefreshCw size={20} />
           Refresh
         </button>
       </div>
 
+      {/* Stats Cards */}
       <div className="ds-stats">
-        <div className="ds-stat-card ds-stat-total">
-          <div className="ds-stat-icon">
-            <FileText />
-          </div>
-          <div className="ds-stat-content">
-            <span className="ds-stat-value">{stats.total}</span>
-            <span className="ds-stat-label">Total Documents</span>
-          </div>
+        <div className="ds-stat">
+          <span className="ds-stat-label">Total Documents</span>
+          <span className="ds-stat-value">{stats.total}</span>
         </div>
-        <div className="ds-stat-card ds-stat-pending">
-          <div className="ds-stat-icon">
-            <Clock />
-          </div>
-          <div className="ds-stat-content">
-            <span className="ds-stat-value">{stats.pending}</span>
-            <span className="ds-stat-label">Pending</span>
-          </div>
+        <div className="ds-stat">
+          <span className="ds-stat-label">Pending</span>
+          <span className="ds-stat-value">{stats.pending}</span>
         </div>
-        <div className="ds-stat-card ds-stat-approved">
-          <div className="ds-stat-icon">
-            <CheckCircle />
-          </div>
-          <div className="ds-stat-content">
-            <span className="ds-stat-value">{stats.approved}</span>
-            <span className="ds-stat-label">Approved</span>
-          </div>
+        <div className="ds-stat">
+          <span className="ds-stat-label">Approved</span>
+          <span className="ds-stat-value">{stats.approved}</span>
         </div>
-        <div className="ds-stat-card ds-stat-rejected">
-          <div className="ds-stat-icon">
-            <XCircle />
-          </div>
-          <div className="ds-stat-content">
-            <span className="ds-stat-value">{stats.rejected}</span>
-            <span className="ds-stat-label">Rejected</span>
-          </div>
+        <div className="ds-stat">
+          <span className="ds-stat-label">Rejected</span>
+          <span className="ds-stat-value">{stats.rejected}</span>
         </div>
       </div>
 
+      {/* Filters */}
       <div className="ds-filters">
         <div className="ds-search">
           <Search className="ds-search-icon" />
@@ -359,8 +338,8 @@ function DocumentStatus() {
         </select>
       </div>
 
+      {/* Table Container */}
       <div className="ds-table-container">
-        {/* New scroll wrapper: handles horizontal scrolling inside the container (keeps page width stable) */}
         <div className="ds-table-scroll">
           <table className="ds-table">
             <thead>
@@ -415,16 +394,12 @@ function DocumentStatus() {
                       <div className="ds-actions">
                         <button
                           className="ds-action-btn ds-action-view"
-                          onClick={() => handleViewDocument(doc.document_id)}
                           title="View details"
                         >
                           <Eye size={16} />
                         </button>
                         <button
                           className="ds-action-btn ds-action-download"
-                          onClick={() =>
-                            handleDownload(doc.document_id, doc.title)
-                          }
                           title="Download"
                         >
                           <Download size={16} />
@@ -439,6 +414,7 @@ function DocumentStatus() {
         </div>
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="ds-pagination">
           <button
@@ -487,120 +463,6 @@ function DocumentStatus() {
           >
             Next
           </button>
-        </div>
-      )}
-
-      {showModal && selectedDocument && (
-        <div className="ds-modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="ds-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="ds-modal-header">
-              <h2>Document Details</h2>
-              <button
-                className="ds-modal-close"
-                onClick={() => setShowModal(false)}
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="ds-modal-body">
-              <div className="ds-modal-section">
-                <h3>Basic Information</h3>
-                <div className="ds-modal-grid">
-                  <div className="ds-modal-field">
-                    <label>Title:</label>
-                    <span>{selectedDocument.document.title}</span>
-                  </div>
-                  <div className="ds-modal-field">
-                    <label>Type:</label>
-                    <span>
-                      {selectedDocument.document.document_type || "—"}
-                    </span>
-                  </div>
-                  <div className="ds-modal-field">
-                    <label>Status:</label>
-                    {getStatusBadge(selectedDocument.document.status)}
-                  </div>
-                  <div className="ds-modal-field">
-                    <label>Priority:</label>
-                    {getPriorityBadge(selectedDocument.document.priority)}
-                  </div>
-                  <div className="ds-modal-field">
-                    <label>Submitted By:</label>
-                    <span>{selectedDocument.document.uploader_name}</span>
-                  </div>
-                  <div className="ds-modal-field">
-                    <label>Department:</label>
-                    <span>
-                      {selectedDocument.document.uploader_department || "—"}
-                    </span>
-                  </div>
-                  <div className="ds-modal-field">
-                    <label>Submission Date:</label>
-                    <span>
-                      {new Date(
-                        selectedDocument.document.created_at
-                      ).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {selectedDocument.history &&
-                selectedDocument.history.length > 0 && (
-                  <div className="ds-modal-section">
-                    <h3>Document History</h3>
-                    <div className="ds-history-timeline">
-                      {selectedDocument.history.map((item, index) => (
-                        <div key={index} className="ds-history-item">
-                          <div className="ds-history-marker"></div>
-                          <div className="ds-history-content">
-                            <div className="ds-history-header">
-                              <span className="ds-history-action">
-                                {item.action_taken}
-                              </span>
-                              <span className="ds-history-date">
-                                {new Date(item.action_date).toLocaleString()}
-                              </span>
-                            </div>
-                            <div className="ds-history-user">
-                              By: {item.first_name} {item.last_name} (
-                              {item.role})
-                            </div>
-                            {item.comments && (
-                              <div className="ds-history-comments">
-                                {item.comments}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-            </div>
-
-            <div className="ds-modal-footer">
-              <button
-                className="ds-btn-secondary"
-                onClick={() => setShowModal(false)}
-              >
-                Close
-              </button>
-              <button
-                className="ds-btn-primary"
-                onClick={() =>
-                  handleDownload(
-                    selectedDocument.document.document_id,
-                    selectedDocument.document.title
-                  )
-                }
-              >
-                <Download size={18} />
-                Download Document
-              </button>
-            </div>
-          </div>
         </div>
       )}
     </div>
