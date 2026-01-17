@@ -1244,3 +1244,121 @@
 .user-menu {
   z-index: 9999;
 }
+
+/* Navigation Badge for Pending Count */
+.nav-item {
+  position: relative;
+}
+
+.nav-badge {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Pending Users Alert */
+.pending-alert {
+  margin: 1.5rem 0;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pending-alert-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pending-alert-content svg {
+  color: #d97706;
+  flex-shrink: 0;
+}
+
+.pending-alert-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.pending-alert-text strong {
+  color: #92400e;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.pending-alert-text span {
+  color: #92400e;
+  font-size: 0.875rem;
+}
+
+.pending-alert-btn {
+  padding: 0.625rem 1.25rem;
+  background: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.pending-alert-btn:hover {
+  background: #d97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pending-alert-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pending-alert-btn {
+    width: 100%;
+  }
+
+  .nav-badge {
+    top: 6px;
+    right: 8px;
+    font-size: 0.65rem;
+    padding: 2px 5px;
+  }
+}

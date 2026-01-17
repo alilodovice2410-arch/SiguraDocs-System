@@ -9,6 +9,7 @@ import {
   ClipboardList,
   Menu,
   X,
+  UserCheck, // NEW: Icon for Pending Approvals
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -16,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import UserManagement from "../components/admin/UserManagement";
 import AuditLogs from "../components/admin/AuditLogs";
 import DocumentStatus from "../components/admin/DocumentStatus";
+import PendingApprovals from "../components/admin/PendingApprovals"; // NEW: Import PendingApprovals
 import SessionIndicator from "../components/SessionIndicator";
 import "./css/AdminDashboard.css";
 import sanMarianoLogo from "../assets/smnhs_logo.png";
@@ -26,6 +28,7 @@ function AdminDashboard() {
   const [activeView, setActiveView] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0); // NEW: Track pending count
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const userMenuRef = useRef(null);
@@ -34,6 +37,8 @@ function AdminDashboard() {
     if (activeView === "overview") {
       fetchDashboardStats();
     }
+    // NEW: Fetch pending count on mount and when view changes
+    fetchPendingCount();
   }, [activeView]);
 
   // prevent body scroll while mobile sidebar is open
@@ -79,6 +84,17 @@ function AdminDashboard() {
     }
   };
 
+  // NEW: Fetch pending user count
+  const fetchPendingCount = async () => {
+    try {
+      const response = await api.get("/auth/pending-users");
+      setPendingCount(response.data.count || 0);
+    } catch (error) {
+      console.error("Failed to fetch pending count:", error);
+      setPendingCount(0);
+    }
+  };
+
   const handleLogout = async () => {
     await logout();
     navigate("/login");
@@ -88,12 +104,18 @@ function AdminDashboard() {
     setActiveView(view);
     // close sidebar on mobile after clicking nav
     setSidebarOpen(false);
+    // Refresh pending count when navigating away from pending approvals
+    if (view !== "pending") {
+      fetchPendingCount();
+    }
   };
 
   const renderContent = () => {
     switch (activeView) {
       case "users":
         return <UserManagement />;
+      case "pending": // NEW: Pending Approvals view
+        return <PendingApprovals />;
       case "documents":
         return <DocumentStatus />;
       case "logs":
@@ -171,6 +193,30 @@ function AdminDashboard() {
             </div>
           </div>
         </div>
+
+        {/* NEW: Pending Users Alert */}
+        {pendingCount > 0 && (
+          <div className="pending-alert">
+            <div className="pending-alert-content">
+              <UserCheck size={24} />
+              <div className="pending-alert-text">
+                <strong>
+                  {pendingCount} pending user registration
+                  {pendingCount > 1 ? "s" : ""}
+                </strong>
+                <span>
+                  Review and approve new teacher/head teacher registrations
+                </span>
+              </div>
+              <button
+                className="pending-alert-btn"
+                onClick={() => handleNavClick("pending")}
+              >
+                Review Now
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Recent Activity */}
         <div className="activity-section">
@@ -270,6 +316,20 @@ function AdminDashboard() {
             <BarChart3 className="nav-icon" />
             <span>Overview</span>
           </button>
+
+          {/* NEW: Pending Approvals Navigation Item */}
+          <button
+            type="button"
+            onClick={() => handleNavClick("pending")}
+            className={`nav-item ${activeView === "pending" ? "active" : ""}`}
+          >
+            <UserCheck className="nav-icon" />
+            <span>Pending Approvals</span>
+            {pendingCount > 0 && (
+              <span className="nav-badge">{pendingCount}</span>
+            )}
+          </button>
+
           <button
             type="button"
             onClick={() => handleNavClick("users")}
@@ -278,6 +338,7 @@ function AdminDashboard() {
             <Users className="nav-icon" />
             <span>User Management</span>
           </button>
+
           <button
             type="button"
             onClick={() => handleNavClick("documents")}
@@ -286,6 +347,7 @@ function AdminDashboard() {
             <FileText className="nav-icon" />
             <span>Document Status</span>
           </button>
+
           <button
             type="button"
             onClick={() => handleNavClick("logs")}
@@ -323,6 +385,7 @@ function AdminDashboard() {
 
               <h1>
                 {activeView === "overview" && "Admin Dashboard"}
+                {activeView === "pending" && "Pending Approvals"}
                 {activeView === "users" && "User Management"}
                 {activeView === "documents" && "Document Status"}
                 {activeView === "logs" && "Audit Logs"}
