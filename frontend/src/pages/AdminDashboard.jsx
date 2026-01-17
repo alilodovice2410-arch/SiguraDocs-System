@@ -9,7 +9,7 @@ import {
   ClipboardList,
   Menu,
   X,
-  UserCheck, // NEW: Icon for Pending Approvals
+  UserCheck,
 } from "lucide-react";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import UserManagement from "../components/admin/UserManagement";
 import AuditLogs from "../components/admin/AuditLogs";
 import DocumentStatus from "../components/admin/DocumentStatus";
-import PendingApprovals from "../components/admin/PendingApprovals"; // NEW: Import PendingApprovals
+import PendingApprovals from "../components/admin/PendingApprovals";
 import SessionIndicator from "../components/SessionIndicator";
 import "./css/AdminDashboard.css";
 import sanMarianoLogo from "../assets/smnhs_logo.png";
@@ -194,7 +194,6 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* NEW: Pending Users Alert */}
         {pendingCount > 0 && (
           <div className="pending-alert">
             <div className="pending-alert-content">
