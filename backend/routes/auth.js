@@ -330,15 +330,16 @@ router.post("/login", async (req, res) => {
 router.get("/pending-users", authenticateToken, async (req, res) => {
   try {
     console.log("📋 Pending users request from:", req.user);
-    console.log("User role:", req.user.role);
-    console.log("User roleId:", req.user.roleId);
+    console.log("User role_name:", req.user.role_name);
+    console.log("User role_id:", req.user.role_id);
 
     // Check if user is Admin (role_id = 1) or Principal (role_id = 2)
-    const isAdmin = req.user.roleId === 1 || req.user.role === "Admin";
-    const isPrincipal = req.user.roleId === 2 || req.user.role === "Principal";
+    const isAdmin = req.user.role_id === 1 || req.user.role_name === "Admin";
+    const isPrincipal =
+      req.user.role_id === 2 || req.user.role_name === "Principal";
 
     if (!isAdmin && !isPrincipal) {
-      console.log("❌ Access denied for role:", req.user.role);
+      console.log("❌ Access denied for role:", req.user.role_name);
       return res.status(403).json({
         success: false,
         message: "Access denied. Admin or Principal privileges required.",
@@ -377,8 +378,9 @@ router.post("/approve-user/:userId", authenticateToken, async (req, res) => {
     console.log("✅ Approve request from:", req.user);
 
     // Check if user is Admin or Principal
-    const isAdmin = req.user.roleId === 1 || req.user.role === "Admin";
-    const isPrincipal = req.user.roleId === 2 || req.user.role === "Principal";
+    const isAdmin = req.user.role_id === 1 || req.user.role_name === "Admin";
+    const isPrincipal =
+      req.user.role_id === 2 || req.user.role_name === "Principal";
 
     if (!isAdmin && !isPrincipal) {
       return res.status(403).json({
@@ -414,7 +416,7 @@ router.post("/approve-user/:userId", authenticateToken, async (req, res) => {
       });
     }
 
-    // Update approval status
+    // Update approval status - use req.user.user_id (not userId)
     await pool.query(
       `UPDATE users 
        SET approval_status = 'approved', 
@@ -422,12 +424,12 @@ router.post("/approve-user/:userId", authenticateToken, async (req, res) => {
            approved_at = NOW(),
            is_approved = 1
        WHERE user_id = ?`,
-      [req.user.userId, userId]
+      [req.user.user_id, userId]
     );
 
-    // Log activity
+    // Log activity - use req.user.user_id
     await logActivity(
-      req.user.userId,
+      req.user.user_id,
       ACTIONS.USER_UPDATED,
       null,
       `Approved user registration: ${user.username} (${user.full_name}) - ${user.role_name}`,
@@ -457,8 +459,9 @@ router.post("/reject-user/:userId", authenticateToken, async (req, res) => {
     console.log("❌ Reject request from:", req.user);
 
     // Check if user is Admin or Principal
-    const isAdmin = req.user.roleId === 1 || req.user.role === "Admin";
-    const isPrincipal = req.user.roleId === 2 || req.user.role === "Principal";
+    const isAdmin = req.user.role_id === 1 || req.user.role_name === "Admin";
+    const isPrincipal =
+      req.user.role_id === 2 || req.user.role_name === "Principal";
 
     if (!isAdmin && !isPrincipal) {
       return res.status(403).json({
@@ -495,7 +498,7 @@ router.post("/reject-user/:userId", authenticateToken, async (req, res) => {
       });
     }
 
-    // Update approval status to rejected
+    // Update approval status to rejected - use req.user.user_id
     await pool.query(
       `UPDATE users 
        SET approval_status = 'rejected', 
@@ -503,12 +506,12 @@ router.post("/reject-user/:userId", authenticateToken, async (req, res) => {
            rejected_at = NOW(),
            status = 'inactive'
        WHERE user_id = ?`,
-      [req.user.userId, userId]
+      [req.user.user_id, userId]
     );
 
-    // Log activity
+    // Log activity - use req.user.user_id
     await logActivity(
-      req.user.userId,
+      req.user.user_id,
       ACTIONS.USER_UPDATED,
       null,
       `Rejected user registration: ${user.username} (${user.full_name}) - ${
