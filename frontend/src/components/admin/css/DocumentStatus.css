@@ -1,5 +1,6 @@
-/* Document Status - Glassmorphism design (matches other admin pages) */
+/* Document Status — fully scoped to .document-status to avoid any leakage */
 
+/* Root context */
 .document-status {
   padding: 2rem;
   background-image: url("../../assets/background.jpg");
@@ -9,10 +10,12 @@
   min-height: 100vh;
   color: white;
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Header card */
-.ds-header-card {
+.document-status .ds-header-card {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.14);
@@ -28,13 +31,13 @@
   z-index: 1;
 }
 
-.ds-header-content {
+.document-status .ds-header-content {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.ds-header-icon-wrapper {
+.document-status .ds-header-icon-wrapper {
   width: 3.5rem;
   height: 3.5rem;
   background: rgba(59, 130, 246, 0.18);
@@ -48,7 +51,7 @@
   flex-shrink: 0;
 }
 
-.ds-header-text h1 {
+.document-status .ds-header-text h1 {
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0;
@@ -56,14 +59,14 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.ds-header-text p {
+.document-status .ds-header-text p {
   margin: 0;
   font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.85);
 }
 
 /* Refresh button */
-.ds-btn-refresh {
+.document-status .ds-btn-refresh {
   display: inline-flex;
   align-items: center;
   gap: 0.625rem;
@@ -77,21 +80,21 @@
   transition: all 0.2s ease;
 }
 
-.ds-btn-refresh:hover {
+.document-status .ds-btn-refresh:hover {
   background: rgba(255, 255, 255, 0.12);
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
 }
 
 /* Small stats row */
-.ds-stats {
+.document-status .ds-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
   margin: 1.25rem 0 2rem 0;
 }
 
-.ds-stat-card {
+.document-status .ds-stat-card {
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
@@ -105,41 +108,41 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.ds-stat-card:hover {
+.document-status .ds-stat-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
 }
 
 /* Colors for specific stat cards */
-.ds-stat-total .ds-stat-icon,
-.ds-stat-total .ds-stat-icon svg {
+.document-status .ds-stat-total .ds-stat-icon,
+.document-status .ds-stat-total .ds-stat-icon svg {
   color: #fff;
   background: rgba(255, 255, 255, 0.02);
   border-radius: 10px;
 }
 
-.ds-stat-pending .ds-stat-icon {
+.document-status .ds-stat-pending .ds-stat-icon {
   background: rgba(251, 146, 60, 0.18);
   color: #fdba74;
   border-radius: 10px;
   border: 1px solid rgba(251, 146, 60, 0.18);
 }
 
-.ds-stat-approved .ds-stat-icon {
+.document-status .ds-stat-approved .ds-stat-icon {
   background: rgba(34, 197, 94, 0.18);
   color: #86efac;
   border-radius: 10px;
   border: 1px solid rgba(34, 197, 94, 0.18);
 }
 
-.ds-stat-rejected .ds-stat-icon {
+.document-status .ds-stat-rejected .ds-stat-icon {
   background: rgba(239, 68, 68, 0.18);
   color: #fca5a5;
   border-radius: 10px;
   border: 1px solid rgba(239, 68, 68, 0.18);
 }
 
-.ds-stat-icon {
+.document-status .ds-stat-icon {
   width: 48px;
   height: 48px;
   display: flex;
@@ -148,21 +151,21 @@
   flex-shrink: 0;
 }
 
-.ds-stat-content .ds-stat-value {
+.document-status .ds-stat-content .ds-stat-value {
   display: block;
   font-size: 1.6rem;
   font-weight: 700;
   color: white;
 }
 
-.ds-stat-content .ds-stat-label {
+.document-status .ds-stat-content .ds-stat-label {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 600;
 }
 
 /* Filters area */
-.ds-filters {
+.document-status .ds-filters {
   backdrop-filter: blur(28px);
   background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -175,13 +178,13 @@
   align-items: center;
 }
 
-.ds-search {
+.document-status .ds-search {
   position: relative;
   flex: 1;
   min-width: 220px;
 }
 
-.ds-search-icon {
+.document-status .ds-search-icon {
   position: absolute;
   left: 1rem;
   top: 50%;
@@ -190,7 +193,7 @@
   pointer-events: none;
 }
 
-.ds-search input {
+.document-status .ds-search input {
   width: 100%;
   padding: 0.9rem 1rem 0.9rem 3.25rem;
   border-radius: 12px;
@@ -201,11 +204,11 @@
   transition: all 0.15s ease;
 }
 
-.ds-search input::placeholder {
+.document-status .ds-search input::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.ds-filter-select {
+.document-status .ds-filter-select {
   padding: 0.875rem 1rem;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -215,8 +218,8 @@
   appearance: none;
 }
 
-/* Table wrapper and scroll */
-.ds-table-container {
+/* Table wrapper and scroll (scoped scrollbars) */
+.document-status .ds-table-container {
   backdrop-filter: blur(32px);
   background: rgba(255, 255, 255, 0.12);
   border-radius: 16px;
@@ -225,24 +228,40 @@
   overflow: hidden;
 }
 
-.ds-table-scroll {
+.document-status .ds-table-scroll {
   overflow-x: auto;
   width: 100%;
 }
 
+/* Scoped custom scrollbar for only this component (WebKit) */
+.document-status .ds-table-scroll::-webkit-scrollbar {
+  height: 10px;
+}
+.document-status .ds-table-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+.document-status .ds-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.35);
+  border-radius: 8px;
+}
+.document-status .ds-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
 /* Table */
-.ds-table {
+.document-status .ds-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 1100px; /* allow horizontal scroll on smaller screens */
 }
 
-.ds-table thead {
+.document-status .ds-table thead {
   background: rgba(255, 255, 255, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.ds-table th {
+.document-status .ds-table th {
   padding: 1rem 1.25rem;
   text-align: left;
   font-size: 0.85rem;
@@ -253,7 +272,7 @@
   white-space: nowrap;
 }
 
-.ds-table td {
+.document-status .ds-table td {
   padding: 0.9rem 1.25rem;
   font-size: 0.95rem;
   color: rgba(255, 255, 255, 0.95);
@@ -262,26 +281,26 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.ds-empty {
+.document-status .ds-empty {
   text-align: center;
   padding: 3rem;
   color: rgba(255, 255, 255, 0.75);
 }
 
 /* Document title cell */
-.ds-doc-title {
+.document-status .ds-doc-title {
   display: flex;
   gap: 0.75rem;
   align-items: center;
 }
 
-.ds-doc-title svg {
+.document-status .ds-doc-title svg {
   color: rgba(255, 255, 255, 0.9);
   flex-shrink: 0;
 }
 
 /* Submitter cell */
-.ds-submitter {
+.document-status .ds-submitter {
   display: flex;
   gap: 0.5rem;
   align-items: center;
@@ -289,7 +308,7 @@
 }
 
 /* Status badges used by DocumentStatus.jsx */
-.ds-status-badge {
+.document-status .ds-status-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -301,38 +320,38 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.ds-status-pending {
+.document-status .ds-status-pending {
   background: rgba(251, 146, 60, 0.12);
   color: #fb923c;
   border-color: rgba(251, 146, 60, 0.2);
 }
 
-.ds-status-review {
+.document-status .ds-status-review {
   background: rgba(59, 130, 246, 0.12);
   color: #3b82f6;
   border-color: rgba(59, 130, 246, 0.18);
 }
 
-.ds-status-approved {
+.document-status .ds-status-approved {
   background: rgba(34, 197, 94, 0.12);
   color: #22c55e;
   border-color: rgba(34, 197, 94, 0.18);
 }
 
-.ds-status-rejected {
+.document-status .ds-status-rejected {
   background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
   border-color: rgba(239, 68, 68, 0.18);
 }
 
-.ds-status-revision {
+.document-status .ds-status-revision {
   background: rgba(234, 179, 8, 0.12);
   color: #d97706;
   border-color: rgba(234, 179, 8, 0.18);
 }
 
 /* Priority badges */
-.ds-priority-badge {
+.document-status .ds-priority-badge {
   display: inline-flex;
   align-items: center;
   padding: 0.25rem 0.5rem;
@@ -342,34 +361,34 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.ds-priority-low {
+.document-status .ds-priority-low {
   background: rgba(255, 255, 255, 0.03);
   color: rgba(255, 255, 255, 0.9);
 }
 
-.ds-priority-medium {
+.document-status .ds-priority-medium {
   background: rgba(59, 130, 246, 0.12);
   color: #3b82f6;
 }
 
-.ds-priority-high {
+.document-status .ds-priority-high {
   background: rgba(251, 146, 60, 0.12);
   color: #fb923c;
 }
 
-.ds-priority-urgent {
+.document-status .ds-priority-urgent {
   background: rgba(239, 68, 68, 0.12);
   color: #ef4444;
 }
 
 /* Actions */
-.ds-actions {
+.document-status .ds-actions {
   display: flex;
   gap: 0.5rem;
   align-items: center;
 }
 
-.ds-action-btn {
+.document-status .ds-action-btn {
   padding: 0.5rem;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -382,13 +401,13 @@
   justify-content: center;
 }
 
-.ds-action-btn:hover {
+.document-status .ds-action-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-2px);
 }
 
 /* Pagination */
-.ds-pagination {
+.document-status .ds-pagination {
   display: flex;
   justify-content: center;
   gap: 0.75rem;
@@ -396,8 +415,8 @@
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.ds-page-btn,
-.ds-page-num {
+.document-status .ds-page-btn,
+.document-status .ds-page-num {
   padding: 0.6rem 0.9rem;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.06);
@@ -407,13 +426,13 @@
   cursor: pointer;
 }
 
-.ds-page-num.active {
+.document-status .ds-page-num.active {
   background: rgba(59, 130, 246, 0.85);
   border-color: rgba(59, 130, 246, 0.5);
 }
 
 /* Modal (document details) */
-.ds-modal-overlay {
+.document-status .ds-modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
@@ -425,7 +444,7 @@
   padding: 1rem;
 }
 
-.ds-modal {
+.document-status .ds-modal {
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
@@ -438,7 +457,7 @@
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
 }
 
-.ds-modal-header {
+.document-status .ds-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -446,13 +465,13 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.ds-modal-header h2 {
+.document-status .ds-modal-header h2 {
   margin: 0;
   font-size: 1.25rem;
   color: white;
 }
 
-.ds-modal-close {
+.document-status .ds-modal-close {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
   color: white;
@@ -462,33 +481,33 @@
 }
 
 /* Modal body sections */
-.ds-modal-body {
+.document-status .ds-modal-body {
   padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.ds-modal-section h3 {
+.document-status .ds-modal-section h3 {
   margin: 0 0 0.5rem 0;
   color: white;
   font-size: 1rem;
 }
 
-.ds-modal-grid {
+.document-status .ds-modal-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0.75rem;
 }
 
-.ds-modal-field {
+.document-status .ds-modal-field {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 10px;
   padding: 0.75rem;
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.ds-modal-field label {
+.document-status .ds-modal-field label {
   display: block;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.85);
@@ -497,20 +516,20 @@
 }
 
 /* Document history timeline */
-.ds-history-timeline {
+.document-status .ds-history-timeline {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   padding-left: 0.5rem;
 }
 
-.ds-history-item {
+.document-status .ds-history-item {
   display: flex;
   gap: 0.75rem;
   align-items: flex-start;
 }
 
-.ds-history-marker {
+.document-status .ds-history-marker {
   width: 10px;
   height: 10px;
   background: rgba(255, 255, 255, 0.9);
@@ -520,7 +539,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.ds-history-content {
+.document-status .ds-history-content {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   padding: 0.65rem;
@@ -528,7 +547,7 @@
   width: 100%;
 }
 
-.ds-history-header {
+.document-status .ds-history-header {
   display: flex;
   justify-content: space-between;
   gap: 0.5rem;
@@ -536,29 +555,29 @@
   margin-bottom: 0.35rem;
 }
 
-.ds-history-action {
+.document-status .ds-history-action {
   font-weight: 700;
   color: white;
 }
 
-.ds-history-date {
+.document-status .ds-history-date {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
-.ds-history-user {
+.document-status .ds-history-user {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 0.4rem;
 }
 
-.ds-history-comments {
+.document-status .ds-history-comments {
   font-size: 0.88rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
 /* Modal footer */
-.ds-modal-footer {
+.document-status .ds-modal-footer {
   display: flex;
   gap: 0.75rem;
   justify-content: flex-end;
@@ -566,7 +585,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.ds-btn-primary {
+.document-status .ds-btn-primary {
   background: rgba(59, 130, 246, 0.9);
   color: white;
   padding: 0.6rem 1rem;
@@ -576,7 +595,7 @@
   cursor: pointer;
 }
 
-.ds-btn-secondary {
+.document-status .ds-btn-secondary {
   background: rgba(255, 255, 255, 0.06);
   color: white;
   padding: 0.6rem 1rem;
@@ -585,8 +604,8 @@
   cursor: pointer;
 }
 
-/* Loading state */
-.document-status-loading {
+/* Loading state (scoped) */
+.document-status .ds-loading-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -595,12 +614,29 @@
   gap: 1rem;
 }
 
+.document-status .ds-loading-spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: ds-spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+/* Unique keyframe for this component only */
+@keyframes ds-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* small responsive adjustments */
 @media (max-width: 1024px) {
-  .ds-modal {
+  .document-status .ds-modal {
     max-width: 92%;
   }
-  .ds-modal-grid {
+  .document-status .ds-modal-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -609,33 +645,33 @@
   .document-status {
     padding: 1rem;
   }
-  .ds-header-card {
+  .document-status .ds-header-card {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.75rem;
   }
-  .ds-stats {
+  .document-status .ds-stats {
     grid-template-columns: repeat(2, 1fr);
   }
-  .ds-modal-grid {
+  .document-status .ds-modal-grid {
     grid-template-columns: 1fr;
   }
-  .ds-search {
+  .document-status .ds-search {
     min-width: 100%;
   }
-  .ds-filter-select {
+  .document-status .ds-filter-select {
     min-width: 140px;
   }
 }
 
 @media (max-width: 480px) {
-  .ds-stat-content .ds-stat-value {
+  .document-status .ds-stat-content .ds-stat-value {
     font-size: 1.25rem;
   }
-  .ds-header-text h1 {
+  .document-status .ds-header-text h1 {
     font-size: 1.25rem;
   }
-  .ds-filters {
+  .document-status .ds-filters {
     padding: 0.75rem;
     gap: 0.5rem;
   }

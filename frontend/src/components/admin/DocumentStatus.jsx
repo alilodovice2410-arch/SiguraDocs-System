@@ -243,9 +243,11 @@ function DocumentStatus() {
 
   if (loading) {
     return (
-      <div className="document-status-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading documents...</p>
+      <div className="document-status">
+        <div className="ds-loading-wrapper">
+          <div className="ds-loading-spinner" aria-hidden="true"></div>
+          <p>Loading documents...</p>
+        </div>
       </div>
     );
   }
