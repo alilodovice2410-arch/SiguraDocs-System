@@ -1,10 +1,7 @@
-/* NotificationBell.css */
-
-/* Ensure wrapper does not clip fixed-position dropdown */
 .notification-wrapper {
   position: relative;
-  z-index: 3000; /* wrapper stacking is fine, dropdown will be fixed so will escape this */
-  overflow: visible; /* ensure no clipping from wrapper */
+  z-index: 3000;
+  overflow: visible;
 }
 
 /* Notification button */
@@ -63,23 +60,14 @@
   font-size: 0.65rem;
 }
 
-/* IMPORTANT: make dropdown fixed so it escapes parent stacking contexts (backdrop-filter, transforms, etc.)
-   and give it a very high z-index so it sits above everything. */
 .notification-dropdown {
   position: fixed;
-  /* place it near the top-right of the viewport by default; adjust offsets as needed */
-  top: 1.25rem;
-  right: 1.25rem;
-  width: 400px;
-  max-width: 90vw;
-  background: white;
   border-radius: 0.75rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   border: 1px solid #e5e7eb;
-  z-index: 99999; /* very high to ensure it appears above most elements */
+  z-index: 99999; /* ensure it's above other stacking contexts */
   overflow: hidden;
-  animation: slideDown 0.2s ease-out;
-  /* remove potential clipping from ancestor stacking contexts */
+  animation: slideDown 0.18s ease-out;
   will-change: transform, opacity;
 }
 
