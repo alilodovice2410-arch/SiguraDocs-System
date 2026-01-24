@@ -14,7 +14,8 @@
 .depthead-dashboard {
   display: flex;
   min-height: 100vh;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url("../../assets/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
@@ -31,7 +32,9 @@
   height: 100vh;
   overflow-y: auto;
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-  transition: transform 220ms ease-in-out, visibility 220ms;
+  transition:
+    transform 220ms ease-in-out,
+    visibility 220ms;
   z-index: 1700;
   pointer-events: auto;
 }
@@ -325,12 +328,16 @@
   padding: 2rem 2.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative; /* ADD THIS */
+  z-index: 100;
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; /* ADD THIS */
+  z-index: 101;
 }
 
 .header-left {
@@ -388,6 +395,8 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  position: relative;
+  z-index: 3000;
 }
 
 /* Notification icon */
@@ -455,7 +464,9 @@
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(6, 95, 70, 0.18);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .logout-btn:hover {
@@ -481,13 +492,16 @@
    ======================================== */
 .dashboard-content {
   padding: 2.5rem;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
     url("../../assets/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   min-height: 100vh;
+  position: relative; /* ADD THIS */
+  z-index: 100;
 }
 
 @media (max-width: 768px) {
@@ -997,6 +1011,27 @@
   .dashboard-content.approvals-view {
     padding: 0;
   }
+}
+
+.stats-grid-modern {
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card-modern {
+  position: relative;
+  z-index: 1;
+}
+
+/* Quick actions should also be lower */
+.quick-actions-modern {
+  position: relative;
+  z-index: 1;
+}
+
+.action-card-modern {
+  position: relative;
+  z-index: 1;
 }
 
 /* The rest of the modern components (stats-grid-modern, stat-card-modern, action-card-modern, etc.)
