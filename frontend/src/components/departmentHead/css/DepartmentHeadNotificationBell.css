@@ -1,10 +1,13 @@
 /* NotificationBell.css */
 
+/* Ensure wrapper does not clip fixed-position dropdown */
 .notification-wrapper {
   position: relative;
-  z-index: 3000; /* Increased from default */
+  z-index: 3000; /* wrapper stacking is fine, dropdown will be fixed so will escape this */
+  overflow: visible; /* ensure no clipping from wrapper */
 }
 
+/* Notification button */
 .notification-btn {
   position: relative;
   width: 3rem;
@@ -25,6 +28,7 @@
   transform: scale(1.05);
 }
 
+/* Badge */
 .notification-bell-badge {
   position: absolute;
   top: 0.5rem;
@@ -59,21 +63,27 @@
   font-size: 0.65rem;
 }
 
+/* IMPORTANT: make dropdown fixed so it escapes parent stacking contexts (backdrop-filter, transforms, etc.)
+   and give it a very high z-index so it sits above everything. */
 .notification-dropdown {
-  position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
+  position: fixed;
+  /* place it near the top-right of the viewport by default; adjust offsets as needed */
+  top: 1.25rem;
+  right: 1.25rem;
   width: 400px;
   max-width: 90vw;
   background: white;
   border-radius: 0.75rem;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   border: 1px solid #e5e7eb;
-  z-index: 3001; /* Increased from 2000 */
+  z-index: 99999; /* very high to ensure it appears above most elements */
   overflow: hidden;
   animation: slideDown 0.2s ease-out;
+  /* remove potential clipping from ancestor stacking contexts */
+  will-change: transform, opacity;
 }
 
+/* Small animation */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -248,18 +258,20 @@
   transform: scale(1.05);
 }
 
-/* Responsive design */
+/* Responsive adjustments for fixed position placement */
 @media (max-width: 768px) {
   .notification-dropdown {
     width: 350px;
-    right: -50px;
+    right: 0.5rem;
+    top: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
   .notification-dropdown {
-    width: calc(100vw - 2rem);
-    right: -100px;
+    width: calc(100vw - 1rem);
+    right: 0.5rem;
+    top: 0.7rem;
   }
 
   .dropdown-header {
