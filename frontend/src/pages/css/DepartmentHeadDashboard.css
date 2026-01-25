@@ -444,17 +444,17 @@
 /* Username text in header (slightly smaller) */
 .header-user-inline .user-name {
   font-size: 0.95rem;
-  color: #111827;
+  color: white;
   font-weight: 700;
   line-height: 1;
 }
 
 .header-user-inline .user-dept {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-/* Logout button in header (copied/styled similar to principal layout) */
+/* Logout button in header */
 .logout-btn {
   padding: 0.6rem 1rem;
   background: #065f46;
@@ -1033,7 +1033,3 @@
   position: relative;
   z-index: 1;
 }
-
-/* The rest of the modern components (stats-grid-modern, stat-card-modern, action-card-modern, etc.)
-   are expected to be defined elsewhere in the same file or included via global styles.
-   If you want them merged here explicitly, I can add them as well. */

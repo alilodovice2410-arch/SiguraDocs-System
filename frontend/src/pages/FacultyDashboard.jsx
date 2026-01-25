@@ -158,7 +158,7 @@ function FacultyDashboard() {
     if (!disposition) return fallback;
     const filenameMatch =
       /filename\*=(?:UTF-8'')?([^;]+)|filename=\"?([^\";]+)\"?/i.exec(
-        disposition
+        disposition,
       );
     if (filenameMatch) {
       const raw = filenameMatch[1] || filenameMatch[2];
@@ -242,7 +242,7 @@ function FacultyDashboard() {
   };
 
   const filteredDocuments = documents.filter((doc) =>
-    doc.title.toLowerCase().includes(searchTerm.toLowerCase())
+    doc.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (loading) {
@@ -353,8 +353,8 @@ function FacultyDashboard() {
 
               <div className="user-menu">
                 <div className="user-info">
-                  <span className="user-role">Faculty</span>
                   <span className="user-name">
+                    <span className="user-role">Faculty</span>
                     {user?.full_name || "Faculty User"}
                   </span>
                 </div>
