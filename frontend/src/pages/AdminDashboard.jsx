@@ -254,7 +254,7 @@ function AdminDashboard() {
                 };
 
                 const { icon: Icon, className } = getActivityIcon(
-                  activity.type
+                  activity.type,
                 );
 
                 return (
@@ -394,10 +394,6 @@ function AdminDashboard() {
               <div className="session-wrapper">
                 <SessionIndicator />
               </div>
-
-              <button className="header-icon-btn" title="Notifications">
-                <Bell />
-              </button>
 
               {/* Desktop user menu (username + logout) */}
               <div className="user-menu desktop-only">
