@@ -353,8 +353,8 @@ function FacultyDashboard() {
 
               <div className="user-menu">
                 <div className="user-info">
+                  <span className="user-role">Faculty</span>
                   <span className="user-name">
-                    <span className="user-role">Faculty</span>
                     {user?.full_name || "Faculty User"}
                   </span>
                 </div>
