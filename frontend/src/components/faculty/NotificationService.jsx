@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import {
   Bell,
   CheckCircle,
@@ -14,68 +15,91 @@ function NotificationService({ isOpen, onClose }) {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const panelRef = useRef(null);
 
+  // Fetch unread count on mount / interval
+  useEffect(() => {
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fetch notifications when opened
   useEffect(() => {
     if (isOpen) {
       fetchNotifications();
     }
   }, [isOpen]);
 
+  // Close on Escape
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === "Escape" && isOpen) {
+        onClose?.();
+      }
+    }
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen, onClose]);
+
+  // Click outside the panel closes it (works across portal)
+  useEffect(() => {
+    function onDocClick(e) {
+      if (!isOpen) return;
+      const el = panelRef.current;
+      if (el && !el.contains(e.target)) {
+        // If click target is not inside the panel, close only if click is on the overlay or outside
+        onClose?.();
+      }
+    }
+    document.addEventListener("mousedown", onDocClick);
+    return () => document.removeEventListener("mousedown", onDocClick);
+  }, [isOpen, onClose]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await api.get("/notifications/unread-count");
+      if (res.data && res.data.success) {
+        setUnreadCount(res.data.count || 0);
+      }
+    } catch (err) {
+      // silent fallback
+      console.error("Unread count fetch error:", err);
+    }
+  };
+
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      // You'll need to create this endpoint in your backend
       const response = await api.get("/notifications");
-
-      if (response.data.success) {
+      if (response.data && response.data.success) {
         setNotifications(response.data.notifications || []);
-        setUnreadCount(response.data.unreadCount || 0);
+        if (typeof response.data.unreadCount !== "undefined") {
+          setUnreadCount(response.data.unreadCount || 0);
+        } else {
+          setUnreadCount(
+            (response.data.notifications || []).filter((n) => !n.read).length,
+          );
+        }
+      } else {
+        setNotifications([]);
       }
     } catch (error) {
       console.error("Error fetching notifications:", error);
-      // For now, show mock data if endpoint doesn't exist
-      setNotifications(getMockNotifications());
-      setUnreadCount(2);
+      // keep graceful fallback: empty list
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
   };
-
-  // Mock notifications for testing
-  const getMockNotifications = () => [
-    {
-      id: 1,
-      type: "success",
-      title: "Document Approved",
-      message: "Your document 'Annual Report 2024' has been approved",
-      timestamp: new Date(Date.now() - 3600000),
-      read: false,
-    },
-    {
-      id: 2,
-      type: "pending",
-      title: "Pending Review",
-      message: "Your document 'Budget Proposal' is awaiting review",
-      timestamp: new Date(Date.now() - 7200000),
-      read: false,
-    },
-    {
-      id: 3,
-      type: "info",
-      title: "System Update",
-      message: "New features have been added to the dashboard",
-      timestamp: new Date(Date.now() - 86400000),
-      read: true,
-    },
-  ];
 
   const markAsRead = async (notificationId) => {
     try {
       await api.post(`/notifications/${notificationId}/read`);
       setNotifications((prev) =>
         prev.map((notif) =>
-          notif.id === notificationId ? { ...notif, read: true } : notif
-        )
+          notif.id === notificationId ? { ...notif, read: true } : notif,
+        ),
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
@@ -124,34 +148,49 @@ function NotificationService({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  return (
+  const panel = (
     <>
-      <div className="notification-overlay" onClick={onClose}></div>
-      <div className="notification-panel">
+      <div
+        className="notification-overlay"
+        // clicking overlay closes the panel
+        onClick={(e) => {
+          // Only close if overlay itself was clicked (not panel)
+          if (e.target === e.currentTarget) onClose?.();
+        }}
+      />
+      <div
+        className="notification-panel faculty-style"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Notifications"
+        ref={panelRef}
+        // stop propagation so overlay click handler doesn't trigger when clicking inside panel
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="notification-header">
           <div className="notification-title">
-            <Bell size={20} />
+            <Bell size={18} />
             <h3>Notifications</h3>
             {unreadCount > 0 && (
               <span className="unread-count">{unreadCount}</span>
             )}
           </div>
-          <button onClick={onClose} className="close-btn">
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Actions */}
-        {notifications.length > 0 && (
-          <div className="notification-actions">
-            <button onClick={clearAll} className="clear-all-btn">
-              Clear all
+          <div className="notification-header-actions">
+            <button
+              className="clear-all-btn small"
+              onClick={clearAll}
+              title="Clear all notifications"
+            >
+              Clear
+            </button>
+            <button onClick={onClose} className="close-btn" aria-label="Close">
+              <X size={18} />
             </button>
           </div>
-        )}
+        </div>
 
-        {/* Notification List */}
+        {/* Body */}
         <div className="notification-list">
           {loading ? (
             <div className="no-notifications">
@@ -173,6 +212,13 @@ function NotificationService({ isOpen, onClose }) {
                 onClick={() =>
                   !notification.read && markAsRead(notification.id)
                 }
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    !notification.read && markAsRead(notification.id);
+                  }
+                }}
               >
                 <div className="notification-content">
                   {getIcon(notification.type)}
@@ -185,7 +231,7 @@ function NotificationService({ isOpen, onClose }) {
                   </div>
                 </div>
                 {!notification.read && (
-                  <span className="unread-indicator"></span>
+                  <span className="unread-indicator" aria-hidden="true" />
                 )}
               </div>
             ))
@@ -202,6 +248,11 @@ function NotificationService({ isOpen, onClose }) {
       </div>
     </>
   );
+
+  // Render into document.body so it's outside header/sidebar stacking contexts
+  return typeof document !== "undefined"
+    ? createPortal(panel, document.body)
+    : null;
 }
 
 export default NotificationService;
